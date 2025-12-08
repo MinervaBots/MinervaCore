@@ -80,31 +80,29 @@ const config = {
       
       navbar: {
         title: 'MinervaCore',
+
         logo: {
           alt: 'MinervaCore Logo',
           src: 'img/minervacore-logo-transp.png',
         },
+
         items: [
-          {
-            type: 'docSidebar',
-            sidebarId: 'tutorialSidebar',
-            position: 'left',
-            label: 'Documentação',
-          },
           {
             href: 'https://github.com/MinervaBots',
             label: 'GitHub',
             position: 'right',
           },
+          
           {
             href: 'https://gitlab.com/MinervaBots',
             label: 'GitLab',
             position: 'right',
           },
+
           {
             to: '/editor',
             label: '➕ Criar Página', // Botão visível para facilitar
-            position: 'right',
+            position: 'left',
           },
         ],
       },
