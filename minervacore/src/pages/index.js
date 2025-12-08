@@ -1,43 +1,114 @@
-import clsx from 'clsx';
+import React from 'react';
+import Layout from '@theme/Layout';
 import Link from '@docusaurus/Link';
 import useDocusaurusContext from '@docusaurus/useDocusaurusContext';
-import Layout from '@theme/Layout';
-import HomepageFeatures from '@site/src/components/HomepageFeatures';
 
-import Heading from '@theme/Heading';
-import styles from './index.module.css';
+// Dados dos tópicos pais
+const KnowledgeTopics = [
+  { 
+    title: 'C++', 
+    link: '/docs/cpp/intro',
+    iconSrc: '/img/icons/cpp.svg' 
+  },
 
-function HomepageHeader() {
-  const {siteConfig} = useDocusaurusContext();
+  { 
+    title: 'Python', 
+    link: '/docs/python/intro',
+    iconSrc: '/img/icons/python.svg'
+  },
+
+  {
+    title: 'Arduino', 
+    link: '/docs/arduino/intro',
+    iconSrc: '/img/icons/arduino.svg' 
+  },
+
+  { 
+    title: 'ROS 2', 
+    link: '/docs/ros2/intro',
+    iconSrc: '/img/icons/ros.svg'
+  },
+
+  { 
+    title: 'Eletrônica', 
+    link: '/docs/eletronica/intro',
+    iconSrc: ''
+  },
+];
+
+// header (capa)
+function HeroHeader() {
   return (
-    <header className={clsx('hero hero--primary', styles.heroBanner)}>
-      <div className="container">
-        <Heading as="h1" className="hero__title">
-          {siteConfig.title}
-        </Heading>
-        <p className="hero__subtitle">{siteConfig.tagline}</p>
-        <div className={styles.buttons}>
-          <Link
-            className="button button--secondary button--lg"
-            to="/docs/intro">
-            Docusaurus Tutorial - 5min ⏱️
-          </Link>
-        </div>
+    <header className="hero-header">
+      <div className="hero-bg-image" />
+      <div className="hero-overlay" />
+
+      <div className="hero-header-content">
+        <img 
+          src="img/minervacore-logo-transp.png" 
+          alt="MinervaCore Logo" 
+          className="hero-logo" 
+        />
+        <h1 className="hero-title">MinervaCore</h1>
+        <p className="hero-subtitle">
+          O núcleo de conhecimento da MinervaBots para EletroProgs!
+        </p>
       </div>
     </header>
   );
 }
 
+// cards dos tópicos
+function TopicsGrid() {
+  return (
+    <section className="topics-section">
+      <div className="container">
+        <div style={{
+            textAlign: 'center', 
+            marginBottom: '3rem', 
+            borderBottom: '1px solid #333',
+            paddingBottom: '20px'
+        }}>
+           <h1 style={{color: 'white', textTransform: 'uppercase', letterSpacing: '1px'}}>
+             Trilhas de Aprendizado
+           </h1>
+        </div>
+
+        <div className="knowledge-grid">
+          {KnowledgeTopics.map((topic, idx) => (
+            <Link key={idx} to={topic.link} className="knowledge-card">
+              
+              {topic.iconSrc ? (
+                  <div className="card-icon-container">
+                    <img src={topic.iconSrc} alt={topic.title} className="card-icon" />
+                  </div>
+              ) : (
+                  <div style={{height: '50px', marginBottom: '20px'}}></div>
+              )}
+
+              <h3 className="card-title">{topic.title}</h3>
+            </Link>
+          ))}
+        </div>
+      </div>
+    </section>
+  );
+}
+
+
 export default function Home() {
   const {siteConfig} = useDocusaurusContext();
   return (
     <Layout
-      title={`Hello from ${siteConfig.title}`}
-      description="Description will go into a meta tag in <head />">
-      <HomepageHeader />
-      <main>
-        <HomepageFeatures />
+      title={`Início`}
+      description="MinervaBots Firmware & Hardware Docs">
+      
+      <main className="home-main-container"> 
+        <HeroHeader />
+        <TopicsGrid />
+         <div style={{height: '100px'}}></div>
       </main>
+      
     </Layout>
   );
 }
