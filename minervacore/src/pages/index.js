@@ -31,9 +31,9 @@ const KnowledgeTopics = [
   },
 
   { 
-    title: 'Eletrônica', 
-    link: '/docs/eletronica/intro',
-    iconSrc: ''
+    title: 'Componentes', 
+    link: '/docs/componentes/intro',
+    iconSrc: '/img/icons/chip.svg'
   },
 ];
 
