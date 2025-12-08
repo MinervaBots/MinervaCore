@@ -49,11 +49,7 @@ const config = {
       /** @type {import('@docusaurus/preset-classic').Options} */
       ({
         docs: {
-          sidebarPath: './sidebars.js',
-          // Please change this to your repo.
-          // Remove this to remove the "edit this page" links.
-          editUrl:
-            'https://github.com/facebook/docusaurus/tree/main/packages/create-docusaurus/templates/shared/',
+          sidebarPath: './sidebars.js'
         },
         blog: {
           showReadingTime: true,
@@ -100,6 +96,16 @@ const config = {
             label: 'GitHub',
             position: 'right',
           },
+          {
+            href: 'https://gitlab.com/MinervaBots',
+            label: 'GitLab',
+            position: 'right',
+          },
+          {
+            to: '/editor',
+            label: '➕ Criar Página', // Botão visível para facilitar
+            position: 'right',
+          },
         ],
       },
       
@@ -107,16 +113,7 @@ const config = {
         style: 'dark',
         links: [
           {
-            title: 'Docs',
-            items: [
-              {
-                label: 'Início',
-                to: '/docs/intro',
-              },
-            ],
-          },
-          {
-            title: 'Comunidade',
+            title: 'Redes Sociais',
             items: [
               {
                 label: 'Instagram',
@@ -129,7 +126,7 @@ const config = {
             ],
           },
         ],
-        copyright: `Copyright © ${new Date().getFullYear()} MinervaBots. Construído com Docusaurus.`,
+        copyright: `Copyright © ${new Date().getFullYear()} MinervaBots. Built with Docusaurus.`,
       },
       
       // Configuração de cores do modo escuro/claro
