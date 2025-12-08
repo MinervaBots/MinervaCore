@@ -8,8 +8,6 @@
   --ifm-color-primary-light: #ae2226;
   --ifm-color-primary-lighter: #b62428;
   --ifm-color-primary-lightest: #cf292d;
-  
-  /* Ajuste para o modo código */
   --docusaurus-highlighted-code-line-bg: rgba(158, 31, 34, 0.1);
 }
 
@@ -18,7 +16,7 @@ body.homepage .navbar {
 }
 
 /* =========================================
-              HERO HEADER (CAPA)
+             HERO HEADER (CAPA)
    ========================================= */
 
 .hero-header {
@@ -31,6 +29,7 @@ body.homepage .navbar {
   color: white;
   overflow: hidden;
   box-shadow: none;
+  background-color: #141414;
 }
 
 .hero-bg-image {
@@ -57,7 +56,7 @@ body.homepage .navbar {
   flex-direction: column;
   align-items: center;
   gap: 10px;
-  margin-top: 110px;
+  margin-top: 50px;
 }
 
 .hero-logo {
@@ -75,6 +74,7 @@ body.homepage .navbar {
     font-weight: 800;
     letter-spacing: 1px;
     margin: 0;
+    color: white;
 }
 
 .hero-subtitle {
@@ -82,10 +82,11 @@ body.homepage .navbar {
     opacity: 0.9;
     font-weight: 300;
     max-width: 600px;
+    color: white;
 }
 
 /* =========================================
-          SEÇÃO DOS CARDS (GRID)
+          SEÇÃO DOS CARDS (HOME)
    ========================================= */
 
 .topics-section {
@@ -104,12 +105,12 @@ body.homepage .navbar {
 }
 
 .home-main-container {
-    background-color: #141414;
+    background-color: #141414 !important; /* !important garante que o modo claro não sobrescreva */
     min-height: 100vh;
 }
 
 /* =========================================
-           DESIGN DO CARD (BOTÃO)
+      DESIGN DO CARD DA HOME (SEMPRE DARK)
    ========================================= */
 
 .knowledge-card {
@@ -119,8 +120,8 @@ body.homepage .navbar {
   justify-content: center;
   padding: 25px 15px;
   
-  background-color: var(--ifm-color-emphasis-100);
-  border: 1px solid var(--ifm-color-emphasis-300);
+  background-color: rgba(255, 255, 255, 0.05); 
+  border: 1px solid rgba(255, 255, 255, 0.1);
   border-radius: 12px;
   
   text-decoration: none !important;
@@ -129,15 +130,13 @@ body.homepage .navbar {
   top: 0;
 }
 
-/* Hover: Borda Vermelha e Brilho */
 .knowledge-card:hover {
   top: -8px; 
-  background-color: rgba(158, 31, 34, 0.05); /* Fundo levemente avermelhado */
+  background-color: rgba(158, 31, 34, 0.05);
   border-color: #9e1f22; 
   box-shadow: 0 10px 30px -10px rgba(158, 31, 34, 0.5);
 }
 
-/* Container do Ícone */
 .card-icon-container {
     margin-bottom: 15px;
     height: 60px;
@@ -147,16 +146,14 @@ body.homepage .navbar {
     justify-content: center;
 }
 
-/* O ícone em si */
 .card-icon {
     max-height: 100%;
     max-width: 100%;
-    filter: brightness(0) invert(1); /* Deixa o ícone branco */
+    filter: brightness(0) invert(1); 
     transition: filter 0.3s;
 }
 
 .knowledge-card:hover .card-icon {
-  /* deixa o ícone vermelho também ao passar o mouse em cima */
     filter: invert(16%) sepia(53%) saturate(6876%) hue-rotate(343deg) brightness(96%) contrast(92%);
 }
 
@@ -187,10 +184,9 @@ body.homepage .navbar {
 
 .topic-card {
   display: flex;
-  align-items: center; /* Alinha ícone e texto verticalmente */
+  align-items: center;
   padding: 20px;
   
-  /* Visual Glass Dark */
   background-color: rgba(255, 255, 255, 0.03);
   border: 1px solid rgba(255, 255, 255, 0.1);
   border-radius: 12px;
@@ -200,14 +196,20 @@ body.homepage .navbar {
   transition: all 0.2s ease-in-out;
 }
 
+/* --- CORREÇÃO MODO CLARO --- */
+html[data-theme='light'] .topic-card {
+  background-color: rgba(0, 0, 0, 0.03); /* Cinza bem clarinho */
+  border: 1px solid rgba(0, 0, 0, 0.1);  /* Borda escura sutil */
+  color: #000;
+}
+
 .topic-card:hover {
-  transform: translateX(5px); /* Move para a direita */
+  transform: translateX(5px);
   border-color: #9e1f22;
   background-color: rgba(158, 31, 34, 0.05);
   box-shadow: -5px 5px 15px -5px rgba(158, 31, 34, 0.3);
 }
 
-/* Container do Ícone (Esquerda) */
 .topic-icon-box {
   flex-shrink: 0;
   width: 50px;
@@ -225,9 +227,13 @@ body.homepage .navbar {
   transition: filter 0.3s;
 }
 
-/* Hover: Ícone fica vermelho */
+/* --- CORREÇÃO ÍCONES MODO CLARO --- */
+html[data-theme='light'] .topic-icon {
+  filter: none;
+}
+
 .topic-card:hover .topic-icon {
-  filter: invert(16%) sepia(53%) saturate(6876%) hue-rotate(343deg) brightness(96%) contrast(92%);
+  filter: invert(16%) sepia(53%) saturate(6876%) hue-rotate(343deg) brightness(96%) contrast(92%) !important;
 }
 
 .topic-content {
@@ -249,24 +255,23 @@ body.homepage .navbar {
   line-height: 1.3;
 }
 
-/* Hover: Título fica vermelho */
 .topic-card:hover .topic-title {
   color: #9e1f22;
 }
 
 /* =========================================
-             COMPONENTE DE VÍDEO
+            COMPONENTE DE VÍDEO
    ========================================= */
 
 .video-responsive {
   overflow: hidden;
-  padding-bottom: 56.25%; /* Proporção para 16:9 */
+  padding-bottom: 56.25%;
   position: relative;
   height: 0;
-  border-radius: 12px; /* Arredonda os cantos do vídeo */
-  margin: 2rem 0; /* Espaço em cima e embaixo */
-  box-shadow: 0 5px 15px rgba(0,0,0,0.3); /* Sombra suave */
-  background-color: #000; /* Fundo preto enquanto carrega */
+  border-radius: 12px;
+  margin: 2rem 0;
+  box-shadow: 0 5px 15px rgba(0,0,0,0.3);
+  background-color: #000;
 }
 
 .video-responsive iframe {
