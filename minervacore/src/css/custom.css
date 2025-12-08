@@ -179,7 +179,6 @@ body.homepage .navbar {
 
 .topic-grid {
   display: grid;
-  /* Cria colunas largas. Em telas grandes, 2 colunas. Em mobile, 1 coluna. */
   grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
   gap: 20px;
   margin-top: 20px;
@@ -202,7 +201,7 @@ body.homepage .navbar {
 }
 
 .topic-card:hover {
-  transform: translateX(5px); /* Move levemente para a direita */
+  transform: translateX(5px); /* Move para a direita */
   border-color: #9e1f22;
   background-color: rgba(158, 31, 34, 0.05);
   box-shadow: -5px 5px 15px -5px rgba(158, 31, 34, 0.3);
@@ -210,7 +209,7 @@ body.homepage .navbar {
 
 /* Container do Ícone (Esquerda) */
 .topic-icon-box {
-  flex-shrink: 0; /* Impede o ícone de esmagar */
+  flex-shrink: 0;
   width: 50px;
   height: 50px;
   margin-right: 20px;
@@ -222,7 +221,6 @@ body.homepage .navbar {
 .topic-icon {
   max-width: 100%;
   max-height: 100%;
-  /* Padrão branco */
   filter: brightness(0) invert(1);
   transition: filter 0.3s;
 }
@@ -232,7 +230,6 @@ body.homepage .navbar {
   filter: invert(16%) sepia(53%) saturate(6876%) hue-rotate(343deg) brightness(96%) contrast(92%);
 }
 
-/* Texto (Direita) */
 .topic-content {
   display: flex;
   flex-direction: column;
@@ -255,4 +252,27 @@ body.homepage .navbar {
 /* Hover: Título fica vermelho */
 .topic-card:hover .topic-title {
   color: #9e1f22;
+}
+
+/* =========================================
+             COMPONENTE DE VÍDEO
+   ========================================= */
+
+.video-responsive {
+  overflow: hidden;
+  padding-bottom: 56.25%; /* Proporção para 16:9 */
+  position: relative;
+  height: 0;
+  border-radius: 12px; /* Arredonda os cantos do vídeo */
+  margin: 2rem 0; /* Espaço em cima e embaixo */
+  box-shadow: 0 5px 15px rgba(0,0,0,0.3); /* Sombra suave */
+  background-color: #000; /* Fundo preto enquanto carrega */
+}
+
+.video-responsive iframe {
+  left: 0;
+  top: 0;
+  height: 100%;
+  width: 100%;
+  position: absolute;
 }
