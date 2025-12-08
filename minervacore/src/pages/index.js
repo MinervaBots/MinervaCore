@@ -26,9 +26,39 @@ const KnowledgeTopics = [
   },
 
   { 
-    title: 'ROS 2', 
-    link: '/docs/ros2',
+    title: 'ROS', 
+    link: '/docs/ros',
     iconSrc: '/img/icons/ros.svg'
+  },
+
+  { 
+    title: 'Dart & Flutter', 
+    link: '/docs/dart-flutter',
+    iconSrc: '/img/icons/dart.svg'
+  },
+
+  { 
+    title: 'PlatformIO', 
+    link: '/docs/platformio',
+    iconSrc: '/img/icons/platformio.svg'
+  },
+
+  { 
+    title: 'Git', 
+    link: '/docs/git',
+    iconSrc: '/img/icons/git.svg'
+  },
+
+  { 
+    title: 'FreeRTOS', 
+    link: '/docs/freertos',
+    iconSrc: '/img/icons/freertos.svg'
+  },
+
+  { 
+    title: 'Markdown', 
+    link: '/docs/markdown',
+    iconSrc: '/img/icons/markdown.svg'
   },
 
   { 
