@@ -12,7 +12,7 @@ import {themes as prismThemes} from 'prism-react-renderer';
 const config = {
   title: 'MinervaCore',
   tagline: 'Documentation for MinervaCore',
-  favicon: 'img/favicon.ico',
+  favicon: 'img/minervacore-logo.jpg',
 
   // Future flags, see https://docusaurus.io/docs/api/docusaurus-config#future
   future: {
