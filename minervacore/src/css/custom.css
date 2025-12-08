@@ -1,5 +1,18 @@
 /* Arquivo em CSS para o site */
 
+:root {
+  --ifm-color-primary: #9e1f22; /* cor oficial da equipe */
+  --ifm-color-primary-dark: #8e1c1f;
+  --ifm-color-primary-darker: #861a1d;
+  --ifm-color-primary-darkest: #6f1618;
+  --ifm-color-primary-light: #ae2226;
+  --ifm-color-primary-lighter: #b62428;
+  --ifm-color-primary-lightest: #cf292d;
+  
+  /* Ajuste para o modo código */
+  --docusaurus-highlighted-code-line-bg: rgba(158, 31, 34, 0.1);
+}
+
 body.homepage .navbar {
   display: none;
 }
