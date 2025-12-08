@@ -111,6 +111,12 @@ const config = {
       
       footer: {
         style: 'dark',
+        logo: {
+          alt: 'MinervaBots Logo',
+          src: 'img/minervabots-logo-compl.png',
+          href: 'https://minervabots.ufrj.br',
+        },
+
         links: [
           {
             title: 'Redes Sociais',
