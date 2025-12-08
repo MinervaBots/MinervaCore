@@ -1,14 +1,11 @@
-name: Deploy to GitHub Pages
+name: Deploy Docusaurus (MinervaCore)
 
 on:
   push:
     branches:
       - main
     paths:
-      - 'docs/**'
-      - 'src/**'
-      - 'docusaurus.config.js'
-      - 'package.json'
+      - 'minervacore/**'
 
 permissions:
   contents: read
@@ -23,6 +20,11 @@ jobs:
   build:
     name: Build Website
     runs-on: ubuntu-latest
+    
+    defaults:
+      run:
+        working-directory: minervacore
+
     steps:
       - name: Checkout Code
         uses: actions/checkout@v4
@@ -34,6 +36,7 @@ jobs:
         with:
           node-version: 18
           cache: 'npm'
+          cache-dependency-path: minervacore/package-lock.json
 
       - name: Install Dependencies
         run: npm ci
@@ -44,7 +47,7 @@ jobs:
       - name: Upload Build Artifact
         uses: actions/upload-pages-artifact@v3
         with:
-          path: build
+          path: minervacore/build
 
   deploy:
     name: Deploy to GitHub Pages
