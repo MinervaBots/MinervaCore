@@ -1,5 +1,9 @@
 /* Arquivo em CSS para o site */
 
+body.homepage .navbar {
+  display: none;
+}
+
 /* =========================================
               HERO HEADER (CAPA)
    ========================================= */

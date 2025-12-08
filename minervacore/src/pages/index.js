@@ -1,6 +1,7 @@
 import React from 'react';
 import Layout from '@theme/Layout';
 import Link from '@docusaurus/Link';
+import Head from '@docusaurus/Head';
 import useDocusaurusContext from '@docusaurus/useDocusaurusContext';
 
 // Dados dos tópicos pais
@@ -101,9 +102,14 @@ export default function Home() {
   return (
     <Layout
       title={`Início`}
-      description="MinervaBots Firmware & Hardware Docs">
+      description="MinervaBots Firmware & Hardware Docs"
+      noFooter={true}>
       
-      <main className="home-main-container"> 
+      <Head>
+        <body className="homepage" />
+      </Head>
+
+      <main className="home-main-container">
         <HeroHeader />
         <TopicsGrid />
          <div style={{height: '100px'}}></div>
