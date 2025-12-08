@@ -3,6 +3,7 @@ import Layout from '@theme/Layout';
 import Link from '@docusaurus/Link';
 import Head from '@docusaurus/Head';
 import useDocusaurusContext from '@docusaurus/useDocusaurusContext';
+import useBaseUrl from '@docusaurus/useBaseUrl';
 
 // Dados dos tópicos pais
 const KnowledgeTopics = [
@@ -46,7 +47,7 @@ function HeroHeader() {
 
       <div className="hero-header-content">
         <img 
-          src="img/minervacore-logo-transp.png" 
+          src={useBaseUrl('img/minervacore-logo-transp.png')}
           alt="MinervaCore Logo" 
           className="hero-logo" 
         />
@@ -81,7 +82,7 @@ function TopicsGrid() {
               
               {topic.iconSrc ? (
                   <div className="card-icon-container">
-                    <img src={topic.iconSrc} alt={topic.title} className="card-icon" />
+                    <img src={useBaseUrl(topic.iconSrc)} alt={topic.title} className="card-icon" />
                   </div>
               ) : (
                   <div style={{height: '50px', marginBottom: '20px'}}></div>
