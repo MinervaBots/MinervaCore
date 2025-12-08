@@ -8,31 +8,31 @@ import useDocusaurusContext from '@docusaurus/useDocusaurusContext';
 const KnowledgeTopics = [
   { 
     title: 'C++', 
-    link: '/docs/cpp/intro',
+    link: '/docs/cpp',
     iconSrc: '/img/icons/cpp.svg' 
   },
 
   { 
     title: 'Python', 
-    link: '/docs/python/intro',
+    link: '/docs/python',
     iconSrc: '/img/icons/python.svg'
   },
 
   {
     title: 'Arduino', 
-    link: '/docs/arduino/intro',
+    link: '/docs/arduino',
     iconSrc: '/img/icons/arduino.svg' 
   },
 
   { 
     title: 'ROS 2', 
-    link: '/docs/ros2/intro',
+    link: '/docs/ros2',
     iconSrc: '/img/icons/ros.svg'
   },
 
   { 
     title: 'Componentes', 
-    link: '/docs/componentes/intro',
+    link: '/docs/componentes',
     iconSrc: '/img/icons/chip.svg'
   },
 ];
