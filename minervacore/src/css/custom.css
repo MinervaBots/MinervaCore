@@ -172,3 +172,87 @@ body.homepage .navbar {
 .knowledge-card:hover .card-title {
     color: #9e1f22;
 }
+
+/* =========================================
+     MENU DE TÓPICOS (PÁGINAS INTERNAS)
+   ========================================= */
+
+.topic-grid {
+  display: grid;
+  /* Cria colunas largas. Em telas grandes, 2 colunas. Em mobile, 1 coluna. */
+  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+  gap: 20px;
+  margin-top: 20px;
+  margin-bottom: 40px;
+}
+
+.topic-card {
+  display: flex;
+  align-items: center; /* Alinha ícone e texto verticalmente */
+  padding: 20px;
+  
+  /* Visual Glass Dark */
+  background-color: rgba(255, 255, 255, 0.03);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 12px;
+  
+  text-decoration: none !important;
+  color: var(--ifm-font-color-base);
+  transition: all 0.2s ease-in-out;
+}
+
+.topic-card:hover {
+  transform: translateX(5px); /* Move levemente para a direita */
+  border-color: #9e1f22;
+  background-color: rgba(158, 31, 34, 0.05);
+  box-shadow: -5px 5px 15px -5px rgba(158, 31, 34, 0.3);
+}
+
+/* Container do Ícone (Esquerda) */
+.topic-icon-box {
+  flex-shrink: 0; /* Impede o ícone de esmagar */
+  width: 50px;
+  height: 50px;
+  margin-right: 20px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.topic-icon {
+  max-width: 100%;
+  max-height: 100%;
+  /* Padrão branco */
+  filter: brightness(0) invert(1);
+  transition: filter 0.3s;
+}
+
+/* Hover: Ícone fica vermelho */
+.topic-card:hover .topic-icon {
+  filter: invert(16%) sepia(53%) saturate(6876%) hue-rotate(343deg) brightness(96%) contrast(92%);
+}
+
+/* Texto (Direita) */
+.topic-content {
+  display: flex;
+  flex-direction: column;
+}
+
+.topic-title {
+  font-weight: 700;
+  font-size: 1.1rem;
+  margin: 0;
+  line-height: 1.2;
+}
+
+.topic-desc {
+  font-size: 0.85rem;
+  opacity: 0.7;
+  margin: 5px 0 0 0;
+  line-height: 1.3;
+}
+
+/* Hover: Título fica vermelho */
+.topic-card:hover .topic-title {
+  color: #9e1f22;
+}
