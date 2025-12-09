@@ -28,6 +28,9 @@ const config = {
   trailingSlash: false,
 
   onBrokenLinks: 'warn',
+  onBrokenMarkdownLinks: 'warn',
+  onDuplicateRoutes: 'warn',
+  onBrokenAnchors: 'warn',
 
   i18n: {
     defaultLocale: 'pt-BR',

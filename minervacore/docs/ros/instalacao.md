@@ -13,11 +13,11 @@ Esse é um tutorial de instalação do ROS 2 HUMBLE, que não é mais atual, por
 
 > Basicamente, o conteúdo abordado nesse documento será uma tradução e simplificação desse vídeo, a fim de facilitar a sua vida, amigo ;)
 
-* Estimativa de duração da etapa: <span style="color:red">30 Minutos.</span>
+* Estimativa de duração da etapa: 30 Minutos.
 
 > A versão que vamos utilizar, e a que esta contida na vídeo aula que colocamos no início deste tutorial, é o ROS 2 Humble. Vamos ver como começar a instalar essa brincadeira na sua máquina virtual.
 
-- Acesse o [site oficial](https://docs.ros.org/en/humble/Installation.html) para instalação, recomendamos que você tente abri-lo no navegador de sua máquina virtual para copiar os comandos que você terá de usar no terminal, para isso basta pesquisar no navegador FireFox padrão por <span style="color:lightgreen">ROS 2 Humble installation</span>, provavelmente será o primeiro link que aparecer.
+- Acesse o [site oficial](https://docs.ros.org/en/humble/Installation.html) para instalação, recomendamos que você tente abri-lo no navegador de sua máquina virtual para copiar os comandos que você terá de usar no terminal, para isso basta pesquisar no navegador FireFox padrão por ROS 2 Humble installation, provavelmente será o primeiro link que aparecer.
 
 ![image](https://hackmd.io/_uploads/S1xHMcUa6.png)
 
@@ -30,17 +30,17 @@ Esse é um tutorial de instalação do ROS 2 HUMBLE, que não é mais atual, por
  
     ![image](https://hackmd.io/_uploads/Bkp10Ozpa.png)
     
-3. A instalação de todos os pacotes pode (e vai) demorar um pouquinho, mas após a instalação basta digitarmos ros2 para checarmos se ocorreu tudo bem, mas vamos acabar nos deparando com <span style="color:red">isso</span>:
+3. A instalação de todos os pacotes pode (e vai) demorar um pouquinho, mas após a instalação basta digitarmos ros2 para checarmos se ocorreu tudo bem, mas vamos acabar nos deparando com isso:
  
      ![image](https://hackmd.io/_uploads/rkfNyKfaT.png)
      😱😱😱😱😱😱😱😱😱😱😱😱😱😱😱😱😱😱😱😱😱😱😱😱
      
->Mas porque isso aconteceu? será que deu algum problema na instalação? <span style="color:red">Não</span>, isso é completamente normal, quando queremos utilizar o ros, precisamos primeiro preparar o ambiente para ele, ou seja...rodar uma linha de código no nosso terminal mais especificamente essa daqui: 
+>Mas porque isso aconteceu? será que deu algum problema na instalação? Não, isso é completamente normal, quando queremos utilizar o ros, precisamos primeiro preparar o ambiente para ele, ou seja...rodar uma linha de código no nosso terminal mais especificamente essa daqui: 
 
      echo $0
 
 >Digitando esse comando você pode obter algumas respostas. São elas: **bash, sh, zsh**
->Agora você vai digitar o seguinte comando no terminal, substituindo o <span style="color:red">bash</span> no final pela resposta anterior:
+>Agora você vai digitar o seguinte comando no terminal, substituindo o bash no final pela resposta anterior:
 
         source /opt/ros/humble/setup.bash
 
@@ -52,7 +52,7 @@ Esse é um tutorial de instalação do ROS 2 HUMBLE, que não é mais atual, por
 
      
      
-> Porém, precisamos fazer isso para <span style="color:red">cada</span> terminal que quisermos usar, o que seria muito chato não é mesmo? Para fazermos com que esse processo seja automático, podemos adicionar o script acima no arquivo .bashrc da nossa máquina, que fará com que esse script seja executado  <span style="color:red">toda vez que abrirmos um novo terminal</span>, bem mais fácil né? 
+> Porém, precisamos fazer isso para cada terminal que quisermos usar, o que seria muito chato não é mesmo? Para fazermos com que esse processo seja automático, podemos adicionar o script acima no arquivo .bashrc da nossa máquina, que fará com que esse script seja executado toda vez que abrirmos um novo terminal, bem mais fácil né? 
 
 - Rodamos o código abaixo para podermos editar o arquivo que dita todos scripts que são executados quando chamamos um novo terminal: 
 
@@ -60,7 +60,7 @@ Esse é um tutorial de instalação do ROS 2 HUMBLE, que não é mais atual, por
 
     
 - Nesse arquivo, vamos até o final dele e adicionamos a linha de código:
- <span style="color:red">source /opt/ros/humble/setup.bash</span>
+    source /opt/ros/humble/setup.bash
  
     ![image](https://hackmd.io/_uploads/S1hwrFMp6.png)
     
@@ -68,15 +68,15 @@ Esse é um tutorial de instalação do ROS 2 HUMBLE, que não é mais atual, por
 
 4. Existem alguns arquivos de teste que te permitem sentir um pouco o que o ROS pode fazer, recomendo que façam esses testes na máquina de vocês, o mais básico é rodar 2 comandos em terminais diferentes, um que estará enviando uma mensagem e outro que estará recebendo:
 
-- Executando  <span style="color:red">ros2 run demo_nodes_cpp talker</span> em um terminal, você inicia o programa que estará publicando uma mensagem:
+- Executando ros2 run demo_nodes_cpp talker em um terminal, você inicia o programa que estará publicando uma mensagem:
 
     ![image](https://hackmd.io/_uploads/B1XXPFGTp.png)
     
-- E executando <span style="color:red">ros2 run demo_nodes_cpp listener</span>, você inicia o programa que lê a mensagem que o outro programa está enviando!
+- E executando ros2 run demo_nodes_cpp listener, você inicia o programa que lê a mensagem que o outro programa está enviando!
 
     ![image](https://hackmd.io/_uploads/SJwWdYMpT.png)
     
-- E executando  <span style="color:red">rqt_graph</span>no seu terminal, uma janela será aberta com um grafo que ilustra a comunicação entre os programas!
+- E executando rqt_graph no seu terminal, uma janela será aberta com um grafo que ilustra a comunicação entre os programas!
     
     ![image](https://hackmd.io/_uploads/HJyVKzap6.png)
     
