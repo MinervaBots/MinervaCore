@@ -11,55 +11,89 @@ import { TopicGrid, TopicCard } from '@site/src/components/TopicMenu';
 
 Bem-vindo à capacitação de ROS (Robotic Operating System). Selecione um dos tópicos abaixo para entrar no conteúdo do tema.
 
+### Início e Teoria
+
 <TopicGrid>
 
     <TopicCard 
     title="Instalação" 
-    description=""
+    description="Configuração do ambiente, sources e instalação da Distro."
     link="/docs/ros/instalacao" 
     icon="/img/icons/ros.svg"
     />
   
     <TopicCard 
-    title="Pluming" 
-    description=""
-    link="/docs/ros/pluming" 
+    title="Plumbing (Comunicação)" 
+    description="O fluxo de dados: Topics, Services, Actions e Parâmetros."
+    link="/docs/ros/plumbing" 
     icon="/img/icons/ros.svg"
     />
 
     <TopicCard 
     title="Elementos da Rede" 
-    description=""
+    description="Entendendo o ROS Graph, Master/Discovery e introspecção."
     link="/docs/ros/elementos-rede" 
     icon="/img/icons/ros.svg"
     />
 
+</TopicGrid>
+
+### Desenvolvimento
+
+<TopicGrid>
+
     <TopicCard 
     title="Workspace" 
-    description=""
+    description="Estrutura de pastas, Overlays e sistema de Build (Colcon/Catkin)."
     link="/docs/ros/workspace" 
     icon="/img/icons/ros.svg"
     />
 
     <TopicCard 
+    title="Nodes" 
+    description="Processos executáveis que realizam computação e controle."
+    link="/docs/ros/nodes" 
+    icon="/img/icons/ros.svg"
+    />
+
+    <TopicCard 
     title="Pacotes em Python" 
-    description=""
+    description="Estrutura (setup.py), dependências e scripts executáveis."
     link="/docs/ros/pacotes-python" 
     icon="/img/icons/python.svg"
     />
 
     <TopicCard 
     title="Pacotes em C++" 
-    description=""
+    description="Estrutura (CMakeLists), compilação e otimização de nós."
     link="/docs/ros/pacotes-cpp" 
     icon="/img/icons/cpp.svg"
     />
 
+</TopicGrid>
+
+### Ferramentas e Simulação
+<TopicGrid>
+
     <TopicCard 
-    title="Nodes" 
-    description=""
-    link="/docs/ros/nodes" 
-    icon="/img/icons/ros.svg"
+    title="Launch Files"
+    description="Automação e inicialização de múltiplos nós." 
+    link="/docs/ros/launch" 
+    icon="/img/icons/ros.svg" 
+    />
+
+    <TopicCard 
+    title="Rviz e Rqt" 
+    description="Visualização 3D, logs e debug de dados." 
+    link="/docs/ros/ferramentas" 
+    icon="/img/icons/ros.svg" 
+    />
+
+    <TopicCard 
+    title="TF e URDF" 
+    description="Transformadas de coordenadas e modelagem física." 
+    link="/docs/ros/tf-urdf" 
+    icon="/img/icons/ros.svg" 
     />
 
 </TopicGrid>
