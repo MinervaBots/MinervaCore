@@ -32,7 +32,7 @@ const SiteData = {
       items: [
         { title: 'C++', link: '/docs/programacao/cpp', iconSrc: '/img/icons/cpp.svg' },
         { title: 'Python', link: '/docs/programacao/python', iconSrc: '/img/icons/python.svg' },
-        { title: 'Dart', link: '/docs/programacao/dart-flutter', iconSrc: '/img/icons/dart.svg' },
+        { title: 'Dart & Flutter', link: '/docs/programacao/dart-flutter', iconSrc: '/img/icons/dart.svg' },
         { title: 'Markdown', link: '/docs/programacao/markdown', iconSrc: '/img/icons/markdown.svg' },
         { title: 'NXC', link: '/docs/programacao/nxc', iconSrc: '/img/icons/nxc.svg' },
       ]
@@ -48,12 +48,25 @@ const SiteData = {
       ]
     },
     {
+      title: 'Robótica & Algoritmos',
+      items: [
+        { title: 'Sistemas de Controle', link: '/docs/programacao/sistemas-controle', iconSrc: '/img/icons/robotics-arm.svg' },
+      ]
+    },
+    {
         title: 'Comunicação',
         items: [
           { title: 'JSON', link: '/docs/programacao/json', iconSrc: '/img/icons/json.svg' },
           { title: 'Wi-Fi', link: '/docs/programacao/wifi', iconSrc: '/img/icons/wifi.svg' },
           { title: 'Bluetooth', link: '/docs/programacao/bluetooth', iconSrc: '/img/icons/bluetooth.svg' },
         ]
+    },
+    {
+      title: 'Ferramentas & Simuladores',
+      items: [
+        { title: 'Git', link: '/docs/programacao/git', iconSrc: '/img/icons/git.svg' },
+        { title: 'Wokwi', link: '/docs/programacao/wokwi', iconSrc: '/img/icons/wokwi.svg' },
+      ]
     }
   ],
 
