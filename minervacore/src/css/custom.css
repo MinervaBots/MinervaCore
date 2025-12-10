@@ -341,3 +341,87 @@ html[data-theme='light'] .topic-icon {
 .footer__logo:hover {
   opacity: 1;
 }
+
+/* =========================================
+      TAB BAR (NAVEGAÇÃO POR CATEGORIA)
+   ========================================= */
+
+.tabs-container {
+  display: flex;
+  justify-content: center;
+  gap: 15px;
+  margin-top: 30px;
+  margin-bottom: 50px;
+  flex-wrap: wrap;
+  padding: 0 20px;
+}
+
+.tab-button {
+  background-color: rgba(255, 255, 255, 0.05);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  color: rgba(255, 255, 255, 0.6);
+  
+  padding: 12px 28px;
+  border-radius: 50px; /* Formato pills */
+  
+  font-size: 1rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
+  
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  outline: none;
+}
+
+/* Efeito Hover */
+.tab-button:hover {
+  background-color: rgba(255, 255, 255, 0.1);
+  color: #fff;
+  transform: translateY(-2px);
+  border-color: rgba(255, 255, 255, 0.3);
+}
+
+.tab-button.active {
+  background-color: var(--ifm-color-primary);
+  color: #fff;
+  border-color: var(--ifm-color-primary);
+  box-shadow: 0 4px 20px rgba(158, 31, 34, 0.4);
+  transform: scale(1.05);
+}
+
+.fade-in {
+  animation: fadeIn 0.5s ease-in-out;
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(10px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+@media (max-width: 600px) {
+  .tab-button {
+    padding: 10px 15px;
+    font-size: 0.9rem;
+    flex: 1 1 auto;
+    justify-content: center;
+  }
+}
+
+.tab-icon-svg {
+  width: 20px;
+  height: 20px;
+  margin-right: 8px;
+  filter: brightness(0) invert(1);
+  transition: all 0.3s ease;
+}
+
+.tab-button.active .tab-icon-svg {
+  filter: brightness(0) invert(1); 
+  transform: scale(1.1);
+}
+
+.tab-button:hover .tab-icon-svg {
+  transform: scale(1.1);
+}
