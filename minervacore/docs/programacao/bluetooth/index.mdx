@@ -12,10 +12,32 @@ Bem-vindo à capacitação de Bluetooth. Selecione um dos tópicos abaixo para e
 <TopicGrid>
   
     <TopicCard 
-    title="EM BREVE!" 
-    description=""
-    link="/docs/" 
+    title="BluetoothSerial ESP32" 
+    description="Biblioteca de Bluetooth Clássico para ESP32 com Serial Port Profile (SPP)."
+    link="/docs/programacao/bluetooth/bluetoothserial-esp32" 
     icon="/img/icons/bluetooth.svg"
     />
 
+    <TopicCard
+    title="BLE ESP32"
+    description="Biblioteca de Bluetooth Low Energy (BLE) para ESP32."
+    link="/docs/programacao/bluetooth/ble-esp32"
+    icon="/img/icons/bluetooth.svg"
+    />
+
+    <TopicCard
+    title="Controle de PS4 via Bluetooth ESP32"
+    description="Tutorial de como controlar o ESP32 usando um controle de PS4 via Bluetooth."
+    link="/docs/programacao/bluetooth/controle-ps4-esp32"
+    icon="/img/icons/bluetooth.svg"
+    />
+
+
 </TopicGrid>
+
+### Bluetooth no ESP32
+
+> O ESP32 tem dois tipos de Bluetooth embutidos nele. São eles o Bluetooth Clássico (também chamado de serial) e o Bluetooth Low Energy (também chamado de BLE). Daí vem a pergunta, qual utilizar?
+> 
+> O BLE possuí a vantagem de consumir menos energia (daí o nome) e é o Bluetooth mais recente. Por causa disso, dispositivos antigos não possuem ele ([como é o caso do brick EV3 do LEGO](https://www.ev3dev.org/docs/kernel-hackers-notebook/ev3-bluetooth/)).
+> Outra desvantagem do BLE é a complexidade do código necessária. Em contrapartida, Bluetooth Clássico é extremamente mais simples de programar e mais antigo, o que faz com que ele seja compatível com dispositivos mais antigos.
