@@ -1,23 +1,12 @@
 // @ts-check
-// `@type` JSDoc annotations allow editor autocompletion and type checking
-// (when paired with `@ts-check`).
-// There are various equivalent ways to declare your Docusaurus config.
-// See: https://docusaurus.io/docs/api/docusaurus-config
 
 import {themes as prismThemes} from 'prism-react-renderer';
-
-// This runs in Node.js - Don't use client-side code here (browser APIs, JSX...)
 
 /** @type {import('@docusaurus/types').Config} */
 const config = {
   title: 'MinervaCore',
   tagline: 'O núcleo de conhecimento da MinervaBots',
   favicon: 'img/minervacore-logo-transp.png',
-
-  // Future flags, see https://docusaurus.io/docs/api/docusaurus-config#future
-  future: {
-    v4: true, // Improve compatibility with the upcoming Docusaurus v4
-  },
 
   // Configurações para o GitHub Pages
   url: 'https://MinervaBots.github.io',
@@ -37,13 +26,25 @@ const config = {
     locales: ['pt-BR'],
   },
 
+  plugins: [
+  [
+    require.resolve("@easyops-cn/docusaurus-search-local"),
+    {
+      hashed: true,
+      language: ["en", "pt"],
+      indexDocs: true,
+      indexBlog: true,
+    },
+  ],
+],
+
   presets: [
     [
       'classic',
       /** @type {import('@docusaurus/preset-classic').Options} */
       ({
         docs: {
-          sidebarPath: './sidebars.js'
+          sidebarPath: './sidebars.js',
         },
         blog: {
           showReadingTime: true,
@@ -51,11 +52,6 @@ const config = {
             type: ['rss', 'atom'],
             xslt: true,
           },
-          // Please change this to your repo.
-          // Remove this to remove the "edit this page" links.
-          editUrl:
-            'https://github.com/facebook/docusaurus/tree/main/packages/create-docusaurus/templates/shared/',
-          // Useful options to enforce blogging best practices
           onInlineTags: 'warn',
           onInlineAuthors: 'warn',
           onUntruncatedBlogPosts: 'warn',
@@ -71,6 +67,19 @@ const config = {
     /** @type {import('@docusaurus/preset-classic').ThemeConfig} */
     ({
       image: 'img/equipe-rc.jpg', // imagem de compartilhamento
+
+      docs: {
+        sidebar: {
+          hideable: true,
+          autoCollapseCategories: true,
+        },
+      },
+
+      colorMode: {
+        defaultMode: 'dark',
+        disableSwitch: false,
+        respectPrefersColorScheme: true,
+      },
       
       navbar: {
         title: 'MinervaCore',
@@ -148,11 +157,10 @@ const config = {
         copyright: `Copyright © ${new Date().getFullYear()} MinervaBots. Built with Docusaurus.`,
       },
       
-      // Configuração de cores do modo escuro/claro
-      colorMode: {
-        defaultMode: 'dark', // começa no modo escuro
-        disableSwitch: false,
-        respectPrefersColorScheme: false,
+      prism: {
+        theme: prismThemes.github,
+        darkTheme: prismThemes.dracula,
+        additionalLanguages: ['cpp', 'python', 'dart', 'bash', 'json', 'cmake', 'c', 'yaml', 'ini', 'makefile', 'arduino'],
       },
     }),
 };
