@@ -61,7 +61,7 @@ const SiteData = {
     {
       title: 'Conceitos de Hardware',
       items: [
-        { title: 'Memória & Armazenamento', link: '/docs/arquitetura/memoria', iconSrc: '/img/icons/chip.svg' },
+        { title: 'Memória & Armazenamento', link: '/docs/arquitetura/memoria', iconSrc: '/img/icons/memory.svg' },
         { title: 'Clock & Interrupções', link: '/docs/arquitetura/clock', iconSrc: '/img/icons/chip.svg' },
         { title: 'Comunicação Serial', link: '/docs/arquitetura/comunicacao-serial', iconSrc: '/img/icons/chip.svg' },
       ]
