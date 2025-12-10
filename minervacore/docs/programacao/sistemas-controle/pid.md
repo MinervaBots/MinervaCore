@@ -1,3 +1,8 @@
+---
+sidebar_position: 0
+title: 0. PID
+---
+
 # PID
 
 O PID é atualmente o sistema de controle mais utilizado na indústria, sua função é manter o valor de uma variável de um processo no valor desejado. Ele conta com 3 ações de controle (Proporcional, Integrtival, Derivativa). 
