@@ -82,6 +82,33 @@ const config = {
 
         items: [
           {
+            type: 'docSidebar',  // Tipo especial que linka para uma sidebar
+            sidebarId: 'programacaoSidebar', // Tem que ser o mesmo nome do sidebars.js
+            position: 'left',
+            label: 'Programação',
+          },
+
+          {
+            type: 'docSidebar',
+            sidebarId: 'arquiteturaSidebar',
+            position: 'left',
+            label: 'Arq. Hardware',
+          },
+
+          {
+            type: 'docSidebar',
+            sidebarId: 'eletronicaSidebar',
+            position: 'left',
+            label: 'Eletrônica',
+          },
+
+          {
+            to: '/editor',
+            label: '➕ Criar Página',
+            position: 'right',
+          },
+
+          {
             href: 'https://github.com/MinervaBots',
             label: 'GitHub',
             position: 'right',
@@ -91,12 +118,6 @@ const config = {
             href: 'https://gitlab.com/MinervaBots',
             label: 'GitLab',
             position: 'right',
-          },
-
-          {
-            to: '/editor',
-            label: '➕ Criar Página', // Botão visível para facilitar
-            position: 'left',
           },
         ],
       },
