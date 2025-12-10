@@ -30,29 +30,29 @@ const SiteData = {
     {
       title: 'Linguagens',
       items: [
-        { title: 'C++', link: '/docs/cpp', iconSrc: '/img/icons/cpp.svg' },
-        { title: 'Python', link: '/docs/python', iconSrc: '/img/icons/python.svg' },
-        { title: 'Dart', link: '/docs/dart-flutter', iconSrc: '/img/icons/dart.svg' },
-        { title: 'Markdown', link: '/docs/markdown', iconSrc: '/img/icons/markdown.svg' },
-        { title: 'NXC', link: '/docs/nxc', iconSrc: '/img/icons/nxc.svg' },
+        { title: 'C++', link: '/docs/programacao/cpp', iconSrc: '/img/icons/cpp.svg' },
+        { title: 'Python', link: '/docs/programacao/python', iconSrc: '/img/icons/python.svg' },
+        { title: 'Dart', link: '/docs/programacao/dart-flutter', iconSrc: '/img/icons/dart.svg' },
+        { title: 'Markdown', link: '/docs/programacao/markdown', iconSrc: '/img/icons/markdown.svg' },
+        { title: 'NXC', link: '/docs/programacao/nxc', iconSrc: '/img/icons/nxc.svg' },
       ]
     },
     {
       title: 'Firmware & Sistemas Operacionais',
       items: [
-        { title: 'Arduino', link: '/docs/arduino', iconSrc: '/img/icons/arduino.svg' },
-        { title: 'Espressif IDF', link: '/docs/espressif', iconSrc: '/img/icons/espressif.svg' },
-        { title: 'FreeRTOS', link: '/docs/freertos', iconSrc: '/img/icons/freertos.svg' },
-        { title: 'PlatformIO', link: '/docs/platformio', iconSrc: '/img/icons/platformio.svg' },
-        { title: 'ROS 2', link: '/docs/ros', iconSrc: '/img/icons/ros.svg' },
+        { title: 'Arduino', link: '/docs/programacao/arduino', iconSrc: '/img/icons/arduino.svg' },
+        { title: 'Espressif IDF', link: '/docs/programacao/espressif', iconSrc: '/img/icons/espressif.svg' },
+        { title: 'FreeRTOS', link: '/docs/programacao/freertos', iconSrc: '/img/icons/freertos.svg' },
+        { title: 'PlatformIO', link: '/docs/programacao/platformio', iconSrc: '/img/icons/platformio.svg' },
+        { title: 'ROS 2', link: '/docs/programacao/ros', iconSrc: '/img/icons/ros.svg' },
       ]
     },
     {
         title: 'Comunicação',
         items: [
-          { title: 'JSON', link: '/docs/json', iconSrc: '/img/icons/json.svg' },
-          { title: 'Wi-Fi', link: '/docs/wifi', iconSrc: '/img/icons/wifi.svg' },
-          { title: 'Bluetooth', link: '/docs/Bluetooth', iconSrc: '/img/icons/bluetooth.svg' },
+          { title: 'JSON', link: '/docs/programacao/json', iconSrc: '/img/icons/json.svg' },
+          { title: 'Wi-Fi', link: '/docs/programacao/wifi', iconSrc: '/img/icons/wifi.svg' },
+          { title: 'Bluetooth', link: '/docs/programacao/bluetooth', iconSrc: '/img/icons/bluetooth.svg' },
         ]
     }
   ],
