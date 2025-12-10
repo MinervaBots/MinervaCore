@@ -15,6 +15,9 @@ Legenda da figura acima:
 
 Na MinervaBots, o PID é muito utilizado para o controle dos motores através do que é recebido dos sensores. 
 
+## Vídeo sobre PID
+
+<Video id="itXtW65KyDs"/>
 
 ## Como funciona o PID?
 
