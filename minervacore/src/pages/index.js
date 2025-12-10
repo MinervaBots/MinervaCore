@@ -93,9 +93,9 @@ const SiteData = {
     {
       title: 'Sensores',
       items: [
-        { title: 'Infravermelho', link: '/docs/eletronica/sensores/infravermelho', iconSrc: '/img/icons/infrared.svg' },
-        { title: 'Ultrassom', link: '/docs/eletronica/sensores/ultrassom', iconSrc: '/img/icons/ultrasound.svg' },
-        { title: 'IMU', link: '/docs/eletronica/sensores/imu', iconSrc: '/img/icons/chip.svg' },
+        { title: 'Infravermelho', link: '/docs/eletronica/infravermelho', iconSrc: '/img/icons/infrared.svg' },
+        { title: 'Ultrassom', link: '/docs/eletronica/ultrassom', iconSrc: '/img/icons/ultrasound.svg' },
+        { title: 'IMU', link: '/docs/eletronica/imu', iconSrc: '/img/icons/chip.svg' },
       ]
     }
   ]
