@@ -50,7 +50,7 @@ const SiteData = {
     {
       title: 'Robótica & Algoritmos',
       items: [
-        { title: 'Sistemas de Controle', link: '/docs/programacao/sistemas-controle', iconSrc: '/img/icons/robotics-arm.svg' },
+        { title: 'Sistemas de Controle', link: '/docs/programacao/sistemas-controle', iconSrc: '/img/icons/robotic-arm.svg' },
       ]
     },
     {
