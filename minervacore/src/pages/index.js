@@ -51,6 +51,7 @@ const SiteData = {
       title: 'Robótica & Algoritmos',
       items: [
         { title: 'Sistemas de Controle', link: '/docs/programacao/sistemas-controle', iconSrc: '/img/icons/robotic-arm.svg' },
+        { title: 'Metaheurísticas', link: '/docs/programacao/metaheuristicas', iconSrc: '/img/icons/smart-optimization.svg' },
       ]
     },
     {
