@@ -5,7 +5,7 @@ import Head from '@docusaurus/Head';
 import useDocusaurusContext from '@docusaurus/useDocusaurusContext';
 import useBaseUrl from '@docusaurus/useBaseUrl';
 
-import SiteData from './homeData';
+import SiteData from '../data/homeData';
 
 /* ==========================================================================
                         COMPONENTES AUXILIARES
