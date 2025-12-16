@@ -126,8 +126,8 @@ const SiteData = {
     {
       title: 'Prática',
       items: [
-        { title: 'Soldagem', link: '/docs/eletronica/soldagem', iconSrc: '/img/icons/soldering.svg' },
-        { title: 'Crimpagem', link: '/docs/eletronica/crimpagem', iconSrc: '/img/icons/connector.svg' },
+        { title: 'Soldagem', link: '/docs/eletronica/pratica/soldagem', iconSrc: '/img/icons/soldering.svg' },
+        { title: 'Crimpagem', link: '/docs/eletronica/pratica/crimpagem', iconSrc: '/img/icons/connector.svg' },
 
       ]
     }
