@@ -92,24 +92,43 @@ const SiteData = {
     {
       title: 'Componentes Básicos',
       items: [
-        { title: 'Resistores', link: '/docs/eletronica/resistores', iconSrc: '/img/icons/resistor.svg' },
-        { title: 'Capacitores', link: '/docs/eletronica/capacitores', iconSrc: '/img/icons/capacitor.svg' },
-        { title: 'Diodos', link: '/docs/eletronica/diodos', iconSrc: '/img/icons/diode.svg' },
-        { title: 'Transistores', link: '/docs/eletronica/transistores', iconSrc: '/img/icons/transistor.svg' },
+        { title: 'Resistores', link: '/docs/eletronica/componentes/resistores', iconSrc: '/img/icons/resistor.svg' },
+        { title: 'Capacitores', link: '/docs/eletronica/componentes/capacitores', iconSrc: '/img/icons/capacitor.svg' },
+        { title: 'Diodos', link: '/docs/eletronica/componentes/diodos', iconSrc: '/img/icons/diode.svg' },
+        { title: 'Transistores', link: '/docs/eletronica/componentes/transistores', iconSrc: '/img/icons/transistor.svg' },
+        { title: 'Mosfets', link: '/docs/eletronica/componentes/mosfets', iconSrc: '/img/icons/transistor.svg' },
       ]
     },
+
     {
       title: 'PCB',
       items: [
         { title: 'Altium Designer', link: '/docs/eletronica/altium', iconSrc: '/img/icons/altium.svg' },
       ]
     },
+
     {
       title: 'Sensores',
       items: [
         { title: 'Infravermelho', link: '/docs/eletronica/infravermelho', iconSrc: '/img/icons/infrared.svg' },
         { title: 'Ultrassom', link: '/docs/eletronica/ultrassom', iconSrc: '/img/icons/ultrasound.svg' },
         { title: 'IMU', link: '/docs/eletronica/imu', iconSrc: '/img/icons/chip.svg' },
+      ]
+    },
+
+    {
+      title: 'Microcontroladores & Microprocessadores',
+      items: [
+        { title: 'ESP-32', link: '/docs/eletronica/esp32', iconSrc: '/img/icons/espressif.svg' },
+      ]
+    },
+
+    {
+      title: 'Prática',
+      items: [
+        { title: 'Soldagem', link: '/docs/eletronica/soldagem', iconSrc: '/img/icons/soldering.svg' },
+        { title: 'Crimpagem', link: '/docs/eletronica/crimpagem', iconSrc: '/img/icons/connector.svg' },
+
       ]
     }
   ]
