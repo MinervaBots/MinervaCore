@@ -94,25 +94,25 @@ const SiteData = {
     {
       title: 'Componentes Passivos',
       items: [
-        { title: 'Resistores', link: '/docs/eletronica/componentes/resistores', iconSrc: '/img/icons/resistor.svg' },
-        { title: 'Capacitores', link: '/docs/eletronica/componentes/capacitores', iconSrc: '/img/icons/capacitor.svg' },
-        { title: 'Indutores', link: '/docs/eletronica/componentes/indutores', iconSrc: '/img/icons/inductor.svg' },
+        { title: 'Resistores', link: '/docs/eletronica/componente/resistores', iconSrc: '/img/icons/resistor.svg' },
+        { title: 'Capacitores', link: '/docs/eletronica/componente/capacitores', iconSrc: '/img/icons/capacitor.svg' },
+        { title: 'Indutores', link: '/docs/eletronica/componente/indutores', iconSrc: '/img/icons/inductor.svg' },
       ]
     },
 
     {
       title: 'Componentes Semicondutores',
       items: [
-        { title: 'Diodos', link: '/docs/eletronica/componentes/diodos', iconSrc: '/img/icons/diode.svg' },
-        { title: 'Transistores BJT', link: '/docs/eletronica/componentes/transistores', iconSrc: '/img/icons/transistor.svg' },
-        { title: 'MOSFETs', link: '/docs/eletronica/componentes/mosfets', iconSrc: '/img/icons/transistor.svg' },
+        { title: 'Diodos', link: '/docs/eletronica/componente/diodos', iconSrc: '/img/icons/diode.svg' },
+        { title: 'Transistores BJT', link: '/docs/eletronica/componente/transistores', iconSrc: '/img/icons/transistor.svg' },
+        { title: 'MOSFETs', link: '/docs/eletronica/componente/mosfets', iconSrc: '/img/icons/transistor.svg' },
       ]
     },
 
     {
       title: 'Componentes Lógicos',
       items: [
-        { title: 'Multiplexadores', link: '/docs/eletronica/componentes/multiplexadores', iconSrc: '/img/icons/logic-diagram.svg' },
+        { title: 'Multiplexadores', link: '/docs/eletronica/componente/multiplexadores', iconSrc: '/img/icons/logic-diagram.svg' },
       ]
     },
 
