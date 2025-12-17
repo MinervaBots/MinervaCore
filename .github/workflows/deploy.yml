@@ -44,12 +44,14 @@ jobs:
 
       - name: Build Docusaurus
         run: npm run build
+        env:
+          SITE_ACCESS_PASS: ${{ secrets.SITE_ACCESS_PASS }} # Passando a variável de ambiente para o build
 
       - name: Upload Build Artifact
         uses: actions/upload-pages-artifact@v3
         with:
           path: minervacore/build
-
+          
   deploy:
     name: Deploy to GitHub Pages
     needs: build
