@@ -134,15 +134,18 @@ const config = {
         ],
       },
       
-      footer: {
+      footer: 
+      {
         style: 'dark',
-        logo: {
+        logo: 
+        {
           alt: 'MinervaBots Logo',
           src: 'img/minervabots-logo-compl.png',
           href: 'https://minervabots.ufrj.br',
         },
 
-        links: [
+        links: 
+        [
           {
             title: 'Redes Sociais',
             items: [
@@ -166,6 +169,11 @@ const config = {
         additionalLanguages: ['cpp', 'python', 'dart', 'bash', 'json', 'cmake', 'c', 'yaml', 'ini', 'makefile', 'arduino'],
       },
     }),
+
+    customFields: 
+    {
+      adminPass: process.env.SITE_ACCESS_PASS || '',
+    },
 };
 
 export default config;
