@@ -28,29 +28,35 @@ export async function createPullRequest({ token, filePath, newContent, prTitle, 
   const mainSha = mainRef.object.sha;
 
   // Cria Branch Nova
-  const branchName = `update-home-${Date.now()}`;
+  const branchName = `update-content-${Date.now()}`;
   await githubFetch('/git/refs', token, {
     method: 'POST',
     body: JSON.stringify({ ref: `refs/heads/${branchName}`, sha: mainSha }),
   });
 
-  // Pega o SHA do arquivo atual
-  const currentFile = await githubFetch(`/contents/${filePath}`, token);
+  // Tenta pegar SHA do arquivo atual
+  let fileSha = null;
+  try {
+      const currentFile = await githubFetch(`/contents/${filePath}`, token);
+      fileSha = currentFile.sha;
+  } catch (e) {
+      // Arquivo não existe (é um arquivo novo/upload), seguimos sem SHA
+  }
 
-  // Commit na nova Branch
+  // Commit
   const contentEncoded = btoa(unescape(encodeURIComponent(newContent)));
   
   await githubFetch(`/contents/${filePath}`, token, {
     method: 'PUT',
     body: JSON.stringify({
-      message: 'chore: update home data via Editor',
+      message: prTitle,
       content: contentEncoded,
-      sha: currentFile.sha,
+      sha: fileSha, // Se for null, o GitHub entende que é criação
       branch: branchName,
     }),
   });
 
-  // Abre o PR
+  // Pull Request
   const pr = await githubFetch('/pulls', token, {
     method: 'POST',
     body: JSON.stringify({
@@ -62,4 +68,8 @@ export async function createPullRequest({ token, filePath, newContent, prTitle, 
   });
 
   return pr.html_url;
+}
+
+export async function getFolderContents(path, token) {
+    return await githubFetch(`/contents/${path}`, token);
 }

@@ -1,27 +1,28 @@
 import React, { useState, useEffect } from 'react';
 import useBaseUrl from '@docusaurus/useBaseUrl';
 import { githubFetch, createPullRequest } from '../../utils/githubApi';
+import IconPicker from './IconPicker';
 
 // =============================================================================
 //                              Linha do Item
 // =============================================================================
-const HomeItemRow = ({ item, onUpdate, onDelete }) => {
+const HomeItemRow = ({ item, onUpdate, onDelete, onOpenPicker }) => {
   const fullIconPath = useBaseUrl(item.iconSrc);
 
   return (
     <div className="row margin-top--sm" style={{backgroundColor: 'var(--ifm-color-emphasis-100)', padding: '10px', borderRadius: '5px', alignItems: 'center', position: 'relative'}}>
         
-        {/* Ícone Preview */}
-        <div className="col col--1">
+        {/* Ícone Preview (Clicável para trocar) */}
+        <div className="col col--1 text--center" style={{cursor: 'pointer'}} onClick={onOpenPicker} title="Clique para alterar">
            <img 
              src={fullIconPath} 
-             style={{width:'24px', filter:'invert(1)'}} 
+             style={{width:'28px', filter:'invert(1)'}} 
              onError={(e)=>e.target.style.display='none'} 
              alt="icon"
            />
         </div>
 
-        {/* Inputs */}
+        {/* Título */}
         <div className="col col--3">
            <small>Título</small>
            <input 
@@ -33,6 +34,7 @@ const HomeItemRow = ({ item, onUpdate, onDelete }) => {
            />
         </div>
 
+        {/* Link */}
         <div className="col col--4">
            <small>Link</small>
            <input 
@@ -44,27 +46,26 @@ const HomeItemRow = ({ item, onUpdate, onDelete }) => {
            />
         </div>
 
+        {/* Caminho do Ícone (Read Only com Botão) */}
         <div className="col col--3">
-           <small>Icon Path</small>
-           <input 
-              type="text" 
-              className="button button--outline button--secondary button--block" 
-              style={{textAlign:'left', padding:'5px', cursor: 'text'}}
-              value={item.iconSrc} 
-              onChange={e => onUpdate('iconSrc', e.target.value)} 
-           />
+           <small>Ícone</small>
+           <div style={{display: 'flex', gap: '5px'}}>
+               <input 
+                  type="text" 
+                  disabled
+                  className="button button--outline button--secondary" 
+                  style={{textAlign:'left', padding:'5px', cursor: 'default', flex: 1, fontSize: '0.7rem', opacity: 0.7}}
+                  value={item.iconSrc} 
+               />
+               <button className="button button--sm button--primary" onClick={onOpenPicker}>
+                   📂
+               </button>
+           </div>
         </div>
 
-        {/* Botão de Excluir Item (X) */}
+        {/* Excluir */}
         <div className="col col--1 text--right">
-            <button 
-                className="button button--sm button--danger" 
-                style={{padding: '5px 10px'}}
-                onClick={onDelete}
-                title="Excluir este botão"
-            >
-                ✕
-            </button>
+            <button className="button button--sm button--danger" style={{padding: '5px 10px'}} onClick={onDelete}>✕</button>
         </div>
     </div>
   );
@@ -79,6 +80,10 @@ export default function HomeEditor({ onBack, userToken }) {
   const [data, setData] = useState(null); 
   const [status, setStatus] = useState({ type: '', msg: '' });
   const [activeTab, setActiveTab] = useState('programacao');
+  
+  // ESTADOS DO PICKER
+  const [showPicker, setShowPicker] = useState(false);
+  const [pickerTarget, setPickerTarget] = useState(null); // { groupIdx, itemIdx }
 
   // Carregar Dados
   useEffect(() => {
@@ -91,6 +96,8 @@ export default function HomeEditor({ onBack, userToken }) {
         const match = rawContent.match(regex);
         
         if (!match || !match[1]) throw new Error("Formato inválido no homeData.js");
+
+        // eslint-disable-next-line no-eval
         const parsedData = eval(`(${match[1]})`);
         setData(parsedData);
       } catch (e) {
@@ -102,16 +109,9 @@ export default function HomeEditor({ onBack, userToken }) {
     load();
   }, [userToken]);
 
-  // Salvar (Criar Pull Request)
+  // Salvar
   const handleSave = async () => {
     if (!data) return;
-    
-    // Pequena validação para não salvar dados quebrados
-    if (!data.programacao || !data.arquitetura || !data.eletronica) {
-        alert("Erro: A estrutura de dados parece corrompida. Recarregue a página.");
-        return;
-    }
-
     setLoading(true);
     setStatus({ type: 'info', msg: 'Criando Branch e Pull Request...' });
 
@@ -141,23 +141,20 @@ export default SiteData;
     }
   };
 
-  // FUNÇÕES DE MANIPULAÇÃO DE DADOS
+  // HANDLERS
 
-  // Alterar valor de texto
   const handleChange = (groupIdx, itemIdx, field, val) => {
     const newData = { ...data };
     newData[activeTab][groupIdx].items[itemIdx][field] = val;
     setData(newData);
   };
 
-  // Alterar Título do Grupo
   const handleGroupTitleChange = (groupIdx, val) => {
     const newData = { ...data };
     newData[activeTab][groupIdx].title = val;
     setData(newData);
   };
 
-  // Adicionar Novo Item
   const handleAddItem = (groupIdx) => {
     const newData = { ...data };
     newData[activeTab][groupIdx].items.push({
@@ -168,33 +165,41 @@ export default SiteData;
     setData(newData);
   };
 
-  // Remover Item
   const handleDeleteItem = (groupIdx, itemIdx) => {
-    if(!confirm("Tem certeza que deseja apagar este botão?")) return;
+    if(!confirm("Apagar este botão?")) return;
     const newData = { ...data };
     newData[activeTab][groupIdx].items.splice(itemIdx, 1);
     setData(newData);
   };
 
-  // Adicionar Novo Grupo
   const handleAddGroup = () => {
     const newData = { ...data };
-    newData[activeTab].push({
-        title: 'Novo Grupo de Títulos',
-        items: [] // Começa vazio
-    });
+    newData[activeTab].push({ title: 'Novo Grupo', items: [] });
     setData(newData);
   };
 
-  // Remover Grupo Inteiro
   const handleDeleteGroup = (groupIdx) => {
-    if(!confirm("CUIDADO: Isso vai apagar o grupo inteiro e todos os botões dentro dele.\nContinuar?")) return;
+    if(!confirm("Apagar grupo inteiro?")) return;
     const newData = { ...data };
     newData[activeTab].splice(groupIdx, 1);
     setData(newData);
   };
 
-  // RENDERIZAÇÃO
+  // LÓGICA DO PICKER
+  
+  const openPicker = (groupIdx, itemIdx) => {
+      setPickerTarget({ groupIdx, itemIdx });
+      setShowPicker(true);
+  };
+
+  const handleIconSelect = (newPath) => {
+      if (pickerTarget) {
+          handleChange(pickerTarget.groupIdx, pickerTarget.itemIdx, 'iconSrc', newPath);
+      }
+      setShowPicker(false);
+  };
+
+  // RENDER
 
   if (loading) return <div className="container text--center margin-vert--xl"><h2>⏳ Processando...</h2></div>;
 
@@ -211,6 +216,15 @@ export default SiteData;
 
   return (
     <div className="container margin-vert--md">
+      {/* MODAL DO PICKER */}
+      {showPicker && (
+          <IconPicker 
+            userToken={userToken} 
+            onClose={() => setShowPicker(false)} 
+            onSelect={handleIconSelect} 
+          />
+      )}
+
       {/* Header */}
       <div style={{display:'flex', justifyContent:'space-between', alignItems:'center', marginBottom:'20px'}}>
         <button className="button button--link" onClick={onBack}>← Voltar</button>
@@ -234,50 +248,31 @@ export default SiteData;
         <>
             {data[activeTab].map((group, gIdx) => (
                 <div key={gIdx} className="card margin-bottom--md padding--md" style={{border: '1px solid var(--ifm-color-emphasis-300)'}}>
-                    
-                    {/* Header do Grupo com Botão de Excluir */}
                     <div style={{display: 'flex', justifyContent: 'space-between', alignItems: 'center', borderBottom:'1px solid #ccc', paddingBottom:'10px', marginBottom: '10px'}}>
-                        <input 
-                            type="text" 
-                            className="button button--outline button--secondary" 
-                            style={{fontWeight: 'bold', fontSize: '1.1rem', flex: 1, marginRight: '10px', textAlign: 'left', cursor: 'text'}}
+                        <input type="text" className="button button--outline button--secondary" style={{fontWeight: 'bold', fontSize: '1.1rem', flex: 1, marginRight: '10px', textAlign: 'left', cursor: 'text'}}
                             value={group.title}
                             onChange={(e) => handleGroupTitleChange(gIdx, e.target.value)}
                         />
-                        <button className="button button--sm button--danger button--outline" onClick={() => handleDeleteGroup(gIdx)}>
-                            Apagar Grupo
-                        </button>
+                        <button className="button button--sm button--danger button--outline" onClick={() => handleDeleteGroup(gIdx)}>Apagar Grupo</button>
                     </div>
                     
-                    {/* Lista de Itens */}
                     {group.items.map((item, iIdx) => (
                         <HomeItemRow 
                             key={iIdx}
                             item={item}
                             onUpdate={(field, val) => handleChange(gIdx, iIdx, field, val)}
                             onDelete={() => handleDeleteItem(gIdx, iIdx)}
+                            onOpenPicker={() => openPicker(gIdx, iIdx)} // Botão para abrir o picker
                         />
                     ))}
 
-                    {/* Botão Adicionar Item no Grupo */}
-                    <button 
-                        className="button button--block button--secondary button--outline margin-top--md"
-                        style={{borderStyle: 'dashed'}}
-                        onClick={() => handleAddItem(gIdx)}
-                    >
-                        + Adicionar Novo Botão em "{group.title}"
+                    <button className="button button--block button--secondary button--outline margin-top--md" style={{borderStyle: 'dashed'}} onClick={() => handleAddItem(gIdx)}>
+                        + Adicionar Botão em "{group.title}"
                     </button>
                 </div>
             ))}
-
-            {/* Botão Adicionar Novo Grupo na Página */}
             <div className="text--center margin-vert--lg">
-                <button 
-                    className="button button--lg button--primary"
-                    onClick={handleAddGroup}
-                >
-                    + Criar Novo Grupo de Títulos
-                </button>
+                <button className="button button--lg button--primary" onClick={handleAddGroup}>+ Criar Novo Grupo</button>
             </div>
         </>
       ) : <p>Carregando...</p>}
