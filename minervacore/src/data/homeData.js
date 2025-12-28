@@ -153,17 +153,17 @@ const SiteData = {
       "items": [
         {
           "title": "Resistores",
-          "link": "/docs/eletronica/componente/resistores",
+          "link": "/docs/eletronica/resistores",
           "iconSrc": "/img/icons/resistor.svg"
         },
         {
           "title": "Capacitores",
-          "link": "/docs/eletronica/componente/capacitores",
+          "link": "/docs/eletronica/capacitores",
           "iconSrc": "/img/icons/capacitor.svg"
         },
         {
           "title": "Indutores",
-          "link": "/docs/eletronica/componente/indutores",
+          "link": "/docs/eletronica/indutores",
           "iconSrc": "/img/icons/inductor.svg"
         }
       ]
@@ -173,17 +173,17 @@ const SiteData = {
       "items": [
         {
           "title": "Diodos",
-          "link": "/docs/eletronica/componente/diodos",
+          "link": "/docs/eletronica/diodos",
           "iconSrc": "/img/icons/diode.svg"
         },
         {
           "title": "Transistores",
-          "link": "/docs/eletronica/componente/transistores",
+          "link": "/docs/eletronica/transistores",
           "iconSrc": "/img/icons/transistor.svg"
         },
         {
           "title": "MOSFETs",
-          "link": "/docs/eletronica/componente/mosfets",
+          "link": "/docs/eletronica/mosfets",
           "iconSrc": "/img/icons/transistor.svg"
         }
       ]
@@ -193,7 +193,7 @@ const SiteData = {
       "items": [
         {
           "title": "Multiplexadores",
-          "link": "/docs/eletronica/componente/multiplexadores",
+          "link": "/docs/eletronica/multiplexadores",
           "iconSrc": "/img/icons/logic-diagram.svg"
         }
       ]
@@ -298,22 +298,22 @@ const SiteData = {
       "items": [
         {
           "title": "Infravermelho",
-          "link": "/docs/eletronica/sensores/infravermelho",
+          "link": "/docs/eletronica/infravermelho",
           "iconSrc": "/img/icons/infrared.svg"
         },
         {
           "title": "Ultrassom",
-          "link": "/docs/eletronica/sensores/ultrassom",
+          "link": "/docs/eletronica/ultrassom",
           "iconSrc": "/img/icons/ultrasound.svg"
         },
         {
           "title": "IMU",
-          "link": "/docs/eletronica/sensores/imu",
+          "link": "/docs/eletronica/imu",
           "iconSrc": "/img/icons/chip.svg"
         },
         {
           "title": "Encoders",
-          "link": "/docs/eletronica/sensores/encoders",
+          "link": "/docs/eletronica/encoders",
           "iconSrc": "/img/icons/encoder.svg"
         }
       ]
@@ -338,7 +338,7 @@ const SiteData = {
       "items": [
         {
           "title": "Controles",
-          "link": "/docs/eletronica/geral/controles",
+          "link": "/docs/eletronica/controles",
           "iconSrc": "/img/icons/controller.svg"
         }
       ]
