@@ -425,3 +425,31 @@ html[data-theme='light'] .topic-icon {
 .tab-button:hover .tab-icon-svg {
   transform: scale(1.1);
 }
+
+/* =========================================
+      FIX DO EDITOR (INPUTS E TEXTAREAS)
+   ========================================= */
+
+input.button,
+textarea.button {
+    cursor: text !important;
+    background-color: rgba(255, 255, 255, 0.05) !important;
+    color: var(--ifm-font-color-base) !important;
+    transition: all 0.2s ease;
+}
+
+input.button:hover,
+input.button:focus,
+textarea.button:hover,
+textarea.button:focus {
+    background-color: rgba(255, 255, 255, 0.1) !important;
+    border-color: var(--ifm-color-primary) !important;
+    color: #fff !important;
+    outline: none;
+    box-shadow: 0 0 0 2px rgba(158, 31, 34, 0.2);
+}
+
+textarea.button {
+    font-family: 'Fira Code', 'Consolas', monospace;
+    line-height: 1.5;
+}

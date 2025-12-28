@@ -89,3 +89,13 @@ export async function getFileContent(path, token) {
         sha: res.sha
     };
 }
+
+// Listar arquivos de uma pasta (apenas .md e ignorando index.mdx/index.md)
+export async function getFiles(path, token) {
+    const contents = await githubFetch(`/contents/${path}`, token);
+    return contents.filter(item => 
+        item.type === 'file' && 
+        item.name.endsWith('.md') && 
+        !item.name.startsWith('index.')
+    );
+}

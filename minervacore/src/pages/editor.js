@@ -9,9 +9,7 @@ import useDocusaurusContext from '@docusaurus/useDocusaurusContext';
 import DashboardMenu from '../components/editor/DashboardMenu';
 import HomeEditor from '../components/editor/HomeEditor';
 import TopicEditor from '../components/editor/TopicEditor';
-
-// @todo Placeholders para futuros editores
-const PageEditor = ({onBack}) => <div className="container"><button onClick={onBack}>Voltar</button><p>Em breve...</p></div>;
+import PageEditor from '../components/editor/PageEditor';
 
 const LoginScreen = ({ onLogin, adminPass }) => {
   const [pass, setPass] = useState('');
@@ -61,7 +59,7 @@ export default function Editor() {
       <div className="margin-vert--md">
         {currentView === 'home' ? <HomeEditor userToken={userToken} onBack={() => setCurrentView('menu')} /> :
          currentView === 'topics' ? <TopicEditor userToken={userToken} onBack={() => setCurrentView('menu')} /> :
-         currentView === 'pages' ? <PageEditor onBack={() => setCurrentView('menu')} /> :
+         currentView === 'pages' ? <PageEditor userToken={userToken} onBack={() => setCurrentView('menu')} /> :
          <DashboardMenu onSelectOption={setCurrentView} />}
       </div>
     </Layout>
