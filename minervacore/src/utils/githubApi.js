@@ -70,6 +70,22 @@ export async function createPullRequest({ token, filePath, newContent, prTitle, 
   return pr.html_url;
 }
 
+// Listar arquivos de uma pasta
 export async function getFolderContents(path, token) {
     return await githubFetch(`/contents/${path}`, token);
+}
+
+// Listar pastas de um diretório
+export async function getFolders(path, token) {
+    const contents = await githubFetch(`/contents/${path}`, token);
+    return contents.filter(item => item.type === 'dir'); // Retorna apenas o que é diretório (type: dir)
+}
+
+// Ler arquivo
+export async function getFileContent(path, token) {
+    const res = await githubFetch(`/contents/${path}`, token);
+    return {
+        content: decodeURIComponent(escape(atob(res.content))),
+        sha: res.sha
+    };
 }
