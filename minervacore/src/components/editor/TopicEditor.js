@@ -28,17 +28,21 @@ function parseIndexMdx(content) {
     // Separar o conteúdo após o Frontmatter
     let body = content.replace(fmRegex, '').trim();
 
-    // Tentar identificar as Seções de Grid (### Titulo ... <TopicGrid>...</TopicGrid>)
-    // Esta regex procura: ### Titulo [qualquer coisa] <TopicGrid> [conteudo] </TopicGrid>
-    const sectionRegex = /###\s+(.*?)\s*<TopicGrid>([\s\S]*?)<\/TopicGrid>/g;
+    // Procure (### Texto) opcionalmente, seguido de quebra de linha e <TopicGrid>
+    const sectionRegex = /(?:###\s+(.*)\n\s*)?<TopicGrid>([\s\S]*?)<\/TopicGrid>/g;
     
     const sections = [];
     let match;
     let lastIndex = 0;
+    let firstMatchIndex = -1;
 
     // Loop para encontrar todas as seções de Grid
     while ((match = sectionRegex.exec(body)) !== null) {
-        const title = match[1].trim();
+        if (firstMatchIndex === -1) firstMatchIndex = match.index;
+
+        // match[1] é o título (pode ser undefined se não tiver ###)
+        // match[2] é o conteúdo do grid
+        const title = match[1] ? match[1].trim() : ''; 
         const gridContent = match[2];
         const cards = [];
 
@@ -64,14 +68,13 @@ function parseIndexMdx(content) {
         lastIndex = match.index + match[0].length;
     }
 
-    // O resto do conteúdo (Intro + Material Extra no final)
-    // Para simplificar, o texto antes do primeiro grid é "Intro"
-    // E o texto depois do último grid é "Footer"
+    // Separar Intro e Footer
+    // Intro é tudo antes do primeiro grid achado
+    const introContent = firstMatchIndex > 0 ? body.substring(0, firstMatchIndex).trim() : '';
     
-    const footerContent = body.substring(lastIndex).trim();
-    
-    const firstSectionIdx = body.search(/###\s+(.*?)\s*<TopicGrid>/);
-    const introContent = firstSectionIdx > 0 ? body.substring(0, firstSectionIdx).trim() : '';
+    // Footer é tudo depois do último grid
+    // Se não achou grid nenhum, o footer é vazio e tudo vira intro (ou vice versa, mas aqui assumimos grids)
+    const footerContent = lastIndex < body.length ? body.substring(lastIndex).trim() : '';
 
     return { metadata, introContent, sections, footerContent };
 }
@@ -79,20 +82,23 @@ function parseIndexMdx(content) {
 function buildIndexMdx(data) {
     let mdx = `---\nsidebar_position: ${data.metadata.pos}\ntitle: ${data.metadata.title}\ndescription: ${data.metadata.description}\nhide_table_of_contents: true\n---\n\n`;
 
-    mdx += `${data.introContent}\n\n`;
+    if (data.introContent) mdx += `${data.introContent}\n\n`;
 
     data.sections.forEach(sec => {
-        mdx += `### ${sec.title}\n\n<TopicGrid>\n\n`;
+        if (sec.title && sec.title.trim() !== '') {
+            mdx += `### ${sec.title}\n\n`;
+        }
+        
+        mdx += `<TopicGrid>\n\n`;
         sec.cards.forEach(c => {
             mdx += `    <TopicCard \n    title="${c.title}" \n    description="${c.description}" \n    link="${c.link}" \n    icon="${c.icon}"\n    />\n\n`;
         });
         mdx += `</TopicGrid>\n\n`;
     });
 
-    mdx += `${data.footerContent}\n`;
+    if (data.footerContent) mdx += `${data.footerContent}\n`;
     return mdx;
 }
-
 
 // =============================================================================
 //                          COMPONENTE VISUAL DE CARD
@@ -103,7 +109,7 @@ const TopicCardRow = ({ card, onUpdate, onDelete, onOpenPicker }) => {
         <div className="card padding--sm margin-bottom--sm" style={{border: '1px solid var(--ifm-color-emphasis-200)', backgroundColor: 'var(--ifm-background-surface-color)'}}>
             <div className="row" style={{alignItems: 'center'}}>
                 {/* Ícone */}
-                <div className="col col--1 text--center pointer" onClick={onOpenPicker}>
+                <div className="col col--1 text--center pointer" onClick={onOpenPicker} title="Alterar ícone">
                      <img src={useBaseUrl(card.icon)} style={{width: '30px', filter: 'invert(1)'}} onError={(e)=>e.target.style.display='none'} />
                 </div>
                 
@@ -142,25 +148,25 @@ const TopicCardRow = ({ card, onUpdate, onDelete, onOpenPicker }) => {
 };
 
 // =============================================================================
-//                             EDITOR PRINCIPAL
+//                           EDITOR PRINCIPAL
 // =============================================================================
 
 export default function TopicEditor({ onBack, userToken }) {
-    const [step, setStep] = useState(1); // 1: Seleção, 2: Edição
+    const [step, setStep] = useState(1); 
     const [area, setArea] = useState('programacao');
     const [folders, setFolders] = useState([]);
     const [selectedTopic, setSelectedTopic] = useState('');
     
-    // Dados do Arquivo
+    // Dados
     const [loading, setLoading] = useState(false);
     const [mdxData, setMdxData] = useState(null);
     const [status, setStatus] = useState({type:'', msg:''});
 
     // Picker
     const [showPicker, setShowPicker] = useState(false);
-    const [pickerTarget, setPickerTarget] = useState(null); // { secIdx, cardIdx }
+    const [pickerTarget, setPickerTarget] = useState(null); 
 
-    // Carregar pastas ao mudar área
+    // Carregar pastas
     useEffect(() => {
         async function loadFolders() {
             setLoading(true);
@@ -176,7 +182,7 @@ export default function TopicEditor({ onBack, userToken }) {
         loadFolders();
     }, [area, userToken]);
 
-    // Carregar arquivo index.mdx
+    // Carregar index.mdx
     const handleLoadTopic = async (topicName) => {
         setLoading(true);
         setSelectedTopic(topicName);
@@ -185,9 +191,9 @@ export default function TopicEditor({ onBack, userToken }) {
             const file = await getFileContent(path, userToken);
             const parsed = parseIndexMdx(file.content);
             setMdxData(parsed);
-            setStep(2); // Vai para edição
+            setStep(2);
         } catch (e) {
-            alert("Erro: Não foi possível encontrar o arquivo index.mdx nesta pasta.\nCertifique-se que a pasta tem a estrutura correta.");
+            alert("Erro: index.mdx não encontrado nesta pasta.");
         } finally {
             setLoading(false);
         }
@@ -216,10 +222,13 @@ export default function TopicEditor({ onBack, userToken }) {
         }
     };
 
-    // MANIPULADORES DE ESTADO
+    // Handlers
+    const updateMeta = (key, val) => setMdxData({...mdxData, metadata: {...mdxData.metadata, [key]: val}});
     
-    const updateMeta = (key, val) => {
-        setMdxData({...mdxData, metadata: {...mdxData.metadata, [key]: val}});
+    const updateSectionTitle = (secIdx, val) => {
+        const newData = {...mdxData};
+        newData.sections[secIdx].title = val;
+        setMdxData(newData);
     };
 
     const updateCard = (secIdx, cardIdx, field, val) => {
@@ -231,27 +240,39 @@ export default function TopicEditor({ onBack, userToken }) {
     const addCard = (secIdx) => {
         const newData = {...mdxData};
         newData.sections[secIdx].cards.push({
-            title: 'Novo Tópico', description: 'Descrição...', link: '/docs/...', icon: '/img/icons/code.svg'
+            title: 'Novo', description: '...', link: '/docs/...', icon: '/img/icons/code.svg'
         });
         setMdxData(newData);
     };
 
     const removeCard = (secIdx, cardIdx) => {
+        if(!confirm("Apagar card?")) return;
         const newData = {...mdxData};
         newData.sections[secIdx].cards.splice(cardIdx, 1);
         setMdxData(newData);
     };
 
-    // RENDER
+    const addSection = () => {
+        const newData = {...mdxData};
+        newData.sections.push({ title: 'Nova Seção', cards: [] });
+        setMdxData(newData);
+    };
 
+    const removeSection = (secIdx) => {
+        if(!confirm("Apagar seção inteira?")) return;
+        const newData = {...mdxData};
+        newData.sections.splice(secIdx, 1);
+        setMdxData(newData);
+    };
+
+    // RENDER
     if (loading) return <div className="container text--center margin-vert--xl"><h2>⏳ Carregando...</h2></div>;
 
-    // SELECIONAR TÓPICO
+    // SELECTOR
     if (step === 1) return (
         <div className="container margin-vert--md">
             <button className="button button--link" onClick={onBack}>← Voltar</button>
             <h2>📂 Selecione um Tópico</h2>
-            
             <div className="tabs tabs--block margin-bottom--md">
                 {['programacao', 'arquitetura', 'eletronica'].map(t => (
                     <li key={t} className={`tabs__item ${area === t ? 'tabs__item--active' : ''}`} onClick={() => setArea(t)}>
@@ -259,7 +280,6 @@ export default function TopicEditor({ onBack, userToken }) {
                     </li>
                 ))}
             </div>
-
             <div className="row">
                 {folders.map(f => (
                     <div key={f} className="col col--3 margin-bottom--md">
@@ -269,10 +289,9 @@ export default function TopicEditor({ onBack, userToken }) {
                         </div>
                     </div>
                 ))}
-                {/* Botão para criar novo tópico (Placeholder) */}
                 <div className="col col--3 margin-bottom--md">
                      <div className="card padding--md pointer" style={{border: '2px dashed #666', opacity: 0.7, textAlign:'center'}}>
-                        <h3>+ Novo</h3>
+                        <h3>+ Novo (Em breve)</h3>
                         <small>Criar Pasta</small>
                     </div>
                 </div>
@@ -308,34 +327,40 @@ export default function TopicEditor({ onBack, userToken }) {
 
             {/* METADADOS */}
             <div className="card padding--md margin-bottom--lg" style={{backgroundColor: '#1b1b1d'}}>
-                <h4>⚙️ Configurações da Página</h4>
+                <h4>⚙️ Configurações</h4>
                 <div className="row">
                     <div className="col col--6">
                         <small>Título (H1)</small>
                         <input className="button button--block button--outline button--secondary" value={mdxData.metadata.title} onChange={e=>updateMeta('title', e.target.value)} style={{textAlign:'left'}} />
                     </div>
-                    <div className="col col--2">
-                        <small>Posição (Sidebar)</small>
-                        <input className="button button--block button--outline button--secondary" value={mdxData.metadata.pos} onChange={e=>updateMeta('pos', e.target.value)} style={{textAlign:'left'}} />
-                    </div>
                     <div className="col col--12 margin-top--sm">
-                        <small>Descrição (SEO)</small>
+                        <small>Descrição</small>
                         <input className="button button--block button--outline button--secondary" value={mdxData.metadata.description} onChange={e=>updateMeta('description', e.target.value)} style={{textAlign:'left'}} />
                     </div>
                 </div>
                 <div className="margin-top--md">
-                     <small>Introdução (Texto antes dos grids)</small>
+                     <small>Introdução</small>
                      <textarea className="button button--block button--outline button--secondary" rows={3} value={mdxData.introContent} onChange={e=>setMdxData({...mdxData, introContent: e.target.value})} style={{textAlign:'left', fontFamily:'monospace'}} />
                 </div>
             </div>
 
-            {/* SEÇÕES DE GRID */}
-            <h3 className="margin-bottom--md">Trilhas de Aprendizado (Grids)</h3>
+            {/* GRIDS */}
+            <h3 className="margin-bottom--md">Trilhas (Grids)</h3>
             {mdxData.sections.map((sec, secIdx) => (
                 <div key={secIdx} className="card padding--md margin-bottom--lg" style={{border: '1px solid var(--ifm-color-primary)'}}>
-                    <div className="row margin-bottom--md">
+                    <div className="row margin-bottom--md" style={{alignItems:'center'}}>
                         <div className="col col--8">
-                            <h3 style={{margin:0}}>Seção: {sec.title}</h3>
+                            <small>Título da Seção (Opcional)</small>
+                            <input 
+                                className="button button--block button--outline button--secondary" 
+                                value={sec.title} 
+                                onChange={e=>updateSectionTitle(secIdx, e.target.value)} 
+                                placeholder="(Deixe vazio para sem título)"
+                                style={{textAlign:'left', fontWeight:'bold'}} 
+                            />
+                        </div>
+                        <div className="col col--4 text--right">
+                            <button className="button button--sm button--danger button--outline" onClick={()=>removeSection(secIdx)}>Apagar Seção</button>
                         </div>
                     </div>
                     
@@ -350,15 +375,18 @@ export default function TopicEditor({ onBack, userToken }) {
                     ))}
 
                     <button className="button button--block button--secondary button--outline button--sm margin-top--sm" onClick={()=>addCard(secIdx)}>
-                        + Adicionar Card em "{sec.title}"
+                        + Adicionar Card
                     </button>
                 </div>
             ))}
+            
+            <div className="text--center">
+                <button className="button button--primary" onClick={addSection}>+ Nova Seção de Grid</button>
+            </div>
 
-            {/* FOOTER (MATERIAL EXTRA) */}
+            {/* FOOTER */}
             <div className="card padding--md margin-top--xl">
                 <h4>Conteúdo Extra</h4>
-                <p style={{fontSize:'0.8rem'}}>Edite aqui as playlists, vídeos e textos que ficam no final da página.</p>
                 <textarea 
                     className="button button--block button--outline button--secondary" 
                     rows={10} 
