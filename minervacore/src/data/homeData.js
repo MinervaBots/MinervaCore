@@ -35,17 +35,12 @@ const SiteData = {
       ]
     },
     {
-      "title": "Firmware & Sistemas Operacionais",
+      "title": "Frameworks & Sistemas Operacionais",
       "items": [
         {
           "title": "Arduino",
           "link": "/docs/programacao/arduino",
           "iconSrc": "/img/icons/arduino.svg"
-        },
-        {
-          "title": "Espressif IDF",
-          "link": "/docs/programacao/espressif",
-          "iconSrc": "/img/icons/espressif.svg"
         },
         {
           "title": "FreeRTOS",
@@ -111,6 +106,16 @@ const SiteData = {
           "title": "Wokwi",
           "link": "/docs/programacao/wokwi",
           "iconSrc": "/img/icons/wokwi.svg"
+        }
+      ]
+    },
+    {
+      "title": "Firmwares & Programação de Microcontroladores",
+      "items": [
+        {
+          "title": "ESP-32",
+          "link": "/docs/programacao/espressif",
+          "iconSrc": "/img/icons/espressif.svg"
         }
       ]
     }
