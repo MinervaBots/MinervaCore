@@ -1,6 +1,6 @@
 ---
-sidebar_position: 0
-title: Instalação e Configuração
+sidebar_position: 1
+title: 1. Instalação e Configuração
 ---
 
 # Instalação e Configuração do Altium
