@@ -1,6 +1,6 @@
 ---
-sidebar_position: 100
-title: PDN Analyzer
+sidebar_position: 3
+title: 3. PDN Analyzer
 ---
 
 # PDN Analyzer 📊
