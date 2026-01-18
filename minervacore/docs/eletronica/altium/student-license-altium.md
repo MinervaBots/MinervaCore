@@ -1,28 +1,25 @@
 ---
-            sidebar_position: 2
-            title: 2. Licença Altium
+            sidebar_position: 0
+            title: 0. Licença Altium
             ---
 
-            # Licença de Estudante Altium
-
-## Ativar conta no CAFE
+            ## Ativar conta no CAFE
 
 - Acesse a intranet da UFRJ
 > [Intranet - UFRJ](https://intranet.ufrj.br/)
 
 - Entre com a sua conta em "Entrar na Intranet"
-![image](https://hackmd.io/_uploads/SyEhGpKB-x.png)
+![image](https://imgur.com/FnASSTq.png)
 - Na barra lateral direita clique no serviço "cafe"
-![image](https://hackmd.io/_uploads/rkVxmaYBWe.png)
+![image](https://imgur.com/Sa07FES.png)
 - Clique para configurar seu cadastro no cafe
-![image](https://hackmd.io/_uploads/HJ44QatSZg.png)
+![image](https://imgur.com/mRrH00J.png)
 - Vincule um email
-![image](https://hackmd.io/_uploads/BysiQptSZl.png)
+![image](https://imgur.com/XAQO2ek.png)
 
 ## Reinvidicar a licença de Estudante
 
 - Acessar esse site da Altium
-
 https://education.altium.com/
 
 - Clicke em "Enroll for free"
