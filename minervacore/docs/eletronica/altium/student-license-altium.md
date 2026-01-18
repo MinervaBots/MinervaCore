@@ -1,11 +1,11 @@
 ---
-            sidebar_position: 1
-            title: 1. Guia para conseguir a licensa de estudante do altium
+            sidebar_position: 2
+            title: 2. Licença Altium
             ---
 
             # Licença de Estudante Altium
 
-## Ativar conta no CAFe
+## Ativar conta no CAFE
 
 - Acesse a intranet da UFRJ
 > [Intranet - UFRJ](https://intranet.ufrj.br/)
