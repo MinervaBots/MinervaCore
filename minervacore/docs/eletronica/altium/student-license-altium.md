@@ -1,9 +1,9 @@
 ---
-            sidebar_position: 0
-            title: 0. Licença Altium
-            ---
+sidebar_position: 0
+title: 0. Licença Altium
+---
 
-            ## Ativar conta no CAFE
+## Ativar conta no CAFE
 
 - Acesse a intranet da UFRJ
 > [Intranet - UFRJ](https://intranet.ufrj.br/)
@@ -24,7 +24,7 @@ https://education.altium.com/
 
 - Clicke em "Enroll for free"
 ![image](https://imgur.com/K6azVVF.png)
-    
+
 - Clicke em "Enroll for free"
 ![image](https://imgur.com/aRETFvF.png)
 
@@ -54,4 +54,3 @@ https://education.altium.com/
 
 
 - Email contato altium: studentsupport@altium.com
-            
