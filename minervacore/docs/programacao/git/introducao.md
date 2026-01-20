@@ -70,7 +70,7 @@ Repositório é o local onde guardamos o nosso projeto. Voltando ao exemplo do l
 
 ## Instalação do Git
 
-Para instalar a >>ferramenta<< do Git no seu computador, acesse este site: [Git Download](https://git-scm.com/install/windows)
+Para instalar a **ferramenta** do Git no seu computador, acesse este site: [Git Download](https://git-scm.com/install/windows)
 
 - Após acessar o site, instale a última versão (A imagem é para instalação em Windows, se você usa Linux ou macOS, altere a versão de instalação)
 ![git-download](https://imgur.com/hIUAMId.png)
