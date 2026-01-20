@@ -3,6 +3,25 @@ sidebar_position: 0
 title: 0. Licença Altium
 ---
 
+Bom dia projetista!
+Segue o tutorial atualizado 2018% confiável para adquirir a licensa de estudante gratuita do Altium para estudantes!
+
+Isso mesmo, não é necessário estar vinculado com alguma equipe!
+
+Esse processo liberda duas licenças:
+
+- Altium Designer Professional: Licensa para usar os recursos padrões do Altium Designer
+- Altium Designer Power Analyze by Keysight: Licensa para usar a extensão de análise de potência de PCB para relatórios sobre
+temperatura e corrente na placa
+
+Além disso, antes de receber as licensas você também ganha acesso ao curso básico de Altium da própria empresa da Altium, que tem
+9 módulos que abrangem o básico de todas as funcionalidades, desde criação do projeto, esquemático, pcb, roteamento, processos de 
+fabricação, cadeia de fornecimento de componentes, uso do power analyzer e um módulo de projeto exemplo e um módulo de verificação
+final, dando certificado no final!
+
+Vamos lá!
+
+
 ## Ativar conta no CAFE
 
 - Acesse a intranet da UFRJ
@@ -52,5 +71,8 @@ https://education.altium.com/
 - Tendo verificado, agora basta esperar receber um novo email da altium, agora com as suas licenças e o código delas, ja vinculado a sua conta com email institucional do altium.
 ![image](https://imgur.com/4nwrVDE.png)
 
+Caso você receba depois mais emails, apenas sigas as intruções de confirmação e em algum momento você vai receber as licenças por email!
+Elas ja estarão vinculadas a sua conta com email institucional!
 
-- Email contato altium: studentsupport@altium.com
+
+- Email contato altium para dúvidas ou problema relacionados a esse processo: studentsupport@altium.com
