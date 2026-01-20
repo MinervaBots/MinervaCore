@@ -1,6 +1,6 @@
 ---
-sidebar_position: 2
-title: 2. Estratégias de Branching
+sidebar_position: 4
+title: 4. Estratégias de Branching
 ---
 
 # Estratégias de Branch
