@@ -45,12 +45,12 @@ function buildMarkdown(data) {
         : data.metadata.title;
 
     return `---
-            sidebar_position: ${data.metadata.pos}
-            title: ${finalTitle}
-            ---
+sidebar_position: ${data.metadata.pos}
+title: ${finalTitle}
+---
 
-            ${data.body}
-            `;
+${data.body}
+`;
 }
 
 // =============================================================================
