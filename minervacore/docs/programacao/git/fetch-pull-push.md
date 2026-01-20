@@ -20,14 +20,14 @@ Aqui veremos como sincronizamos nosso trabalho local com o restante da equipe. V
 > **Quando usamos o Pull, não precisamos usar o Fetch antes, ele é uma abstração de dois comandos**, ao invés de fazermos fetch + merge, fazemos direto o pull, como podemos ver na imagem abaixo, ele vai pular a etapa de passar pelo repositório local e trazer direto para seu diretório de trabalho.
 > Dificilmente você usará o Fetch, apenas em casos onde você não queira trazer de imediato as alterações que existem no repositório remoto por algum motivo.
 
-!(pull)[https://imgur.com/naXzMvT.png]
+![pull](https://imgur.com/naXzMvT.png)
 
 ### Push
 
 O Push é responsável por enviar seus commits locais para o repositório remoto. Ao fazer isso, você torna seu trabalho acessível para toda a equipe.
 > Nota: O Git só permitirá o Push se o seu histórico local estiver atualizado com o remoto. Caso contrário, você precisará dar um pull primeiro.
 
-!(push)[https://imgur.com/Wf2uoE9.png]
+![push](https://imgur.com/Wf2uoE9.png)
 
 ### Merge
 
