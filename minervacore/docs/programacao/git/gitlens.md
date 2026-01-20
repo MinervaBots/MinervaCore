@@ -1,6 +1,6 @@
 ---
-sidebar_position: 4
-title: 4. GitLens
+sidebar_position: 100
+title: 100. GitLens
 ---
 
 # GitLens no VSCode
