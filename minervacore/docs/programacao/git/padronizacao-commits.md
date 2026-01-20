@@ -1,6 +1,6 @@
 ---
-sidebar_position: 1
-title: 1. Padronização de Commits
+sidebar_position: 3
+title: 3. Padronização de Commits
 ---
 
 # Padronização de Commits
