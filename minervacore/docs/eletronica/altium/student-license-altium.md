@@ -1,9 +1,9 @@
 ---
-sidebar_position: 0
-title: 0. Licença Altium
----
+            sidebar_position: 0
+            title: 0. Licença Altium
+            ---
 
-## Ativar conta no CAFE
+            ## Ativar conta no CAFE
 
 - Acesse a intranet da UFRJ
 > [Intranet - UFRJ](https://intranet.ufrj.br/)
@@ -52,5 +52,8 @@ https://education.altium.com/
 - Tendo verificado, agora basta esperar receber um novo email da altium, agora com as suas licenças e o código delas, ja vinculado a sua conta com email institucional do altium.
 ![image](https://imgur.com/4nwrVDE.png)
 
+Você pode acabar rebendo novos emails de confirmação, apenas siga as intruções e eventualmente a licensa vai chegar no email.
+
 
 - Email contato altium: studentsupport@altium.com
+            
