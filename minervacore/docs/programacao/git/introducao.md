@@ -1,24 +1,60 @@
 ---
 sidebar_position: 0
-title: 0. Introdução ao Git
+title: 0. Conceitos Fundamentais & Configuração
 ---
-
-# Introdução ao Git
 
 ## Conceitos básicos
 
+Vamos entender um pouco da filosofia da ferramenta Git e o intuito de usar ela.
+
+### O que é Versionamento?
+
+Vamos imaginar o seguinte, estamos escrevendo um livro da equipe juntos:
+- Dia 1: Eu (Fróes) escrevo o capítulo "História da MinervaBots"
+- Dia 2: O Cerqueira revisa e muda o final do seu capítulo
+- Dia 3: A mc olha a mudança do Cerqueira e acha ruim, então quer voltar para a versão que eu fiz
+
+Se a gente não tiver versionamento, a gente vai ter vários arquivos, correto? Por exemplo: `livro_capitulo1`, `livro_novocapitulo1`, `livro_agoravai`, etc.
+Isso tudo fica muito bagunçado.
+
+O versionamento resolve esse problema. Ele cria versões do nosso livro no histórico do projeto, você vai poder voltar e avançar em versões.
+
+Um exemplo que usamos, é o Google Docs, ele tem um sistema de versionamento próprio dentro do site:
+
+![versao-google](https://imgur.com/1FPc8DN.png)
+
+Aqui podemos ver que temos versões dentro do mesmo dia ou de outros dias em horários diferentes, tudo uma parte de escrita dentro do documento.
+
+Mas agora, como fazemos esse estilo de versionamento com qualquer tipo de arquivo (códigos, fotos, CADs, placas, etc.)? 
+A resposta é USANDO GIT! A ferramenta consegue criar versionamento em qualquer tipo de arquivo.
+
 ### O que é Git?
 
-- O git é o que chamamos de ferramenta de versionamento. *Imaginem que vocês vão escrever um livro e começam fazendo um rascunho geral, e aí no dia 1 vocês escrevem x coisas, no dia 2 vocês escrevem y coisas, no dia 3 z coisas, e assim por diante. Quando chega no dia 10, por exemplo, vocês percebem que não gostaram do que escreveram no dia 9 e acham que na verdade o livro tava melhor no dia 7. Basta você voltar a versão anterior e retornar ao commit da época em que você achava melhor.* Então, essa é a principal ideia do Git e porque ele é tão famoso no mundo da tecnologia em relação aos projetos. Ele permite que você faça um controle das versões do desenvolvimento do seu software e também consiga resolver possíveis conflitos resultantes da participação de outros membros e criação de novas features.
+Bom, como falamos, o Git cria versionamento em qualquer tipo de arquivo, resumindo, o Git é a ferramenta que controla o histórico de versões dos nossos arquivos, permitindo desfazer erros e trabalhar em equipe simultaneamente.
 
-### Por que ferramentas de versionamento são importantes?
+![git](https://imgur.com/yz1S58D.png)
 
-- Como podem ver, escrever um livro do 0 toda vez que fizer algo errado, não é algo muito eficiente, então basicamente todas as pessoas ou empresas que tenham projetos - sejam eles de programação, mecânica, eletrônica, design, gestão, etc - utilizam o sistema de versionamento. Ele ajuda a termos um controle sobre todas as versões de um projeto e isso, quando falamos em projetos maiores e mais complexos, se torna fundamental, principalmente por contar com muitas pessoas trabalhando juntas.
+O Git é um ferramenta instalada no seu computador, ele funciona inclusive sem internet e é essa ferramenta que faz o controle de versão. Porém, o Git é uma ferramenta de terminal, para quem não sabe o que é, são aquelas linhas de comando do computador.
+Isso acaba afastando um pouco as pessoas do uso direto da ferramenta, por ser bem complicado visualizar o que você está fazendo apenas com textos.
+Mas não se preocupe, esse problema já é resolvido, existem diversas interfaces para o Git que facilitam o seu uso no dia a dia e já já falamos um pouco mais delas.
 
 ### Por que Git?
 
 - O git torna nossa vida muito fácil e ajuda a descomplicar muitos problemas que temos ao longo do tempo. Infelizmente o processo de desenvolvimento de um software não é trivial nem algo que segue exatamente uma linha do início ao fim, ele sofre alterações, bugs, adições, etc, ao longo do tempo. E quando isso acontece com a participação de diversos times e pessoas, que estão fazendo coisas diferentes e alterações que muitas das vezes não se complementam ou não se parecem, podem surgir conflitos e problemas na hora de juntar todas as alterações a linha principal de desenvolvimento.
 - O git traz facilidade a essas questões. Ele consegue tornar o ato de mesclar/ramificar muito mais simples do que seria em outras ferramentas como CVS/Subversion. A fusão( ou ramificação) são conceitos bastantes chatos e que acabam se tornando massivos para muitos. O git consegue trazer uma simplicidade a isso.
+
+## Nuvem
+
+O conceito de nuvem já é bem conhecido no dia a dia, é um local onde nós iremos colocar arquivos ou pastas que ficarão armazenados no servidor da empresa responsável pelo programa de nuvem que estamos usando e não em nossas memórias locais.
+Um que muita gente conhece é o Google Drive que tem exatamente essa funcionalidade.
+
+Existem alguns programas de nuvem que possuem integração com a versões do Git e eles são essenciais para trabalharmos com o versionamento que queremos, algo que não tem no Google Drive, por exemplo.
+
+- `GitHub`: Essa é provavelmente uma das mais conhecidas, ele é um serviço de nuvem que hospeda repositórios (já vamos falar disso). O GitHub também funciona como uma "rede social" para usuários de Git e principalmente programadores. Lá existem códigos open source (que qualquer um pode editar, como o VSCode, Linux e até o próprio Git) e tem uma comunidade ativa muito forte, além de servir como portfólio para pessoas mostrarem seus projetos no mercado de trabalho.
+- `GitLab`: Um pouco parecido com o GitHub, porém mais focado no trabalho em equipe, ele também é um servido de nuvem para repositórios e o que utilizamos na equipe hoje.
+- Existem outros serviços de nuvens para repositórios, principalmente focados na integração de ferramentas específicas e no mundo empresarial.
+
+!(hospedagem)[https://imgur.com/mMWjZbo.png]
 
 ## Repositórios
 
@@ -28,49 +64,51 @@ Repositório é o local onde guardamos o nosso projeto. Voltando ao exemplo do l
 
 ![image](https://imgur.com/sux3eqS.png)
 
--  E também existem os **repositórios da nuvem** que é quando o projeto está em uma plataforma externa (GitLab, Github, etc) e todas as alterações que fizermos estará disponível para todo mundo que tem acesso.
+-  E também existem os **repositórios da nuvem** que é quando o projeto está em uma plataforma externa (GitLab, GitHub, etc) e todas as alterações que fizermos estará disponível para todo mundo que tem acesso.
 
 ![image](https://i.imgur.com/hifLqZp.png)
 
+## Instalação do Git
 
-## Pull e Push
+Para instalar a >>ferramenta<< do Git no seu computador, acesse este site: [Git Download](https://git-scm.com/install/windows)
 
-O **Push** é o responsável por "mandar os arquivos para o repositório na nuvem", o que significa que basicamente cada modificação que alguma pessoa faz cria uma nova versão do projeto e para possibilita que toda a sua equipe de projeto tenha acesso a essa versão é necessário usar o **Push**.
+- Após acessar o site, instale a última versão (A imagem é para instalação em Windows, se você usa Linux ou macOS, altere a versão de instalação)
+![git-download](https://imgur.com/hIUAMId.png)
 
-Já o **Pull** é o responsável por "Atualizar os arquivos no seu PC de acordo com a versão no repositório na nuvem", o que significa que quando alguém faz o **Pull**, o arquivo do projeto no PC dessa pessoa é atualizado para a versão mais recente desse arquivo que estiver no repositório na nuvem.
+- Após clicar ali, você irá baixar um arquivo executável, abra ele no seu computador
+![executavel](https://imgur.com/R3tCSad.png)
 
-## Pull Requests
+- Por fim, na janela do instalador aberta, clica em `Install`
+![install](https://imgur.com/LXSoBXU.png)
 
-- Para subir alterações feitas, você convoca pessoas a analisarem e apontarem se são alterações válidas e coerentes. Acontece muito com casos de códigos open source, onde pessoas fazem alterações mas precisam do pull request para que o revisor e dono do projeto aprove suas alterações;
-- Ainda neste exemplo, também existe os "Forks", onde você pode bifurcar o código original e fazer as alterações como se fosse um repositório próprio. Após isso, pode fazer o pull request e o revisor analisar se é cabível;
+> Um bônus aqui: Se você não tem nenhuma interface de Git baixada ainda, você vai precisar fazer uma configuração inicial pelo terminal, se você for usar alguma interface, é possível fazer a configuração por ela, então procure a documentação aqui no MinervaCore da interface que está usando.
 
-![image](https://i.imgur.com/nkjHI5j.png)
+### Configuração Inicial pelo Terminal
+Agora que você instalou o Git, precisa se identificar. Isso é crucial porque cada alteração no código leva uma "assinatura". Se o código quebrar, precisamos saber quem fez para... pedir ajuda (e não para culpar!).
 
+- Abra seu terminal (ou Git Bash no Windows) pelo navegador de programas
+![terminal](https://imgur.com/uytsncj.png)
 
+Rode os comandos abaixo, substituindo pelos seus dados:
 
-## Conflitos de Mesclagem
+#### 1. Definindo nome
 
-Conflitos podem ocorrer de diversas formas e isso principalmente quando integramos commits de diferentes fontes. Então, neste ponto, entenderemos como se dão essas questões de forma mais direta a partir de três pontos focais básicos:
-> 1. quando eles acontecem;
-2. o que de fato acontece;
-3. como resolvê-los.
-
-![image](https://i.imgur.com/Ps3wjEm.png)
-
-
-### Como acontecem
-
-Geralmente o Git consegue resolver coisas simples de conflitos, mas há casos em que ele não consegue resolver e esses casos na maioria são relacionados a linhas de código que foram selecionadas diferentemente em branches separadas e não há como ele decidir qual que deve ser usada, ou então arquivo que foi modificado em uma branh e apagada em outra, etc.
-
-![image](https://imgur.com/YWsVMLl.png)
-
-
-
-### Como desfazer um conflito e Começar do 0
-
-Você sempre pode desfazer e começar de novo graças a duas opções dadas pelo Git:
-
-```shell
-git merge --abort
-git rebase --abort
+```bash
+git config --global user.name "Seu Nome Completo"
 ```
+
+#### 2. Definindo e-mail
+
+> Atenção: Use o mesmo e-mail da sua conta do GitHub/GitLab.
+
+```bash
+git config --global user.email "seu_email@exemplo.com"
+```
+
+#### Verificando
+
+```bash
+git config --list
+```
+
+Se der tudo certo, pronto, seu Git está configurado!
