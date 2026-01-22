@@ -116,7 +116,7 @@ const config = {
 
           {
             to: '/editor',
-            label: '➕ Criar Página',
+            label: 'Modo Edição',
             position: 'right',
           },
 
@@ -172,7 +172,7 @@ const config = {
 
     customFields: 
     {
-      adminPass: process.env.SITE_ACCESS_PASS || '',
+      adminPass: process.env.SITE_ACCESS_PASS,
     },
 };
 
