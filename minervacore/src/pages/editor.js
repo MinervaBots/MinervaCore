@@ -17,6 +17,7 @@ const LoginScreen = ({ onLogin, adminPass }) => {
   const [token, setToken] = useState('');
   const [remember, setRemember] = useState(false); // Estado para lembrar o token
   const [error, setError] = useState('');
+  const [showPass, setShowPass] = useState(false);
 
   // URL para gerar um novo token no GitHub já preenchido com as permissões necessárias
   const generateTokenUrl = "https://github.com/settings/tokens/new?description=MinervaCore+Editor+Access&scopes=repo";
@@ -61,25 +62,44 @@ const LoginScreen = ({ onLogin, adminPass }) => {
           <p style={{opacity: 0.7, fontSize: '0.9rem'}}>Área administrativa para gestão de conteúdo</p>
         </div>
 
-        {/* Formulário */}
-        <form onSubmit={handleSubmit}>
+        <form onSubmit={handleSubmit} autoComplete="off">
             
             {/* Senha da Equipe */}
             <div className="margin-bottom--md">
                 <label htmlFor="team-pass" style={{fontWeight: 'bold', display: 'block', marginBottom: '5px'}}>
                     Senha da Equipe
                 </label>
-                <input 
-                    id="team-pass"
-                    name="team-password" // Ajuda o navegador a salvar corretamente
-                    type="password" 
-                    className="button button--block button--outline button--secondary" 
-                    style={{textAlign: 'left', cursor: 'text'}}
-                    placeholder="••••••••"
-                    value={pass} 
-                    onChange={e => setPass(e.target.value)} 
-                    autoComplete="current-password"
-                />
+                <div style={{position: 'relative'}}>
+                    <input 
+                        id="mc_access_key_field"
+                        name="mc_access_key_no_autofill"
+                        type={showPass ? "text" : "password"} 
+                        className="button button--block button--outline button--secondary" 
+                        style={{textAlign: 'left', cursor: 'text', paddingRight: '40px'}}
+                        placeholder="••••••••"
+                        value={pass} 
+                        onChange={e => setPass(e.target.value)} 
+                        autoComplete="new-password"
+                    />
+                    <button
+                        type="button"
+                        onClick={() => setShowPass(!showPass)}
+                        style={{
+                            position: 'absolute',
+                            right: '10px',
+                            top: '50%',
+                            transform: 'translateY(-50%)',
+                            background: 'none',
+                            border: 'none',
+                            cursor: 'pointer',
+                            opacity: 0.6,
+                            padding: '5px'
+                        }}
+                        title={showPass ? "Ocultar senha" : "Mostrar senha"}
+                    >
+                        {showPass ? "🙈" : "👁️"}
+                    </button>
+                </div>
             </div>
 
             {/* Token do GitHub */}
@@ -92,22 +112,21 @@ const LoginScreen = ({ onLogin, adminPass }) => {
                 </div>
                 
                 <input 
-                    id="gh-token"
-                    name="github-token" // Nome diferente para não confundir com senha
+                    id="mc_gh_token_field"
+                    name="mc_gh_token_no_autofill"
                     type="password" 
                     className="button button--block button--outline button--secondary" 
                     style={{textAlign: 'left', cursor: 'text', fontFamily: 'monospace'}}
                     placeholder="ghp_..." 
                     value={token} 
                     onChange={e => setToken(e.target.value)} 
-                    autoComplete="off" // Tenta evitar que o navegador sobrescreva a senha da equipe
+                    autoComplete="new-password"
                 />
                 <small style={{fontSize: '0.75rem', opacity: 0.6, marginTop: '4px', display: 'block'}}>
                     Necessário permissão de <code>repo</code> para editar arquivos.
                 </small>
             </div>
 
-            {/* Opções Extras */}
             <div className="margin-bottom--lg" style={{display: 'flex', alignItems: 'center'}}>
                 <input 
                     type="checkbox" 
@@ -124,7 +143,7 @@ const LoginScreen = ({ onLogin, adminPass }) => {
             {/* Erros */}
             {error && (
                 <div className="alert alert--danger margin-bottom--md" role="alert">
-                    <i className="fas fa-exclamation-circle"></i> {error}
+                    {error}
                 </div>
             )}
 
