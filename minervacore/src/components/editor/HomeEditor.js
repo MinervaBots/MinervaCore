@@ -2,18 +2,27 @@ import React, { useState, useEffect } from 'react';
 import useBaseUrl from '@docusaurus/useBaseUrl';
 import { githubFetch, createPullRequest } from '../../utils/githubApi';
 import IconPicker from './IconPicker';
+import LinkPicker from './LinkPicker';
 
-// =============================================================================
-//                              Linha do Item
-// =============================================================================
-const HomeItemRow = ({ item, onUpdate, onDelete, onOpenPicker }) => {
+const HomeItemRow = ({ item, index, totalItems, onUpdate, onDelete, onMove, onOpenIconPicker, onOpenLinkPicker }) => {
   const fullIconPath = useBaseUrl(item.iconSrc);
+  
+  // Validação Visual
+  const isTitleInvalid = !item.title || item.title.trim() === '';
+  const isLinkInvalid = !item.link || item.link.trim() === '';
 
   return (
-    <div className="row margin-top--sm" style={{backgroundColor: 'var(--ifm-color-emphasis-100)', padding: '10px', borderRadius: '5px', alignItems: 'center', position: 'relative'}}>
+    <div className="row margin-top--sm" style={{
+        backgroundColor: 'var(--ifm-color-emphasis-100)', 
+        padding: '10px', 
+        borderRadius: '5px', 
+        alignItems: 'center', 
+        position: 'relative',
+        borderLeft: (isTitleInvalid || isLinkInvalid) ? '3px solid red' : '3px solid transparent' // Indicador de erro lateral
+    }}>
         
-        {/* Ícone Preview (Clicável para trocar) */}
-        <div className="col col--1 text--center" style={{cursor: 'pointer'}} onClick={onOpenPicker} title="Clique para alterar">
+        {/* Ícone Preview */}
+        <div className="col col--1 text--center" style={{cursor: 'pointer'}} onClick={onOpenIconPicker} title="Alterar ícone">
            <img 
              src={fullIconPath} 
              style={{width:'28px', filter:'invert(1)'}} 
@@ -24,29 +33,40 @@ const HomeItemRow = ({ item, onUpdate, onDelete, onOpenPicker }) => {
 
         {/* Título */}
         <div className="col col--3">
-           <small>Título</small>
+           <small>Título {isTitleInvalid && <span style={{color:'red'}}>*</span>}</small>
            <input 
               type="text" 
               className="button button--outline button--secondary button--block" 
-              style={{textAlign:'left', padding:'5px', cursor: 'text'}}
+              style={{
+                  textAlign:'left', padding:'5px', cursor: 'text',
+                  borderColor: isTitleInvalid ? 'red' : ''
+              }}
               value={item.title} 
               onChange={e => onUpdate('title', e.target.value)} 
            />
         </div>
 
-        {/* Link */}
+        {/* Link com Picker */}
         <div className="col col--4">
-           <small>Link</small>
-           <input 
-              type="text" 
-              className="button button--outline button--secondary button--block" 
-              style={{textAlign:'left', padding:'5px', cursor: 'text'}}
-              value={item.link} 
-              onChange={e => onUpdate('link', e.target.value)} 
-           />
+           <small>Link {isLinkInvalid && <span style={{color:'red'}}>*</span>}</small>
+           <div style={{display: 'flex', gap: '5px'}}>
+               <input 
+                  type="text" 
+                  className="button button--outline button--secondary button--block" 
+                  style={{
+                      textAlign:'left', padding:'5px', cursor: 'text', flex: 1,
+                      borderColor: isLinkInvalid ? 'red' : ''
+                  }}
+                  value={item.link} 
+                  onChange={e => onUpdate('link', e.target.value)} 
+               />
+               <button className="button button--sm button--secondary" onClick={onOpenLinkPicker} title="Escolher Página">
+                   🔗
+               </button>
+           </div>
         </div>
 
-        {/* Caminho do Ícone (Read Only com Botão) */}
+        {/* Ícone Path */}
         <div className="col col--3">
            <small>Ícone</small>
            <div style={{display: 'flex', gap: '5px'}}>
@@ -57,15 +77,43 @@ const HomeItemRow = ({ item, onUpdate, onDelete, onOpenPicker }) => {
                   style={{textAlign:'left', padding:'5px', cursor: 'default', flex: 1, fontSize: '0.7rem', opacity: 0.7}}
                   value={item.iconSrc} 
                />
-               <button className="button button--sm button--primary" onClick={onOpenPicker}>
+               <button className="button button--sm button--secondary" onClick={onOpenIconPicker} title="Escolher da Galeria">
                    📂
                </button>
            </div>
         </div>
 
-        {/* Excluir */}
-        <div className="col col--1 text--right">
-            <button className="button button--sm button--danger" style={{padding: '5px 10px'}} onClick={onDelete}>✕</button>
+        {/* Reordenar e Excluir */}
+        <div className="col col--1 text--right" style={{display: 'flex', flexDirection: 'column', gap: '2px'}}>
+            {/* Seta Cima (Desabilita se for o primeiro) */}
+            <button 
+                className="button button--xs button--secondary" 
+                disabled={index === 0}
+                onClick={() => onMove(-1)}
+                title="Mover para cima"
+            >
+                ▲
+            </button>
+            
+            {/* Seta Baixo (Desabilita se for o último) */}
+            <button 
+                className="button button--xs button--secondary" 
+                disabled={index === totalItems - 1}
+                onClick={() => onMove(1)}
+                title="Mover para baixo"
+            >
+                ▼
+            </button>
+
+            {/* Excluir (X) */}
+            <button 
+                className="button button--xs button--danger" 
+                style={{marginTop: '5px'}} 
+                onClick={onDelete}
+                title="Excluir"
+            >
+                ✕
+            </button>
         </div>
     </div>
   );
@@ -81,8 +129,8 @@ export default function HomeEditor({ onBack, userToken }) {
   const [status, setStatus] = useState({ type: '', msg: '' });
   const [activeTab, setActiveTab] = useState('programacao');
   
-  // ESTADOS DO PICKER
-  const [showPicker, setShowPicker] = useState(false);
+  // ESTADOS DOS PICKERS
+  const [pickerType, setPickerType] = useState(null); // 'icon' ou 'link' ou null
   const [pickerTarget, setPickerTarget] = useState(null); // { groupIdx, itemIdx }
 
   // Carregar Dados
@@ -108,6 +156,21 @@ export default function HomeEditor({ onBack, userToken }) {
     }
     load();
   }, [userToken]);
+
+  // VALIDAÇÃO GERAL
+  const isFormValid = () => {
+      if (!data) return false;
+      // Varre todas as categorias
+      for (const cat of Object.keys(data)) {
+          for (const group of data[cat]) {
+              for (const item of group.items) {
+                  if (!item.title || item.title.trim() === '') return false;
+                  if (!item.link || item.link.trim() === '') return false;
+              }
+          }
+      }
+      return true;
+  };
 
   // Salvar
   const handleSave = async () => {
@@ -141,12 +204,24 @@ export default SiteData;
     }
   };
 
-  // HANDLERS
+  // HANDLERS DE DADOS
 
   const handleChange = (groupIdx, itemIdx, field, val) => {
     const newData = { ...data };
     newData[activeTab][groupIdx].items[itemIdx][field] = val;
     setData(newData);
+  };
+
+  const handleMoveItem = (groupIdx, itemIdx, direction) => {
+      const newData = { ...data };
+      const items = newData[activeTab][groupIdx].items;
+      
+      // Troca de posição
+      const temp = items[itemIdx];
+      items[itemIdx] = items[itemIdx + direction];
+      items[itemIdx + direction] = temp;
+      
+      setData(newData);
   };
 
   const handleGroupTitleChange = (groupIdx, val) => {
@@ -159,7 +234,7 @@ export default SiteData;
     const newData = { ...data };
     newData[activeTab][groupIdx].items.push({
         title: 'Novo Botão',
-        link: '/docs/caminho/novo',
+        link: '/docs/...',
         iconSrc: '/img/icons/code.svg'
     });
     setData(newData);
@@ -185,18 +260,19 @@ export default SiteData;
     setData(newData);
   };
 
-  // LÓGICA DO PICKER
+  // HANDLERS DOS PICKERS
   
-  const openPicker = (groupIdx, itemIdx) => {
+  const openPicker = (type, groupIdx, itemIdx) => {
+      setPickerType(type);
       setPickerTarget({ groupIdx, itemIdx });
-      setShowPicker(true);
   };
 
-  const handleIconSelect = (newPath) => {
+  const handlePickerSelect = (val) => {
       if (pickerTarget) {
-          handleChange(pickerTarget.groupIdx, pickerTarget.itemIdx, 'iconSrc', newPath);
+          const field = pickerType === 'icon' ? 'iconSrc' : 'link';
+          handleChange(pickerTarget.groupIdx, pickerTarget.itemIdx, field, val);
       }
-      setShowPicker(false);
+      setPickerType(null);
   };
 
   // RENDER
@@ -214,22 +290,51 @@ export default SiteData;
     </div>
   );
 
+  const isValid = isFormValid();
+
   return (
     <div className="container margin-vert--md">
-      {/* MODAL DO PICKER */}
-      {showPicker && (
+      
+      {/* MODAIS */}
+      {pickerType === 'icon' && (
           <IconPicker 
             userToken={userToken} 
-            onClose={() => setShowPicker(false)} 
-            onSelect={handleIconSelect} 
+            onClose={() => setPickerType(null)} 
+            onSelect={handlePickerSelect} 
+          />
+      )}
+      {pickerType === 'link' && (
+          <LinkPicker 
+            userToken={userToken} 
+            onClose={() => setPickerType(null)} 
+            onSelect={handlePickerSelect} 
           />
       )}
 
-      {/* Header */}
-      <div style={{display:'flex', justifyContent:'space-between', alignItems:'center', marginBottom:'20px'}}>
+      {/* HEADER FIXO */}
+      <div style={{
+          position: 'sticky', 
+          top: '60px',
+          zIndex: 100, 
+          backgroundColor: 'var(--ifm-background-color)',
+          padding: '15px 0',
+          borderBottom: '1px solid var(--ifm-color-emphasis-200)',
+          marginBottom: '20px',
+          display:'flex', justifyContent:'space-between', alignItems:'center'
+      }}>
         <button className="button button--link" onClick={onBack}>← Voltar</button>
-        <h2>Editando Home</h2>
-        <button className="button button--success" onClick={handleSave}>Salvar Alterações</button>
+        <h2 style={{margin:0}}>🎨 Editando Home</h2>
+        <div>
+            {!isValid && <span style={{color:'red', marginRight:'10px', fontSize:'0.8rem'}}>⚠️ Preencha todos os campos</span>}
+            <button 
+                className="button button--success" 
+                onClick={handleSave}
+                disabled={!isValid}
+                style={{opacity: isValid ? 1 : 0.5}}
+            >
+                Salvar Alterações
+            </button>
+        </div>
       </div>
 
       {status.msg && <div className={`alert alert--${status.type} margin-bottom--md`}>{status.msg}</div>}
@@ -259,10 +364,14 @@ export default SiteData;
                     {group.items.map((item, iIdx) => (
                         <HomeItemRow 
                             key={iIdx}
+                            index={iIdx}
+                            totalItems={group.items.length}
                             item={item}
                             onUpdate={(field, val) => handleChange(gIdx, iIdx, field, val)}
                             onDelete={() => handleDeleteItem(gIdx, iIdx)}
-                            onOpenPicker={() => openPicker(gIdx, iIdx)} // Botão para abrir o picker
+                            onMove={(dir) => handleMoveItem(gIdx, iIdx, dir)}
+                            onOpenIconPicker={() => openPicker('icon', gIdx, iIdx)} 
+                            onOpenLinkPicker={() => openPicker('link', gIdx, iIdx)}
                         />
                     ))}
 
