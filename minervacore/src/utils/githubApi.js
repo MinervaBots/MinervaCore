@@ -99,3 +99,25 @@ export async function getFiles(path, token) {
         !item.name.startsWith('index.')
     );
 }
+
+// Função para Upload de Imagem (cria um PR específico para a imagem)
+export async function uploadImage({ token, file, contentBase64 }) {
+    const timestamp = Date.now();
+    const cleanName = file.name.replace(/[^a-zA-Z0-9.]/g, '-').toLowerCase();
+    const path = `minervacore/static/img/uploads/${timestamp}-${cleanName}`;
+    
+    // Usa a função existente para criar o PR
+    const prLink = await createPullRequest({
+        token,
+        filePath: path,
+        newContent: contentBase64, // Já enviamos em base64 puro
+        prTitle: `Upload: ${cleanName}`,
+        prBody: `Upload automático de imagem via Editor.`
+    });
+
+    // Retorna o caminho público que será usado no Markdown
+    return {
+        path: `/img/uploads/${timestamp}-${cleanName}`,
+        pr: prLink
+    };
+}
