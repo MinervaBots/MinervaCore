@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef } from 'react';
+import React, { useState, useEffect } from 'react';
 import ReactMarkdown from 'react-markdown';
 import remarkGfm from 'remark-gfm';
 import rehypeRaw from 'rehype-raw';
@@ -214,7 +214,7 @@ export default function PageEditor({ onBack, userToken }) {
         while ((match = linkRegex.exec(pageData.body)) !== null) {
             const url = match[1];
             if (url.startsWith('/docs/') && (url.includes('prog/') || url.includes('pyton'))) {
-                errors.push(`Link suspeito encontrado: ${url}. Verifique se não há erro de digitação.`);
+                errors.push(`Link suspeito: ${url}. Verifique erros de digitação.`);
             }
         }
         setValidationErrors(errors);
@@ -227,7 +227,7 @@ export default function PageEditor({ onBack, userToken }) {
         const file = e.dataTransfer.files[0];
         if (!file || !file.type.startsWith('image/')) return;
 
-        if (!confirm(`Deseja fazer upload de "${file.name}" para o GitHub?`)) return;
+        if (!confirm(`Deseja fazer upload de "${file.name}"?`)) return;
 
         setLoading(true);
         const reader = new FileReader();
@@ -280,47 +280,67 @@ export default function PageEditor({ onBack, userToken }) {
     // RENDER
     if (loading) return <div className="container text--center margin-vert--xl"><h2>⏳ Processando...</h2></div>;
 
-    // Navegação
-    if (step === 1) return (
-        <div className="container margin-vert--md">
-            <button className="button button--link" onClick={onBack}>← Menu</button>
-            <h2>📂 Passo 1: Área</h2>
-            <div className="row">{['programacao', 'arquitetura', 'eletronica'].map(t => (
-                <div key={t} className="col col--4"><div className="card padding--lg pointer" onClick={()=>{setArea(t); setStep(1.5)}} style={{border:'1px solid #444', textAlign:'center', textTransform:'capitalize'}}><h3>{t}</h3></div></div>
-            ))}</div>
-            {/* Hack: Load folders on Area set */}
-            {step === 1.5 && loadFolders() && setStep(1)} 
-        </div>
+    if (status.type === 'success') return (
+        <div className="container text--center margin-vert--xl">
+           <div className="alert alert--success">
+               <h3>✅ Pull Request Criado!</h3>
+               <a href={status.msg} target="_blank" className="button button--primary">Ver PR</a>
+               <button className="button button--link margin-left--md" onClick={() => setStatus({type:'', msg:''})}>Continuar Editando</button>
+           </div>
+       </div>
     );
-    
+
     if (step === 1) return (
         <div className="container margin-vert--md">
-            <button className="button button--link" onClick={onBack}>← Voltar</button>
-            <h2>📂 Selecione Tópico</h2>
+            <button className="button button--link" onClick={onBack}>← Menu Principal</button>
+            <h2>📂 Passo 1: Escolha o Tópico</h2>
+            
             <div className="tabs tabs--block margin-bottom--md">
-                {['programacao', 'arquitetura', 'eletronica'].map(t => <li key={t} className={`tabs__item ${area===t?'tabs__item--active':''}`} onClick={()=>setArea(t)}>{t.toUpperCase()}</li>)}
+                {['programacao', 'arquitetura', 'eletronica'].map(t => (
+                    <li key={t} className={`tabs__item ${area === t ? 'tabs__item--active' : ''}`} onClick={() => setArea(t)}>
+                        {t.toUpperCase()}
+                    </li>
+                ))}
             </div>
+
             <div className="row">
-                {folders.map(f => <div key={f} className="col col--3 margin-bottom--md"><div className="card padding--md pointer" onClick={()=>handleSelectFolder(f)} style={{border:'1px solid #444', textAlign:'center'}}>📁 {f}</div></div>)}
+                {folders.map(f => (
+                    <div key={f} className="col col--3 margin-bottom--md">
+                        <div className="card padding--md pointer" onClick={() => handleSelectFolder(f)} style={{border: '1px solid #444', textAlign:'center'}}>
+                            <h3>📁 {f}</h3>
+                        </div>
+                    </div>
+                ))}
             </div>
         </div>
     );
 
     if (step === 2) return (
         <div className="container margin-vert--md">
-            <button className="button button--link" onClick={()=>setStep(1)}>← Voltar</button>
-            <h2>📄 Arquivos em {selectedFolder}</h2>
+            <button className="button button--link" onClick={() => setStep(1)}>← Voltar para Pastas</button>
+            <h2>📄 Páginas em {selectedFolder}</h2>
+            
             <div className="row">
                 <div className="col col--3 margin-bottom--md">
-                    <div className="card padding--md pointer" onClick={()=>setShowTemplateModal(true)} style={{border:'2px dashed var(--ifm-color-primary)', textAlign:'center'}}><h3>+ Nova Página</h3></div>
+                    <div className="card padding--md pointer" onClick={()=>setShowTemplateModal(true)} style={{border: '2px dashed var(--ifm-color-primary)', textAlign:'center', height: '100%', justifyContent: 'center', display: 'flex', flexDirection: 'column'}}>
+                        <h3>+ Nova Página</h3>
+                    </div>
                 </div>
-                {files.map(f => <div key={f.sha} className="col col--3 margin-bottom--md"><div className="card padding--md pointer" onClick={()=>handleSelectFile(f.name)} style={{border:'1px solid #444', textAlign:'center'}}>{f.name}</div></div>)}
+
+                {files.map(f => (
+                    <div key={f.sha} className="col col--3 margin-bottom--md">
+                        <div className="card padding--md pointer" onClick={() => handleSelectFile(f.name)} style={{border: '1px solid #444', textAlign:'center'}}>
+                            <h4 style={{wordBreak: 'break-all'}}>{f.name}</h4>
+                            <small>Editar Markdown</small>
+                        </div>
+                    </div>
+                ))}
             </div>
-            
+
             {/* MODAL DE TEMPLATES */}
             {showTemplateModal && (
                 <div style={{position:'fixed', top:0, left:0, right:0, bottom:0, background:'rgba(0,0,0,0.8)', zIndex:999, display:'flex', alignItems:'center', justifyContent:'center'}}>
-                    <div className="card padding--lg" style={{width:'400px'}}>
+                    <div className="card padding--lg" style={{width:'400px', backgroundColor: 'var(--ifm-background-surface-color)'}}>
                         <h3>Escolha um Template</h3>
                         <div className="button-group-vertical" style={{display:'flex', flexDirection:'column', gap:'10px'}}>
                             <button className="button button--secondary" onClick={()=>initNewFile('tutorial')}>📚 Tutorial</button>
@@ -334,19 +354,8 @@ export default function PageEditor({ onBack, userToken }) {
         </div>
     );
 
-    // TELA DE SUCESSO
-    if (status.type === 'success') return (
-        <div className="container text--center margin-vert--xl">
-           <div className="alert alert--success">
-               <h3>✅ Pull Request Criado!</h3>
-               <a href={status.msg} target="_blank" className="button button--primary">Ver PR</a>
-               <button className="button button--link margin-left--md" onClick={() => setStatus({type:'', msg:''})}>Voltar</button>
-           </div>
-       </div>
-    );
-
     return (
-        <div className="container margin-vert--md" style={{maxWidth: '95%'}}> {/* Container mais largo */}
+        <div className="container margin-vert--md" style={{maxWidth: '98%'}}>
             
             {/* HEADER */}
             <div style={{display:'flex', justifyContent:'space-between', alignItems:'center', marginBottom:'15px', borderBottom:'1px solid #444', paddingBottom:'10px'}}>
@@ -357,9 +366,9 @@ export default function PageEditor({ onBack, userToken }) {
                 
                 <div style={{display:'flex', gap:'10px', alignItems:'center'}}>
                     <div className="button-group">
-                        <button className={`button button--sm ${viewMode==='edit'?'button--primary':'button--secondary'}`} onClick={()=>setViewMode('edit')}>Apenas Editor</button>
-                        <button className={`button button--sm ${viewMode==='split'?'button--primary':'button--secondary'}`} onClick={()=>setViewMode('split')}>Split View</button>
-                        <button className={`button button--sm ${viewMode==='preview'?'button--primary':'button--secondary'}`} onClick={()=>setViewMode('preview')}>Apenas Preview</button>
+                        <button className={`button button--sm ${viewMode==='edit'?'button--primary':'button--secondary'}`} onClick={()=>setViewMode('edit')}>Editor</button>
+                        <button className={`button button--sm ${viewMode==='split'?'button--primary':'button--secondary'}`} onClick={()=>setViewMode('split')}>Split</button>
+                        <button className={`button button--sm ${viewMode==='preview'?'button--primary':'button--secondary'}`} onClick={()=>setViewMode('preview')}>Preview</button>
                     </div>
                     <button className="button button--success button--sm" onClick={handleSave}>Salvar</button>
                 </div>
