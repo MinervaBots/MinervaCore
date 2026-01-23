@@ -2,6 +2,18 @@ import React, { useState, useEffect } from 'react';
 import useBaseUrl from '@docusaurus/useBaseUrl';
 import { getFolders, getFileContent, createPullRequest } from '../../utils/githubApi';
 import IconPicker from './IconPicker';
+import LinkPicker from './LinkPicker';
+
+// ÍCONES SVG
+const UiIcons = {
+    moveUp: <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round"><polyline points="18 15 12 9 6 15"></polyline></svg>,
+    moveDown: <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round"><polyline points="6 9 12 15 18 9"></polyline></svg>,
+    trash: <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><polyline points="3 6 5 6 21 6"></polyline><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path></svg>,
+    folder: <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M22 19a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5l2 3h9a2 2 0 0 1 2 2z"></path></svg>,
+    link: <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"></path><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"></path></svg>,
+    settings: <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><circle cx="12" cy="12" r="3"></circle><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"></path></svg>,
+    back: <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><line x1="19" y1="12" x2="5" y2="12"></line><polyline points="12 19 5 12 12 5"></polyline></svg>
+};
 
 // =============================================================================
 //                          PARSER E BUILDER DE MDX
@@ -104,43 +116,111 @@ function buildIndexMdx(data) {
 //                          COMPONENTE VISUAL DE CARD
 // =============================================================================
 
-const TopicCardRow = ({ card, onUpdate, onDelete, onOpenPicker }) => {
+const TopicCardRow = ({ card, index, totalItems, onUpdate, onDelete, onMove, onOpenPicker, onOpenLinkPicker }) => {
+    
+    // Validação Visual
+    const isTitleInvalid = !card.title || card.title.trim() === '';
+    const isLinkInvalid = !card.link || card.link.trim() === '';
+
     return (
-        <div className="card padding--sm margin-bottom--sm" style={{border: '1px solid var(--ifm-color-emphasis-200)', backgroundColor: 'var(--ifm-background-surface-color)'}}>
+        <div className="card padding--sm margin-bottom--sm" style={{
+            border: '1px solid var(--ifm-color-emphasis-200)', 
+            backgroundColor: 'var(--ifm-background-surface-color)',
+            borderLeft: (isTitleInvalid || isLinkInvalid) ? '3px solid red' : '1px solid var(--ifm-color-emphasis-200)'
+        }}>
             <div className="row" style={{alignItems: 'center'}}>
                 {/* Ícone */}
-                <div className="col col--1 text--center pointer" onClick={onOpenPicker} title="Alterar ícone">
-                     <img src={useBaseUrl(card.icon)} style={{width: '30px', filter: 'invert(1)'}} onError={(e)=>e.target.style.display='none'} />
+                <div className="col col--1 text--center pointer" onClick={() => onOpenPicker('icon')} title="Alterar ícone">
+                     <img 
+                        src={useBaseUrl(card.icon)} 
+                        style={{width: '40px', height: '40px', objectFit: 'contain', filter: 'invert(1)'}} 
+                        onError={(e)=>e.target.style.display='none'} 
+                     />
                 </div>
                 
                 {/* Inputs */}
                 <div className="col col--10">
                     <div className="row" style={{marginBottom: '5px'}}>
                         <div className="col col--4">
-                            <input type="text" className="button button--outline button--secondary button--block button--sm" placeholder="Título"
-                                value={card.title} onChange={e => onUpdate('title', e.target.value)} style={{textAlign:'left'}} />
+                            <input 
+                                type="text" 
+                                className="button button--outline button--secondary button--block button--sm" 
+                                placeholder="Título"
+                                value={card.title} 
+                                onChange={e => onUpdate('title', e.target.value)} 
+                                style={{textAlign:'left', borderColor: isTitleInvalid ? 'red' : ''}} 
+                            />
                         </div>
                         <div className="col col--4">
-                            <input type="text" className="button button--outline button--secondary button--block button--sm" placeholder="Link (/docs/...)"
-                                value={card.link} onChange={e => onUpdate('link', e.target.value)} style={{textAlign:'left'}} />
+                            <div style={{display: 'flex', gap: '5px'}}>
+                                <input 
+                                    type="text" 
+                                    className="button button--outline button--secondary button--block button--sm" 
+                                    placeholder="Link (/docs/...)"
+                                    value={card.link} 
+                                    onChange={e => onUpdate('link', e.target.value)} 
+                                    style={{textAlign:'left', flex: 1, borderColor: isLinkInvalid ? 'red' : ''}} 
+                                />
+                                <button className="button button--sm button--secondary" onClick={() => onOpenLinkPicker('link')} title="Selecionar Página">
+                                    {UiIcons.link}
+                                </button>
+                            </div>
                         </div>
                         <div className="col col--4" style={{display:'flex', gap:'5px'}}>
-                             <input type="text" className="button button--outline button--secondary button--block button--sm" placeholder="Ícone"
-                                value={card.icon} disabled style={{textAlign:'left', opacity: 0.7}} />
-                             <button className="button button--sm button--primary" onClick={onOpenPicker}>📂</button>
+                             <input 
+                                type="text" 
+                                className="button button--outline button--secondary button--block button--sm" 
+                                placeholder="Ícone"
+                                value={card.icon} 
+                                disabled 
+                                style={{textAlign:'left', opacity: 0.7, flex: 1}} 
+                             />
+                             <button className="button button--sm button--secondary" onClick={() => onOpenPicker('icon')} title="Galeria">
+                                {UiIcons.folder}
+                             </button>
                         </div>
                     </div>
                     <div className="row">
                         <div className="col col--12">
-                            <input type="text" className="button button--outline button--secondary button--block button--sm" placeholder="Descrição curta..."
-                                value={card.description} onChange={e => onUpdate('description', e.target.value)} style={{textAlign:'left'}} />
+                            <input 
+                                type="text" 
+                                className="button button--outline button--secondary button--block button--sm" 
+                                placeholder="Descrição curta..."
+                                value={card.description} 
+                                onChange={e => onUpdate('description', e.target.value)} 
+                                style={{textAlign:'left'}} 
+                            />
                         </div>
                     </div>
                 </div>
 
-                {/* Delete */}
-                <div className="col col--1 text--right">
-                    <button className="button button--sm button--danger" onClick={onDelete}>✕</button>
+                {/* Ações (Move + Delete) */}
+                <div className="col col--1" style={{display: 'flex', flexDirection: 'column', gap: '3px', alignItems: 'center'}}>
+                    <div className="button-group" style={{display:'flex', gap:'2px'}}>
+                        <button 
+                            className="button button--outline button--secondary" 
+                            disabled={index === 0}
+                            onClick={() => onMove(-1)}
+                            style={{padding: '2px 4px', lineHeight: 0, height: '24px', opacity: index===0 ? 0.3 : 1}}
+                        >
+                            {UiIcons.moveUp}
+                        </button>
+                        <button 
+                            className="button button--outline button--secondary" 
+                            disabled={index === totalItems - 1}
+                            onClick={() => onMove(1)}
+                            style={{padding: '2px 4px', lineHeight: 0, height: '24px', opacity: index===totalItems-1 ? 0.3 : 1}}
+                        >
+                            {UiIcons.moveDown}
+                        </button>
+                    </div>
+                    <button 
+                        className="button button--danger button--outline" 
+                        style={{padding: '2px', lineHeight: 0, height: '24px', width: '100%', marginTop: '3px', display:'flex', alignItems:'center', justifyContent:'center'}} 
+                        onClick={onDelete}
+                    >
+                        {UiIcons.trash}
+                    </button>
                 </div>
             </div>
         </div>
@@ -162,9 +242,9 @@ export default function TopicEditor({ onBack, userToken }) {
     const [mdxData, setMdxData] = useState(null);
     const [status, setStatus] = useState({type:'', msg:''});
 
-    // Picker
-    const [showPicker, setShowPicker] = useState(false);
-    const [pickerTarget, setPickerTarget] = useState(null); 
+    // Pickers
+    const [pickerType, setPickerType] = useState(null); // 'icon' ou 'link'
+    const [pickerTarget, setPickerTarget] = useState(null); // { secIdx, cardIdx }
 
     // Carregar pastas
     useEffect(() => {
@@ -197,6 +277,21 @@ export default function TopicEditor({ onBack, userToken }) {
         } finally {
             setLoading(false);
         }
+    };
+
+    // Validação
+    const isFormValid = () => {
+        if (!mdxData) return false;
+        // Metadados básicos
+        if (!mdxData.metadata.title) return false;
+        
+        // Cards
+        for (const sec of mdxData.sections) {
+            for (const card of sec.cards) {
+                if (!card.title || !card.link) return false;
+            }
+        }
+        return true;
     };
 
     // Salvar
@@ -237,6 +332,15 @@ export default function TopicEditor({ onBack, userToken }) {
         setMdxData(newData);
     };
 
+    const moveCard = (secIdx, cardIdx, direction) => {
+        const newData = {...mdxData};
+        const cards = newData.sections[secIdx].cards;
+        const temp = cards[cardIdx];
+        cards[cardIdx] = cards[cardIdx + direction];
+        cards[cardIdx + direction] = temp;
+        setMdxData(newData);
+    };
+
     const addCard = (secIdx) => {
         const newData = {...mdxData};
         newData.sections[secIdx].cards.push({
@@ -265,13 +369,38 @@ export default function TopicEditor({ onBack, userToken }) {
         setMdxData(newData);
     };
 
+    const moveSection = (secIdx, direction) => {
+        const newData = {...mdxData};
+        const sections = newData.sections;
+        const temp = sections[secIdx];
+        sections[secIdx] = sections[secIdx + direction];
+        sections[secIdx + direction] = temp;
+        setMdxData(newData);
+    };
+
+    // Picker Handlers
+    const openPicker = (type, secIdx, cardIdx) => {
+        setPickerType(type);
+        setPickerTarget({ secIdx, cardIdx });
+    };
+
+    const handlePickerSelect = (val) => {
+        if (pickerTarget) {
+            const field = pickerType === 'icon' ? 'icon' : 'link';
+            updateCard(pickerTarget.secIdx, pickerTarget.cardIdx, field, val);
+        }
+        setPickerType(null);
+    };
+
     // RENDER
     if (loading) return <div className="container text--center margin-vert--xl"><h2>⏳ Carregando...</h2></div>;
 
     // SELECTOR
     if (step === 1) return (
         <div className="container margin-vert--md">
-            <button className="button button--link" onClick={onBack}>← Voltar</button>
+            <button className="button button--link" style={{display:'flex', gap:'5px', alignItems:'center'}} onClick={onBack}>
+                {UiIcons.back} Voltar
+            </button>
             <h2>📂 Selecione um Tópico</h2>
             <div className="tabs tabs--block margin-bottom--md">
                 {['programacao', 'arquitetura', 'eletronica'].map(t => (
@@ -310,31 +439,49 @@ export default function TopicEditor({ onBack, userToken }) {
         </div>
     );
 
+    const isValid = isFormValid();
+
     return (
         <div className="container margin-vert--md">
-            {showPicker && <IconPicker userToken={userToken} onClose={()=>setShowPicker(false)} onSelect={(path) => {
-                updateCard(pickerTarget.secIdx, pickerTarget.cardIdx, 'icon', path);
-                setShowPicker(false);
-            }} />}
+            
+            {pickerType === 'icon' && <IconPicker userToken={userToken} onClose={()=>setPickerType(null)} onSelect={handlePickerSelect} />}
+            {pickerType === 'link' && <LinkPicker userToken={userToken} onClose={()=>setPickerType(null)} onSelect={handlePickerSelect} />}
 
-            <div style={{display:'flex', justifyContent:'space-between', alignItems:'center', marginBottom:'20px'}}>
-                <button className="button button--link" onClick={() => setStep(1)}>← Voltar para Pastas</button>
-                <h2>Editando: {selectedTopic}</h2>
-                <button className="button button--success" onClick={handleSave}>Salvar Alterações</button>
+            {/* STICKY HEADER */}
+            <div style={{
+                position: 'sticky', top: '60px', zIndex: 100, 
+                backgroundColor: 'var(--ifm-background-color)', 
+                padding: '15px 0', borderBottom: '1px solid var(--ifm-color-emphasis-200)', marginBottom: '20px',
+                display:'flex', justifyContent:'space-between', alignItems:'center'
+            }}>
+                <button className="button button--link" style={{display:'flex', gap:'5px', alignItems:'center'}} onClick={() => setStep(1)}>
+                    {UiIcons.back} Voltar
+                </button>
+                <h2 style={{margin:0}}>Editando: {selectedTopic}</h2>
+                <div>
+                    {!isValid && <span style={{color:'red', marginRight:'10px', fontSize:'0.8rem'}}>⚠️ Preencha os campos obrigatórios</span>}
+                    <button className="button button--success" onClick={handleSave} disabled={!isValid} style={{opacity: isValid ? 1 : 0.5}}>
+                        Salvar Alterações
+                    </button>
+                </div>
             </div>
 
             {status.msg && <div className={`alert alert--${status.type}`}>{status.msg}</div>}
 
             {/* METADADOS */}
             <div className="card padding--md margin-bottom--lg" style={{backgroundColor: '#1b1b1d'}}>
-                <h4>⚙️ Configurações</h4>
+                <h4 style={{display:'flex', alignItems:'center', gap:'10px'}}>{UiIcons.settings} Configurações</h4>
                 <div className="row">
                     <div className="col col--6">
                         <small>Título (H1)</small>
                         <input className="button button--block button--outline button--secondary" value={mdxData.metadata.title} onChange={e=>updateMeta('title', e.target.value)} style={{textAlign:'left'}} />
                     </div>
+                    <div className="col col--2">
+                        <small>Posição (Sidebar)</small>
+                        <input className="button button--block button--outline button--secondary" value={mdxData.metadata.pos} onChange={e=>updateMeta('pos', e.target.value)} style={{textAlign:'left'}} />
+                    </div>
                     <div className="col col--12 margin-top--sm">
-                        <small>Descrição</small>
+                        <small>Descrição (SEO)</small>
                         <input className="button button--block button--outline button--secondary" value={mdxData.metadata.description} onChange={e=>updateMeta('description', e.target.value)} style={{textAlign:'left'}} />
                     </div>
                 </div>
@@ -344,7 +491,7 @@ export default function TopicEditor({ onBack, userToken }) {
                 </div>
             </div>
 
-            {/* GRIDS */}
+            {/* GRIDS (SEÇÕES) */}
             <h3 className="margin-bottom--md">Trilhas (Grids)</h3>
             {mdxData.sections.map((sec, secIdx) => (
                 <div key={secIdx} className="card padding--md margin-bottom--lg" style={{border: '1px solid var(--ifm-color-primary)'}}>
@@ -359,18 +506,25 @@ export default function TopicEditor({ onBack, userToken }) {
                                 style={{textAlign:'left', fontWeight:'bold'}} 
                             />
                         </div>
-                        <div className="col col--4 text--right">
-                            <button className="button button--sm button--danger button--outline" onClick={()=>removeSection(secIdx)}>Apagar Seção</button>
+                        <div className="col col--4 text--right" style={{display:'flex', gap:'5px', justifyContent:'flex-end'}}>
+                            {/* REORDENAÇÃO DE SEÇÃO */}
+                            <button className="button button--sm button--secondary button--outline" disabled={secIdx === 0} onClick={() => moveSection(secIdx, -1)}>{UiIcons.moveUp}</button>
+                            <button className="button button--sm button--secondary button--outline" disabled={secIdx === mdxData.sections.length - 1} onClick={() => moveSection(secIdx, 1)}>{UiIcons.moveDown}</button>
+                            <button className="button button--sm button--danger button--outline" onClick={()=>removeSection(secIdx)}>{UiIcons.trash}</button>
                         </div>
                     </div>
                     
                     {sec.cards.map((card, cardIdx) => (
                         <TopicCardRow 
-                            key={cardIdx} 
+                            key={cardIdx}
+                            index={cardIdx}
+                            totalItems={sec.cards.length}
                             card={card} 
                             onUpdate={(f, v) => updateCard(secIdx, cardIdx, f, v)}
                             onDelete={() => removeCard(secIdx, cardIdx)}
-                            onOpenPicker={() => { setPickerTarget({secIdx, cardIdx}); setShowPicker(true); }}
+                            onMove={(dir) => moveCard(secIdx, cardIdx, dir)}
+                            onOpenPicker={(type) => openPicker(type, secIdx, cardIdx)}
+                            onOpenLinkPicker={(type) => openPicker(type, secIdx, cardIdx)}
                         />
                     ))}
 
@@ -386,7 +540,7 @@ export default function TopicEditor({ onBack, userToken }) {
 
             {/* FOOTER */}
             <div className="card padding--md margin-top--xl">
-                <h4>Conteúdo Extra</h4>
+                <h4>📝 Conteúdo Extra (Markdown)</h4>
                 <textarea 
                     className="button button--block button--outline button--secondary" 
                     rows={10} 
