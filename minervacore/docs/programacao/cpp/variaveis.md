@@ -50,3 +50,60 @@ const float distanicia_minima = 23.7;
 Obs.: Conseguimos declarar as várias variáveis de mesmo tipo de uma vez.
 
 tipo variavel1, variavel2, variavel3 = valor1, valor2, valor3; // declarando 3 variáveis ao mesmo tempo
+
+
+---
+
+## Modificadores
+
+Modificadores alteram o **comportamento**, **alcance** ou **valores possíveis** de variáveis e funções. Eles não são tipos de dados, mas trabalham em conjunto com eles.
+
+| Modificador | Função                                     |
+| ----------- | ------------------------------------------ |
+| `const`     | Impede que o valor seja alterado           |
+| `unsigned`  | Remove valores negativos                   |
+| `signed`    | Permite valores negativos                  |
+| `static`    | Mantém o valor entre chamadas              |
+| `volatile`  | Indica que o valor pode mudar externamente |
+
+
+### Exemplos de uso por modificador
+
+#### `const`
+
+Usado quando o valor **não deve ser alterado** durante a execução.
+
+```cpp
+const float PI = 3.14;
+```
+
+---
+
+#### `unsigned`
+
+Usado quando o valor **nunca será negativo**.
+
+```cpp
+unsigned int contador = 0;
+```
+
+---
+
+#### `static`
+
+Usado quando o valor precisa ser preservado entre execuções da função.
+
+```cpp
+static int chamadas = 0;
+```
+
+---
+
+#### `volatile`
+
+Usado quando o valor pode ser alterado fora do fluxo normal do programa.
+
+```cpp
+volatile int status;
+```
+
