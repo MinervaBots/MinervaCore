@@ -1,0 +1,224 @@
+/* src/components/Esp32Pinout.module.css */
+
+.container {
+    display: grid;
+    grid-template-columns: 1fr 340px;
+    background-color: #141414; /* Fundo escuro profundo */
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    border-radius: 12px;
+    overflow: hidden;
+    font-family: var(--ifm-font-family-base);
+    height: 750px;
+    box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+    position: relative;
+}
+
+/* ÁREA DA PLACA (ESQUERDA) */
+.workbench {
+    position: relative;
+    background-color: #0f0f0f;
+    /* Grid de fundo técnico */
+    background-image: 
+        linear-gradient(rgba(255,255,255,0.03) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(255,255,255,0.03) 1px, transparent 1px);
+    background-size: 40px 40px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    overflow: auto;
+    padding: 40px;
+}
+
+.boardSvg {
+    max-height: 100%;
+    filter: drop-shadow(0 20px 50px rgba(0,0,0,0.6));
+    transition: transform 0.3s ease;
+}
+
+/* PINOS E INTERATIVIDADE */
+.pinGroup {
+    cursor: pointer;
+    transition: opacity 0.2s;
+}
+
+/* O condutor metálico do pino */
+.pinConductor {
+    fill: #52606d;
+    transition: all 0.2s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+}
+
+.pinLabel {
+    font-family: 'Fira Code', monospace; /* Fonte de código */
+    font-size: 16px;
+    font-weight: 500;
+    fill: rgba(255, 255, 255, 0.4);
+    pointer-events: none;
+    transition: all 0.2s ease;
+}
+
+/* Hover e Seleção */
+.pinGroup:hover .pinConductor {
+    fill: var(--ifm-color-primary-light);
+    filter: drop-shadow(0 0 5px var(--ifm-color-primary));
+}
+
+.pinGroup:hover .pinLabel {
+    fill: #fff;
+    font-weight: 700;
+}
+
+.selected .pinConductor {
+    fill: var(--ifm-color-primary) !important;
+    stroke: #fff;
+    stroke-width: 0.5px;
+    filter: drop-shadow(0 0 8px var(--ifm-color-primary));
+}
+
+.selected .pinLabel {
+    fill: var(--ifm-color-primary) !important;
+    font-weight: 800;
+    font-size: 18px; /* Cresce um pouco */
+}
+
+/* BARRA LATERAL (DIREITA) */
+.inspector {
+    background: rgba(20, 20, 20, 0.95);
+    border-left: 1px solid rgba(255, 255, 255, 0.1);
+    display: flex;
+    flex-direction: column;
+    overflow-y: auto;
+    backdrop-filter: blur(10px);
+}
+
+.inspectorHeader {
+    padding: 20px;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+    background: linear-gradient(180deg, rgba(255,255,255,0.02) 0%, transparent 100%);
+}
+
+.inspectorContent {
+    padding: 20px;
+    flex: 1;
+    overflow-y: auto;
+}
+
+/* Título e ID */
+.pinIdDisplay {
+    font-family: 'Fira Code', monospace;
+    font-size: 32px;
+    font-weight: 700;
+    color: #fff;
+    margin-bottom: 5px;
+    letter-spacing: -1px;
+    line-height: 1;
+}
+
+.pinMeta {
+    display: flex;
+    gap: 10px;
+    margin-bottom: 20px;
+    font-size: 12px;
+    color: rgba(255,255,255,0.5);
+}
+
+/* Seções de Detalhes */
+.detailSection {
+    margin-bottom: 25px;
+}
+
+.label {
+    text-transform: uppercase;
+    font-size: 10px;
+    font-weight: 700;
+    letter-spacing: 1px;
+    color: rgba(255, 255, 255, 0.4);
+    margin-bottom: 10px;
+    display: block;
+}
+
+/* Badges de Função */
+.capabilitiesList {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+}
+
+.capabilityBadge {
+    display: inline-flex;
+    align-items: center;
+    padding: 6px 10px;
+    border-radius: 6px;
+    font-size: 11px;
+    font-weight: 600;
+    font-family: 'Fira Code', monospace;
+    background: rgba(255, 255, 255, 0.05);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    color: #e4e7eb;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.2);
+}
+
+/* Notas Técnicas */
+.techNote {
+    font-size: 13px;
+    color: rgba(255, 255, 255, 0.7);
+    line-height: 1.6;
+    padding: 15px;
+    background: rgba(255, 255, 255, 0.03);
+    border-radius: 8px;
+    border-left: 3px solid var(--ifm-color-primary);
+}
+
+/* Estado Vazio */
+.emptyState {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    height: 100%;
+    text-align: center;
+    color: rgba(255, 255, 255, 0.3);
+    padding: 40px;
+}
+
+.emptyIcon {
+    width: 64px;
+    height: 64px;
+    margin-bottom: 20px;
+    opacity: 0.5;
+    stroke: var(--ifm-color-primary);
+}
+
+/* Legenda no Rodapé */
+.legendFooter {
+    padding: 20px;
+    border-top: 1px solid rgba(255, 255, 255, 0.1);
+    background: rgba(0,0,0,0.2);
+}
+
+.legendGrid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 8px;
+}
+
+.legendItem {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 11px;
+    color: rgba(255,255,255,0.6);
+}
+
+.legendSwatch {
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    box-shadow: 0 0 5px currentColor;
+}
+
+/* Mobile */
+@media (max-width: 900px) {
+    .container { grid-template-columns: 1fr; height: auto; }
+    .inspector { border-left: none; border-top: 1px solid rgba(255,255,255,0.1); max-height: 400px; }
+    .boardSvg { max-height: 500px; }
+}
