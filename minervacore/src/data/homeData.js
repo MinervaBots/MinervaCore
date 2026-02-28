@@ -118,6 +118,21 @@ const SiteData = {
           "iconSrc": "/img/icons/espressif.svg"
         }
       ]
+    },
+    {
+      "title": "Bibliotecas MinervaBots",
+      "items": [
+        {
+          "title": "Servo ESP-32",
+          "link": "/docs/programacao/libraries/servoesp32",
+          "iconSrc": "/img/icons/espressif.svg"
+        },
+        {
+          "title": "ESC ESP-32",
+          "link": "/docs/programacao/libraries/escesp32",
+          "iconSrc": "/img/icons/espressif.svg"
+        }
+      ]
     }
   ],
   "arquitetura": [
