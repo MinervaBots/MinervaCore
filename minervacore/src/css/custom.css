@@ -21,7 +21,7 @@ body.homepage .navbar {
 
 .hero-header {
   position: relative;
-  height: 450px; 
+  min-height: 450px; 
   display: flex;
   align-items: center;
   justify-content: center;
@@ -37,7 +37,7 @@ body.homepage .navbar {
   top: 0; left: 0; width: 100%; height: 100%;
   background-image: url('/img/equipe-rc.jpg');
   background-size: cover;
-  background-position: center 48%; /* Ajuste da imagem */
+  background-position: center 48%;
   z-index: 0;
 }
 
@@ -56,17 +56,18 @@ body.homepage .navbar {
   flex-direction: column;
   align-items: center;
   gap: 10px;
-  margin-top: 50px;
+  margin-top: 20px; 
 }
 
 .hero-logo {
   max-width: 180px;
+  width: 100%;
   filter: drop-shadow(0 0 15px rgba(158, 31, 34, 0.6)); 
-  transition: transform 0.3s ease;
+  transition: transform 0.3s ease, max-width 0.3s ease;
 }
 
 .hero-logo:hover {
-    transform: scale(1.05); /* Efeito de zoom na logo */
+    transform: scale(1.05);
 }
 
 .hero-title {
@@ -75,6 +76,7 @@ body.homepage .navbar {
     letter-spacing: 1px;
     margin: 0;
     color: white;
+    transition: font-size 0.3s ease;
 }
 
 .hero-subtitle {
@@ -83,6 +85,43 @@ body.homepage .navbar {
     font-weight: 300;
     max-width: 600px;
     color: white;
+    transition: font-size 0.3s ease;
+}
+
+/* Telas menores (notebooks pequenos e tablets) */
+@media (max-width: 992px) {
+  .hero-header { min-height: 400px; }
+  .hero-logo { max-width: 140px; }
+  .hero-title { font-size: 2.2rem; }
+}
+
+/* Celulares */
+@media (max-width: 600px) {
+  .hero-header { 
+    min-height: 320px;
+  }
+  
+  .hero-header-content {
+    margin-top: 0px; /* Remove a margem para não empurrar para baixo */
+    padding: 15px;
+  }
+
+  .hero-logo { 
+    max-width: 100px; /* Logo bem menor no celular para não tampar a foto */
+  }
+  
+  .hero-title { 
+    font-size: 1.8rem; 
+  }
+  
+  .hero-subtitle { 
+    font-size: 1rem; 
+  }
+
+  .hero-bg-image {
+    /* Sobe o foco da imagem no mobile */
+    background-position: center 30%; 
+  }
 }
 
 /* =========================================
