@@ -60,6 +60,31 @@ const SiteData = {
       ]
     },
     {
+      "title": "Fundamentos de Programação",
+      "items": [
+        {
+          "title": "Linguagens de Programação",
+          "link": "/docs/programacao/linguagens",
+          "iconSrc": "/img/icons/code.svg"
+        },
+        {
+          "title": "Estruturas de Dados",
+          "link": "/docs/programacao/estruturas-dados",
+          "iconSrc": "/img/icons/estrutura-dados.svg"
+        },
+        {
+          "title": "Binário & Hexadecimal",
+          "link": "/docs/programacao/binario-hexadecimal",
+          "iconSrc": "/img/icons/binary.svg"
+        },
+        {
+          "title": "Compilação & Execução",
+          "link": "/docs/programacao/compilacao-execucao",
+          "iconSrc": "/img/icons/compiler.svg"
+        }
+      ]
+    },
+    {
       "title": "Robótica & Algoritmos",
       "items": [
         {
