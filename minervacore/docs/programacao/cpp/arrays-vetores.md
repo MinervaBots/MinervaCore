@@ -14,9 +14,6 @@ Array é provavelmente a estrutura de dados mais conhecida e usada. No C++ exist
 Ambos os tipos possuem limitações e caracteristicas em comum. 
 Entre elas e importante ressaltar como ele e criado na memória
 
-![image.png](/img/uploads/1776059005371-image.png)
-
-
 ### Array Classico
 O array classico é aquela estrutura de dados que estamos acostumados a ver e a usar. Ele segue o estilo que é usado em C
 
