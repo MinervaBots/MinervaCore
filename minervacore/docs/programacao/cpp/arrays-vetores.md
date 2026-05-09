@@ -109,7 +109,7 @@ Ele é basiscamente um array de alocação dinâmica, por causa disso, ele é cr
 Umas das vantagens do vetor é que a implementação dele na Standart Library abstrai muito do trabalho de se lidar com alocação dinâmica, o que traz facilidade e segurança pro seu código.
 
 ### Criando um vetor
-Para criar um vetor, a sintaxe é muito parecida com o array da Standart Library: std::vector<tipo> nome = {}
+Para criar um vetor, a sintaxe é muito parecida com o array da Standart Library: std::vector\<tipo> nome = {}
 
 ```cpp
 // Cria um vetor com 3 itens
