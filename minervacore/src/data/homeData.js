@@ -81,6 +81,11 @@ const SiteData = {
           "title": "Compilação & Execução",
           "link": "/docs/programacao/compilacao-execucao",
           "iconSrc": "/img/icons/compiler.svg"
+        },
+        {
+          "title": "Concorrência & Paralelismo",
+          "link": "/docs/programacao/concorrencia-paralelismo",
+          "iconSrc": "/img/icons/pages.svg"
         }
       ]
     },
