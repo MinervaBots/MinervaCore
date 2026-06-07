@@ -279,6 +279,41 @@ export default function TopicEditor({ onBack, userToken }) {
         }
     };
 
+    // Criação de novo tópico
+    const handleNewTopic = () => {
+        const name = prompt("Digite o nome da nova pasta (sem espaços, ex: machine-learning):");
+        if (!name) return;
+
+        // Limpa o nome para virar formato de URL/Pasta padrão
+        const cleanName = name.toLowerCase().replace(/[^a-z0-9-]/g, '-').replace(/-+/g, '-').replace(/^-|-$/g, '');
+
+        if (folders.includes(cleanName)) {
+            alert("Já existe uma pasta com esse nome nesta área!");
+            return;
+        }
+
+        setSelectedTopic(cleanName);
+        
+        // Inicializa com um template base para um novo tópico
+        setMdxData({
+            metadata: {
+                title: 'Novo Tópico',
+                description: 'Descrição do tópico para o Google (SEO)',
+                pos: '1'
+            },
+            introContent: `# Bem-vindo ao Tópico de ${cleanName}\n\nSelecione um dos itens abaixo para iniciar seus estudos.`,
+            sections: [
+                {
+                    title: 'Início e Teoria',
+                    cards: []
+                }
+            ],
+            footerContent: '### Material Extra\n\nAdicione links e playlists aqui.'
+        });
+
+        setStep(2); // Pula para edição do index.mdx
+    };
+
     // Validação
     const isFormValid = () => {
         if (!mdxData) return false;
@@ -418,10 +453,11 @@ export default function TopicEditor({ onBack, userToken }) {
                         </div>
                     </div>
                 ))}
+                
+                {/* Card de Novo Tópico */}
                 <div className="col col--3 margin-bottom--md">
-                     <div className="card padding--md pointer" style={{border: '2px dashed #666', opacity: 0.7, textAlign:'center'}}>
-                        <h3>+ Novo (Em breve)</h3>
-                        <small>Criar Pasta</small>
+                     <div className="card padding--md pointer" onClick={handleNewTopic} style={{border: '2px dashed var(--ifm-color-primary)', textAlign:'center', display: 'flex', flexDirection: 'column', justifyContent: 'center', height: '100%'}}>
+                        <h3 style={{margin:0}}>+ Novo Tópico</h3>
                     </div>
                 </div>
             </div>
@@ -478,7 +514,7 @@ export default function TopicEditor({ onBack, userToken }) {
                     </div>
                     <div className="col col--2">
                         <small>Posição (Sidebar)</small>
-                        <input className="button button--block button--outline button--secondary" value={mdxData.metadata.pos} onChange={e=>updateMeta('pos', e.target.value)} style={{textAlign:'left'}} />
+                        <input className="button button--block button--outline button--secondary" type="number" value={mdxData.metadata.pos} onChange={e=>updateMeta('pos', e.target.value)} style={{textAlign:'left'}} />
                     </div>
                     <div className="col col--12 margin-top--sm">
                         <small>Descrição (SEO)</small>
@@ -486,7 +522,7 @@ export default function TopicEditor({ onBack, userToken }) {
                     </div>
                 </div>
                 <div className="margin-top--md">
-                     <small>Introdução</small>
+                     <small>Introdução (Texto antes dos cards)</small>
                      <textarea className="button button--block button--outline button--secondary" rows={3} value={mdxData.introContent} onChange={e=>setMdxData({...mdxData, introContent: e.target.value})} style={{textAlign:'left', fontFamily:'monospace'}} />
                 </div>
             </div>
