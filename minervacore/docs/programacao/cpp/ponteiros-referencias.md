@@ -1,6 +1,6 @@
 ---
-sidebar_position: 0
-title: Ponteiros e Referências
+sidebar_position: 10
+title: 10. Ponteiros e Referências
 ---
 
 ### Ponteiros e Referências
