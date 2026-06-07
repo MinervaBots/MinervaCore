@@ -203,6 +203,7 @@ body.homepage .navbar {
     letter-spacing: 0.5px;
     color: rgba(255, 255, 255, 0.9);
     transition: color 0.3s;
+    text-align: center;
 }
 
 .knowledge-card:hover .card-title {
