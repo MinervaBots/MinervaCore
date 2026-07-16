@@ -160,7 +160,7 @@ const config = {
             ],
           },
         ],
-        copyright: `Copyright © ${new Date().getFullYear()} MinervaBots. Built with Docusaurus.`,
+        copyright: `Copyright © ${new Date().getFullYear()} MinervaBots. Conteúdo sob licença <a href="https://creativecommons.org" target="_blank" rel="noopener noreferrer">CC BY-SA 4.0</a>. Built with Docusaurus.`,
       },
       
       prism: {
