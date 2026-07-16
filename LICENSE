@@ -1,4 +1,18 @@
-MIT License
+# MinervaBots Documentation - License
+
+This project uses a dual-licensing model to protect both the source code and the educational content.
+
+## 1. Documentation Content
+All documentation texts, tutorials, guides, and images contained in the `docs/`, `blog/`, and `src/pages/` directories are licensed under the **Creative Commons Attribution-ShareAlike 4.0 International (CC BY-SA 4.0)** License.
+
+To view a copy of this license, visit: http://creativecommons.org
+
+<a href="https://github.com/MinervaBots/MinervaCore">MinervaCore</a> © 2025 by <a href="https://github.com/MinervaBots">MinervaBots</a> is licensed under <a href="https://creativecommons.org/licenses/by-sa/4.0/">CC BY-SA 4.0</a><img src="https://mirrors.creativecommons.org/presskit/icons/cc.svg" alt="" style="max-width: 1em;max-height:1em;margin-left: .2em;"><img src="https://mirrors.creativecommons.org/presskit/icons/by.svg" alt="" style="max-width: 1em;max-height:1em;margin-left: .2em;"><img src="https://mirrors.creativecommons.org/presskit/icons/sa.svg" alt="" style="max-width: 1em;max-height:1em;margin-left: .2em;">
+
+---
+
+## 2. Software and Source Code
+The underlying source code, configuration files, React components, and styles used to build this website are licensed under the **MIT License**.
 
 Copyright (c) 2025 MinervaBots
 
