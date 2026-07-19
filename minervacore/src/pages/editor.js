@@ -169,7 +169,7 @@ const LoginScreen = ({ onLogin, adminPass }) => {
             <button 
                 type="submit" 
                 className="button button--primary button--block button--lg"
-                style={{fontWeight: 'bold', letterSpacing: '0.5px'}}
+                style={{fontWeight: 'bold', letterSpacing: '0.5px', color: 'white'}}
             >
                 ACESSAR PAINEL
             </button>
