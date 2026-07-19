@@ -307,7 +307,8 @@ export default SiteData;
         <h2 style={{margin:0}}>Editando Home</h2>
         <div>
             {!isValid && <span style={{color:'red', marginRight:'10px', fontSize:'0.8rem'}}>⚠️ Preencha todos os campos</span>}
-            <button className="button button--success" onClick={handleSave} disabled={!isValid} style={{opacity: isValid ? 1 : 0.5}}>
+            <button className="button button--success" onClick={handleSave} disabled={!isValid} 
+                    style={{opacity: isValid ? 1 : 0.5, color: 'white'}}>
                 Salvar Alterações
             </button>
         </div>

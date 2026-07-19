@@ -496,7 +496,8 @@ export default function TopicEditor({ onBack, userToken }) {
                 <h2 style={{margin:0}}>Editando: {selectedTopic}</h2>
                 <div>
                     {!isValid && <span style={{color:'red', marginRight:'10px', fontSize:'0.8rem'}}>⚠️ Preencha os campos obrigatórios</span>}
-                    <button className="button button--success" onClick={handleSave} disabled={!isValid} style={{opacity: isValid ? 1 : 0.5}}>
+                    <button className="button button--success" onClick={handleSave} disabled={!isValid} 
+                            style={{opacity: isValid ? 1 : 0.5, color: 'white'}}>
                         Salvar Alterações
                     </button>
                 </div>
