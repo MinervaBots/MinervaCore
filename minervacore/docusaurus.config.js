@@ -38,7 +38,7 @@ const config = {
       hashed: true,
       language: ["en", "pt"],
       indexDocs: true,
-      indexBlog: true,
+      indexBlog: false,
     },
   ],
 ],
