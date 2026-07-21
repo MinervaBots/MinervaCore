@@ -170,6 +170,8 @@ export default function PageEditor({ onBack, userToken }) {
             const path = `minervacore/docs/${area}/${selectedFolder}/${fileName}`;
             const file = await getFileContent(path, userToken);
             setPageData(parseMarkdown(file.content));
+            setHistory([parsed.body]);
+            setHistoryStep(0);
             setStep(3);
         } catch (e) { alert("Erro ao ler arquivo."); } finally { setLoading(false); }
     };
@@ -181,6 +183,8 @@ export default function PageEditor({ onBack, userToken }) {
         setSelectedFile(finalName);
         setIsNewFile(true);
         setPageData({ metadata: { title: 'Novo Título', pos: '1' }, body: '# Título Principal\n\n' });
+        setHistory([parsed.body]);
+        setHistoryStep(0);
         setStep(3);
     };
 
