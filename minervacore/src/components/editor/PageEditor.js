@@ -74,18 +74,6 @@ Não use bibliotecas externas.
 `
 };
 
-// ICONES SVG DA TOOLBAR
-const ToolbarIcons = {
-    bold: <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M6 4h8a4 4 0 0 1 4 4 4 4 0 0 1-4 4H6z"></path><path d="M6 12h9a4 4 0 0 1 4 4 4 4 0 0 1-4 4H6z"></path></svg>,
-    italic: <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><line x1="19" y1="4" x2="10" y2="4"></line><line x1="14" y1="20" x2="5" y2="20"></line><line x1="15" y1="4" x2="9" y2="20"></line></svg>,
-    code: <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><polyline points="16 18 22 12 16 6"></polyline><polyline points="8 6 2 12 8 18"></polyline></svg>,
-    link: <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"></path><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"></path></svg>,
-    image: <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><rect x="3" y="3" width="18" height="18" rx="2" ry="2"></rect><circle cx="8.5" cy="8.5" r="1.5"></circle><polyline points="21 15 16 10 5 21"></polyline></svg>,
-    video: <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><polygon points="23 7 16 12 23 17 23 7"></polygon><rect x="1" y="5" width="15" height="14" rx="2" ry="2"></rect></svg>,
-    tip: <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><circle cx="12" cy="12" r="10"></circle><line x1="12" y1="16" x2="12" y2="12"></line><line x1="12" y1="8" x2="12.01" y2="8"></line></svg>,
-    h2: <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M4 12h8"/><path d="M4 18V6"/><path d="M12 18V6"/><path d="M21 18l-4-4 2-2-2-2 4-4"/></svg> // Simplificado para Header
-};
-
 // =============================================================================
 //                            COMPONENTE DE PREVIEW
 // =============================================================================
@@ -418,7 +406,7 @@ export default function PageEditor({ onBack, userToken }) {
 
     // EDITOR COM TOOLBAR E PREVIEW
     return (
-        <div className="container margin-vert--md" style={{maxWidth: '98%'}}>
+        <div className="container-fluid margin-vert--sm" style={{ padding: '0 0px' }}>
             
             {/* Header Fixo */}
             <div style={{
@@ -462,14 +450,14 @@ export default function PageEditor({ onBack, userToken }) {
                         
                         {/* TOOLBAR */}
                         <div style={{marginBottom:'5px', display:'flex', gap:'5px', flexWrap:'wrap', padding:'5px', background:'rgba(255,255,255,0.05)', borderRadius:'4px'}}>
-                            <button className="button button--sm button--icon button--link" title="Negrito" onClick={()=>handleToolbar('bold')}>{ToolbarIcons.bold}</button>
-                            <button className="button button--sm button--icon button--link" title="Itálico" onClick={()=>handleToolbar('italic')}>{ToolbarIcons.italic}</button>
-                            <button className="button button--sm button--icon button--link" title="Cabeçalho 2" onClick={()=>handleToolbar('h2')}>{ToolbarIcons.h2}</button>
+                            <button className="button button--sm button--icon button--link" title="Negrito" onClick={()=>handleToolbar('bold')}>{Icons.bold}</button>
+                            <button className="button button--sm button--icon button--link" title="Itálico" onClick={()=>handleToolbar('italic')}>{Icons.italic}</button>
+                            <button className="button button--sm button--icon button--link" title="Cabeçalho 2" onClick={()=>handleToolbar('h2')}>{Icons.h2}</button>
                             <span style={{borderRight:'1px solid #555', margin:'0 5px'}}></span>
-                            <button className="button button--sm button--icon button--link" title="Link" onClick={()=>handleToolbar('link')}>{ToolbarIcons.link}</button>
-                            <button className="button button--sm button--icon button--link" title="Código C++" onClick={()=>handleToolbar('code')}>{ToolbarIcons.code}</button>
-                            <button className="button button--sm button--icon button--link" title="Dica" onClick={()=>handleToolbar('tip')}>{ToolbarIcons.tip}</button>
-                            <button className="button button--sm button--icon button--link" title="Vídeo" onClick={()=>handleToolbar('video')}>{ToolbarIcons.video}</button>
+                            <button className="button button--sm button--icon button--link" title="Link" onClick={()=>handleToolbar('link')}>{Icons.link}</button>
+                            <button className="button button--sm button--icon button--link" title="Código C++" onClick={()=>handleToolbar('code')}>{Icons.code}</button>
+                            <button className="button button--sm button--icon button--link" title="Dica" onClick={()=>handleToolbar('tip')}>{Icons.tip}</button>
+                            <button className="button button--sm button--icon button--link" title="Vídeo" onClick={()=>handleToolbar('video')}>{Icons.video}</button>
                             <span style={{flex:1}}></span>
                             <small style={{opacity:0.5, alignSelf:'center', fontSize:'0.75rem'}}>Cole ou arraste imagens</small>
                         </div>
