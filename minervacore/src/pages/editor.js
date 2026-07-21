@@ -13,254 +13,308 @@ import TopicEditor from '../components/editor/TopicEditor';
 import PageEditor from '../components/editor/PageEditor';
 
 const LoginScreen = ({ onLogin, adminPass }) => {
-  const [pass, setPass] = useState('');
-  const [token, setToken] = useState('');
-  const [remember, setRemember] = useState(false); // Estado para lembrar o token
-  const [error, setError] = useState('');
-  const [showPass, setShowPass] = useState(false);
+    const [pass, setPass] = useState('');
+    const [token, setToken] = useState('');
+    const [remember, setRemember] = useState(false); // Estado para lembrar o token
+    const [error, setError] = useState('');
+    const [loading, setLoading] = useState(false);
+    const [showPass, setShowPass] = useState(false);
 
-  // URL para gerar um novo token no GitHub já preenchido com as permissões necessárias
-  const generateTokenUrl = "https://github.com/settings/tokens/new?description=MinervaCore+Editor+Access&scopes=repo";
+    // URL para gerar um novo token no GitHub já preenchido com as permissões necessárias
+    const generateTokenUrl = "https://github.com/settings/tokens/new?description=MinervaCore+Editor+Access&scopes=repo";
 
-  const handleSubmit = (e) => {
-    e.preventDefault(); // Impede o reload da página pelo form
-    setError('');
-
-    if (pass !== adminPass) {
-      setError('Senha da equipe incorreta.');
-      return;
-    }
-    
-    // Validação básica de formato do token
-    if (!token || token.length < 10) {
-      setError('O Token parece inválido ou está vazio.');
-      return;
-    }
-
-    onLogin(token, remember);
-  };
-
-  return (
-    <div style={{
-        minHeight: '80vh', 
-        display: 'flex', 
-        alignItems: 'center', 
-        justifyContent: 'center',
-        background: 'radial-gradient(circle at center, rgba(158, 31, 34, 0.1) 0%, transparent 70%)' // Efeito de fundo sutil
-    }}>
-      <div className="card shadow--lg" style={{maxWidth: '450px', width: '100%', padding: '2rem', border: '1px solid var(--ifm-color-emphasis-200)'}}>
-        
-        {/* Cabeçalho */}
-        <div className="text--center margin-bottom--lg">
-          <img 
-            src={useBaseUrl('img/minervacore-logo-transp.png')} 
-            alt="Logo" 
-            width="100" 
-            style={{marginBottom: '1rem'}} 
-          />
-          <h1 style={{fontSize: '1.8rem', marginBottom: '0.5rem'}}>Acesso Restrito</h1>
-          <p style={{opacity: 0.7, fontSize: '0.9rem'}}>Área administrativa para gestão de conteúdo</p>
-        </div>
-
-        <form onSubmit={handleSubmit} autoComplete="off">
+    // Função para verificar se o usuário é membro da organização da equipe
+    const verifyGitHubMembership = async (ghToken) => {
+        try {
+            // Pega os dados do usuário a partir do Token
+            const userRes = await fetch('https://api.github.com/user', {
+                headers: { 
+                    'Authorization': `token ${ghToken}`,
+                    'Accept': 'application/vnd.github.v3+json'
+                }
+            });
             
-            {/* Senha da Equipe */}
-            <div className="margin-bottom--md">
-                <label htmlFor="team-pass" style={{fontWeight: 'bold', display: 'block', marginBottom: '5px'}}>
-                    Senha da Equipe
-                </label>
-                <div style={{position: 'relative'}}>
-                    <input 
-                        id="mc_access_key_field"
-                        name="mc_access_key_no_autofill"
-                        type={showPass ? "text" : "password"} 
-                        className="button button--block button--outline button--secondary" 
-                        style={{textAlign: 'left', cursor: 'text', paddingRight: '45px'}}
-                        placeholder="••••••••"
-                        value={pass} 
-                        onChange={e => setPass(e.target.value)} 
-                        autoComplete="new-password"
-                    />
-                    <button
-                        type="button"
-                        onClick={() => setShowPass(!showPass)}
-                        style={{
-                            position: 'absolute',
-                            right: '12px',
-                            top: '50%',
-                            transform: 'translateY(-50%)',
-                            background: 'none',
-                            border: 'none',
-                            cursor: 'pointer',
-                            color: 'rgba(255, 255, 255, 0.6)',
-                            padding: '4px',
-                            display: 'flex',
-                            alignItems: 'center',
-                            justifyContent: 'center',
-                            transition: 'color 0.2s'
-                        }}
-                        onMouseEnter={(e) => e.currentTarget.style.color = 'var(--ifm-color-primary)'}
-                        onMouseLeave={(e) => e.currentTarget.style.color = 'rgba(255, 255, 255, 0.6)'}
-                        title={showPass ? "Ocultar senha" : "Mostrar senha"}
-                    >
-                        {showPass ? (
-                            // Ícone: olho cortado
-                            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                                <path d="M17.94 17.94A10.07 10.07 0 0 1 12 20c-7 0-11-8-11-8a18.45 18.45 0 0 1 5.06-5.94M9.9 4.24A9.12 9.12 0 0 1 12 4c7 0 11 8 11 8a18.5 18.5 0 0 1-2.16 3.19m-6.72-1.07a3 3 0 1 1-4.24-4.24"></path>
-                                <line x1="1" y1="1" x2="23" y2="23"></line>
-                            </svg>
-                        ) : (
-                            // Ícone: olho aberto
-                            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                                <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path>
-                                <circle cx="12" cy="12" r="3"></circle>
-                            </svg>
-                        )}
-                    </button>
-                </div>
-            </div>
+            if (!userRes.ok) {
+                throw new Error('Token inválido ou expirado.');
+            }
+            
+            const userData = await userRes.json();
+            const username = userData.login;
 
-            {/* Token do GitHub */}
-            <div className="margin-bottom--md">
-                <div style={{display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '5px'}}>
-                    <label htmlFor="gh-token" style={{fontWeight: 'bold'}}>GitHub Personal Token</label>
-                    <a href={generateTokenUrl} target="_blank" rel="noopener noreferrer" style={{fontSize: '0.8rem', fontWeight: 'bold'}}>
-                        Gerar Token ↗
-                    </a>
-                </div>
-                
-                <input 
-                    id="mc_gh_token_field"
-                    name="mc_gh_token_no_autofill"
-                    type="password" 
-                    className="button button--block button--outline button--secondary" 
-                    style={{textAlign: 'left', cursor: 'text', fontFamily: 'monospace'}}
-                    placeholder="ghp_..." 
-                    value={token} 
-                    onChange={e => setToken(e.target.value)} 
-                    autoComplete="new-password"
-                />
-                <small style={{fontSize: '0.75rem', opacity: 0.6, marginTop: '4px', display: 'block'}}>
-                    Necessário permissão de <code>repo</code> para editar arquivos.
-                </small>
-            </div>
+            // Verifica as permissões do usuário no repositório do MinervaCore
+            const repoRes = await fetch(`https://api.github.com/repos/MinervaBots/MinervaCore/collaborators/${username}/permission`, {
+                headers: { 
+                    'Authorization': `token ${ghToken}`,
+                    'Accept': 'application/vnd.github.v3+json'
+                }
+            });
 
-            <div className="margin-bottom--lg" style={{display: 'flex', alignItems: 'center'}}>
-                <input 
-                    type="checkbox" 
-                    id="remember" 
-                    checked={remember} 
-                    onChange={e => setRemember(e.target.checked)}
-                    style={{marginRight: '8px', cursor: 'pointer'}}
-                />
-                <label htmlFor="remember" style={{cursor: 'pointer', fontSize: '0.9rem'}}>
-                    Manter-me conectado neste navegador
-                </label>
-            </div>
+            if (!repoRes.ok) {
+                throw new Error('Usuário autenticado, mas sem acesso ao repositório MinervaCore.');
+            }
 
-            {/* Erros */}
-            {error && (
-                <div className="alert alert--danger margin-bottom--md" role="alert">
-                    {error}
-                </div>
-            )}
+            const repoData = await repoRes.json();
 
-            {/* Botão de Ação */}
-            <button 
-                type="submit" 
-                className="button button--primary button--block button--lg"
-                style={{fontWeight: 'bold', letterSpacing: '0.5px', color: 'white'}}
-            >
-                ACESSAR PAINEL
-            </button>
+            // Só libera se tiver permissão de escrita (write) ou for admin
+            if (repoData.permission === 'admin' || repoData.permission === 'write') {
+                return true;
+            } 
+            
+            else {
+                throw new Error('Você é membro, mas tem apenas permissão de LEITURA (read). Peça acesso de escrita à coordenação de programação.');
+            }
 
-        </form>
+        } catch (e) {
+            throw e;
+        }
+    };
+
+    const handleSubmit = async (e) => {
+        e.preventDefault(); 
+        setError('');
+        setLoading(true);
+
+        // Validação da senha
+        if (pass !== adminPass) {
+            setError('Senha da equipe incorreta.');
+            setLoading(false);
+            return;
+        }
         
-        <div className="text--center margin-top--lg" style={{opacity: 0.5, fontSize: '0.8rem'}}>
-            MinervaBots &copy; {new Date().getFullYear()}
+        // Validação básica de formato do token
+        if (!token || token.length < 10) {
+            setError('O Token parece inválido ou está vazio.');
+            setLoading(false);
+            return;
+        }
+
+        try {
+            // Verifica a identidade e permissão no GitHub
+            await verifyGitHubMembership(token);
+            
+            // Se passar por aqui sem erro, o cara é brabo. Pode entrar.
+            onLogin(token, remember);
+        } catch (e) {
+            setError(e.message);
+            setLoading(false);
+        }
+    };
+
+    return (
+        <div style={{
+            minHeight: '80vh', 
+            display: 'flex', 
+            alignItems: 'center', 
+            justifyContent: 'center',
+            background: 'radial-gradient(circle at center, rgba(158, 31, 34, 0.1) 0%, transparent 70%)' // Efeito de fundo sutil
+        }}>
+            <div className="card shadow--lg" style={{maxWidth: '450px', width: '100%', padding: '2rem', border: '1px solid var(--ifm-color-emphasis-200)'}}>
+                
+                {/* Cabeçalho */}
+                <div className="text--center margin-bottom--lg">
+                    <img 
+                        src={useBaseUrl('img/minervacore-logo-transp.png')} 
+                        alt="Logo" 
+                        width="100" 
+                        style={{marginBottom: '1rem'}} 
+                    />
+                    <h1 style={{fontSize: '1.8rem', marginBottom: '0.5rem'}}>Acesso Restrito</h1>
+                    <p style={{opacity: 0.7, fontSize: '0.9rem'}}>Autenticação de Membros MinervaBots</p>
+                </div>
+
+                <form onSubmit={handleSubmit} autoComplete="off">
+                    
+                    <div className="margin-bottom--md">
+                        <label htmlFor="team-pass" style={{fontWeight: 'bold', display: 'block', marginBottom: '5px'}}>
+                            Senha da Equipe
+                        </label>
+                        <div style={{position: 'relative'}}>
+                            <input 
+                                id="mc_access_key_field"
+                                name="mc_access_key_no_autofill"
+                                type={showPass ? "text" : "password"} 
+                                className="button button--block button--outline button--secondary" 
+                                style={{textAlign: 'left', cursor: 'text', paddingRight: '45px'}}
+                                placeholder="••••••••"
+                                value={pass} 
+                                onChange={e => setPass(e.target.value)} 
+                                autoComplete="new-password"
+                            />
+                            <button
+                                type="button"
+                                onClick={() => setShowPass(!showPass)}
+                                style={{
+                                    position: 'absolute', right: '12px', top: '50%', transform: 'translateY(-50%)',
+                                    background: 'none', border: 'none', cursor: 'pointer', color: 'rgba(255, 255, 255, 0.6)',
+                                    padding: '4px', display: 'flex', alignItems: 'center', justifyContent: 'center', transition: 'color 0.2s'
+                                }}
+                                onMouseEnter={(e) => e.currentTarget.style.color = 'var(--ifm-color-primary)'}
+                                onMouseLeave={(e) => e.currentTarget.style.color = 'rgba(255, 255, 255, 0.6)'}
+                                title={showPass ? "Ocultar senha" : "Mostrar senha"}
+                            >
+                                {showPass ? (
+                                    // Ícone: Olho fechado
+                                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                                        <path d="M17.94 17.94A10.07 10.07 0 0 1 12 20c-7 0-11-8-11-8a18.45 18.45 0 0 1 5.06-5.94M9.9 4.24A9.12 9.12 0 0 1 12 4c7 0 11 8 11 8a18.5 18.5 0 0 1-2.16 3.19m-6.72-1.07a3 3 0 1 1-4.24-4.24"></path>
+                                        <line x1="1" y1="1" x2="23" y2="23"></line>
+                                    </svg>
+                                ) : (
+                                    // Ícone: Olho aberto
+                                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                                        <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path>
+                                        <circle cx="12" cy="12" r="3"></circle>
+                                    </svg>
+                                )}
+                            </button>
+                        </div>
+                    </div>
+
+                    {/* Token do GitHub */}
+                    <div className="margin-bottom--md">
+                        <div style={{display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '5px'}}>
+                            <label htmlFor="gh-token" style={{fontWeight: 'bold'}}>GitHub Personal Token</label>
+                            <a href={generateTokenUrl} target="_blank" rel="noopener noreferrer" style={{fontSize: '0.8rem', fontWeight: 'bold'}}>
+                                Gerar Token ↗
+                            </a>
+                        </div>
+                        
+                        <input 
+                            id="mc_gh_token_field"
+                            name="mc_gh_token_no_autofill"
+                            type="password" 
+                            className="button button--block button--outline button--secondary" 
+                            style={{textAlign: 'left', cursor: 'text', fontFamily: 'monospace'}}
+                            placeholder="ghp_..." 
+                            value={token} 
+                            onChange={e => setToken(e.target.value)} 
+                            autoComplete="new-password"
+                        />
+                        <small style={{fontSize: '0.75rem', opacity: 0.6, marginTop: '4px', display: 'block'}}>
+                            Verificaremos sua permissão na organização da equipe.
+                        </small>
+                    </div>
+
+                    <div className="margin-bottom--lg" style={{display: 'flex', alignItems: 'center'}}>
+                        <input 
+                            type="checkbox" 
+                            id="remember" 
+                            checked={remember} 
+                            onChange={e => setRemember(e.target.checked)}
+                            style={{marginRight: '8px', cursor: 'pointer'}}
+                        />
+                        <label htmlFor="remember" style={{cursor: 'pointer', fontSize: '0.9rem'}}>
+                            Manter-me conectado neste navegador
+                        </label>
+                    </div>
+
+                    {/* Erros */}
+                    {error && (
+                        <div className="alert alert--danger margin-bottom--md" role="alert">
+                            {error}
+                        </div>
+                    )}
+
+                    {/* Botão de Ação */}
+                    <button 
+                        type="submit" 
+                        className="button button--primary button--block button--lg"
+                        style={{fontWeight: 'bold', letterSpacing: '0.5px', color: 'white'}}
+                        disabled={loading}
+                    >
+                        {loading ? 'Verificando GitHub...' : 'ACESSAR PAINEL'}
+                    </button>
+
+                </form>
+                
+                <div className="text--center margin-top--lg" style={{opacity: 0.5, fontSize: '0.8rem'}}>
+                    MinervaBots &copy; {new Date().getFullYear()}
+                </div>
+            </div>
         </div>
-      </div>
-    </div>
-  );
+    );
 };
 
 export default function Editor() {
-  const { siteConfig } = useDocusaurusContext();
-  const ADMIN_PASS = siteConfig.customFields?.adminPass || '';
-  
-  const [userToken, setUserToken] = useState('');
-  const [currentView, setCurrentView] = useState('menu');
-  const [isChecking, setIsChecking] = useState(true);
-
-  // Verifica se já existe login salvo ao abrir a página
-  useEffect(() => {
-    // Tenta pegar do LocalStorage (Persistente)
-    const localToken = localStorage.getItem('mc_gh_token');
-    // Tenta pegar do SessionStorage (Aba atual)
-    const sessionToken = sessionStorage.getItem('mc_gh_token');
-
-    if (localToken) {
-        setUserToken(localToken);
-    } else if (sessionToken) {
-        setUserToken(sessionToken);
-    }
+    const { siteConfig } = useDocusaurusContext();
+    const ADMIN_PASS = siteConfig.customFields?.adminPass || '';
     
-    setIsChecking(false);
-  }, []);
+    const [userToken, setUserToken] = useState('');
+    const [currentView, setCurrentView] = useState('menu');
+    const [isChecking, setIsChecking] = useState(true);
 
-  const handleLogin = (token, remember) => {
-    setUserToken(token);
-    
-    if (remember) {
-        localStorage.setItem('mc_gh_token', token); // Salva pra sempre (até limpar cache)
-    } else {
-        sessionStorage.setItem('mc_gh_token', token); // Salva só nessa aba
-    }
-  };
+    // Verifica se já existe login salvo ao abrir a página
+    useEffect(() => {
+        const localToken = localStorage.getItem('mc_gh_token');     // Tenta pegar do LocalStorage (Persistente)
+        const sessionToken = sessionStorage.getItem('mc_gh_token'); // Tenta pegar do SessionStorage (Aba atual)
 
-  const handleLogout = () => {
-      if(confirm("Deseja realmente sair?")) {
-          setUserToken('');
-          localStorage.removeItem('mc_gh_token');
-          sessionStorage.removeItem('mc_gh_token');
-          setCurrentView('menu');
-      }
-  };
-
-  // Enquanto verifica o storage, mostra loading simples para não piscar a tela de login
-  if (isChecking) return <Layout><div className="container margin-vert--xl text--center">Carregando...</div></Layout>;
-
-  // Se não tiver token, mostra Login
-  if (!userToken) {
-      return (
-        <Layout title="Login Editor" noFooter>
-            <LoginScreen onLogin={handleLogin} adminPass={ADMIN_PASS} />
-        </Layout>
-      );
-  }
-
-  // Se tiver logado, mostra o Painel
-  return (
-    <Layout title="Editor">
-      <div className="container margin-vert--md">
+        if (localToken) {
+            setUserToken(localToken);
+        }
         
-        {/* Barra Superior do Editor (Logout e Info) */}
-        <div className="row margin-bottom--md" style={{alignItems: 'center', borderBottom: '1px solid var(--ifm-color-emphasis-200)', paddingBottom: '10px'}}>
-            <div className="col col--6">
-                <span className="badge badge--primary">Modo Administrador</span>
-            </div>
-            <div className="col col--6 text--right">
-                <button className="button button--sm button--link" onClick={handleLogout} style={{color: 'var(--ifm-color-danger)'}}>
-                    Sair / Logout
-                </button>
-            </div>
-        </div>
+        else if (sessionToken) {
+            setUserToken(sessionToken);
+        }
+        
+        setIsChecking(false);
+    }, []);
 
-        {currentView === 'home' ? <HomeEditor userToken={userToken} onBack={() => setCurrentView('menu')} /> :
-         currentView === 'topics' ? <TopicEditor userToken={userToken} onBack={() => setCurrentView('menu')} /> :
-         currentView === 'pages' ? <PageEditor userToken={userToken} onBack={() => setCurrentView('menu')} /> :
-         <DashboardMenu onSelectOption={setCurrentView} />}
-      </div>
-    </Layout>
-  );
+    const handleLogin = (token, remember) => {
+        setUserToken(token);
+        
+        if (remember) {
+            localStorage.setItem('mc_gh_token', token); // Salva pra sempre (até limpar cache)
+        }
+        
+        else {
+            sessionStorage.setItem('mc_gh_token', token); // Salva só nessa aba
+        }
+    };
+
+    const handleLogout = () => {
+        if(confirm("Deseja realmente sair?")) {
+            setUserToken('');
+            localStorage.removeItem('mc_gh_token');
+            sessionStorage.removeItem('mc_gh_token');
+            setCurrentView('menu');
+        }
+    };
+
+    // Enquanto verifica o storage, mostra loading simples para não piscar a tela de login
+    if (isChecking) return <Layout><div className="container margin-vert--xl text--center">Carregando...</div></Layout>;
+
+    // Se não tiver token, mostra Login
+    if (!userToken) {
+        return (
+            <Layout title="Login Editor" noFooter>
+                <LoginScreen onLogin={handleLogin} adminPass={ADMIN_PASS} />
+            </Layout>
+        );
+    }
+
+    // Se tiver logado, mostra o Painel
+    return (
+        <Layout title="Editor">
+            <div className="container margin-vert--md">
+                {/* Barra Superior do Editor (Logout e Info) */}
+                <div className="row margin-bottom--md" style={{alignItems: 'center', borderBottom: '1px solid var(--ifm-color-emphasis-200)', paddingBottom: '10px'}}>
+                    <div className="col col--6">
+                        <span className="badge badge--primary">Modo Administrador</span>
+                    </div>
+                    <div className="col col--6 text--right">
+                        <button className="button button--sm button--link" onClick={handleLogout} style={{color: 'var(--ifm-color-danger)'}}>
+                            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" style={{marginRight: '5px', verticalAlign: 'middle'}}>
+                                <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"></path><polyline points="16 17 21 12 16 7"></polyline><line x1="21" y1="12" x2="9" y2="12"></line>
+                            </svg>
+                            Sair / Logout
+                        </button>
+                    </div>
+                </div>
+
+                {currentView === 'home' ? <HomeEditor userToken={userToken} onBack={() => setCurrentView('menu')} /> :
+                 currentView === 'topics' ? <TopicEditor userToken={userToken} onBack={() => setCurrentView('menu')} /> :
+                 currentView === 'pages' ? <PageEditor userToken={userToken} onBack={() => setCurrentView('menu')} /> :
+                 <DashboardMenu onSelectOption={setCurrentView} />}
+            </div>
+        </Layout>
+    );
 }
