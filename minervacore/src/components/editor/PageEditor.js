@@ -131,6 +131,8 @@ export default function PageEditor({ onBack, userToken }) {
     
     // Estados do Editor
     const [pageData, setPageData] = useState({ metadata: { title: '', pos: '' }, body: '' });
+    const [history, setHistory] = useState(['']);
+    const [historyStep, setHistoryStep] = useState(0);
     const [viewMode, setViewMode] = useState('split');
     const [loading, setLoading] = useState(false);
     const [status, setStatus] = useState({ type: '', msg: '' });
@@ -182,7 +184,21 @@ export default function PageEditor({ onBack, userToken }) {
         setStep(3);
     };
 
-    // INSERIR ONDE ESTÁ O CURSOR
+    // GERENCIADOR DE HISTÓRICO
+    const updateBodyWithHistory = (newText) => {
+        // Pega o histórico até o passo atual (corta o futuro se desfez e digitou algo novo)
+        const newHistory = history.slice(0, historyStep + 1);
+        newHistory.push(newText);
+        
+        // Limita a 50 passos para não pesar a memória do navegador
+        if (newHistory.length > 50) newHistory.shift(); 
+        
+        setHistory(newHistory);
+        setHistoryStep(newHistory.length - 1);
+        setPageData(prev => ({ ...prev, body: newText }));
+    };
+
+    // MANIPULAÇÃO DE TEXTO E ATALHOS
     const insertAtCursor = (textToInsert) => {
         const textarea = textAreaRef.current;
         if (!textarea) return;
@@ -195,7 +211,7 @@ export default function PageEditor({ onBack, userToken }) {
         const newText = currentText.substring(0, start) + textToInsert + currentText.substring(end);
         
         // Atualiza estado
-        setPageData({ ...pageData, body: newText });
+        updateBodyWithHistory(newText);
 
         // Restaura foco e posição do cursor (após a inserção)
         setTimeout(() => {
@@ -212,18 +228,81 @@ export default function PageEditor({ onBack, userToken }) {
         const selection = pageData.body.substring(start, end);
 
         switch (type) {
-            case 'bold': insertAtCursor(`**${selection || 'texto negrito'}**`); break;
-            case 'italic': insertAtCursor(`*${selection || 'texto itálico'}*`); break;
+            case 'bold': insertAtCursor(`**${selection || 'texto'}**`); break;
+            case 'italic': insertAtCursor(`*${selection || 'texto'}*`); break;
             case 'h2': insertAtCursor(`\n## ${selection || 'Subtítulo'}\n`); break;
-            case 'link': insertAtCursor(`[${selection || 'Texto do Link'}](url)`); break;
-            case 'code': insertAtCursor(`\n\`\`\`cpp\n${selection || '// Seu código aqui'}\n\`\`\`\n`); break;
-            case 'tip': insertAtCursor(`\n:::tip Dica\n${selection || 'Escreva sua dica aqui.'}\n:::\n`); break;
-            case 'video': insertAtCursor(`\n<Video id="ID_DO_VIDEO" title="${selection || 'Título'}" />\n`); break;
+            case 'link': insertAtCursor(`[${selection || 'Texto'}](url)`); break;
+            case 'code': insertAtCursor(`\n\`\`\`cpp\n${selection || '// código'}\n\`\`\`\n`); break;
+            case 'tip': insertAtCursor(`\n:::tip Dica\n${selection || 'Dica.'}\n:::\n`); break;
+            case 'video': insertAtCursor(`\n<Video id="ID" title="${selection || 'Título'}" />\n`); break;
             default: break;
         }
     };
 
-    // PROCESSAR IMAGEM (Drag, Drop & Paste)
+    // ATALHOS DE TECLADO (Na Textarea)
+    const handleKeyDown = (e) => {
+        if (e.ctrlKey || e.metaKey) {
+            const key = e.key.toLowerCase();
+            
+            // Redo: Ctrl + Shift + Z ou Ctrl + Y
+            if ((e.shiftKey && key === 'z') || key === 'y') {
+                e.preventDefault();
+                if (historyStep < history.length - 1) {
+                    setHistoryStep(prev => prev + 1);
+                    setPageData(prev => ({ ...prev, body: history[historyStep + 1] }));
+                }
+                return;
+            }
+
+            switch (key) {
+                case 's': // Salvar
+                    e.preventDefault();
+                    handleSave();
+                    break;
+                case 'b': // Negrito
+                    e.preventDefault();
+                    handleToolbar('bold');
+                    break;
+                case 'i': // Itálico
+                    e.preventDefault();
+                    handleToolbar('italic');
+                    break;
+                case 'k': // Link
+                    e.preventDefault();
+                    handleToolbar('link');
+                    break;
+                case 'e': // Código
+                    e.preventDefault();
+                    handleToolbar('code');
+                    break;
+                case 'z': // Undo (Desfazer)
+                    e.preventDefault();
+                    if (historyStep > 0) {
+                        setHistoryStep(prev => prev - 1);
+                        setPageData(prev => ({ ...prev, body: history[historyStep - 1] }));
+                    }
+                    break;
+                default:
+                    break;
+            }
+        }
+    };
+
+    // ATALHO GLOBAL (Funciona mesmo se a textarea não estiver focada)
+    useEffect(() => {
+        const handleGlobalKeyDown = (e) => {
+            if ((e.ctrlKey || e.metaKey) && e.key.toLowerCase() === 's') {
+                if (step === 3) {
+                    e.preventDefault();
+                    handleSave();
+                }
+            }
+        };
+        window.addEventListener('keydown', handleGlobalKeyDown);
+        return () => window.removeEventListener('keydown', handleGlobalKeyDown);
+    });
+
+    // Uploads
     const processImageFile = (file) => {
         if (!file || !file.type.startsWith('image/')) return;
 
@@ -450,16 +529,16 @@ export default function PageEditor({ onBack, userToken }) {
                         
                         {/* TOOLBAR */}
                         <div style={{marginBottom:'5px', display:'flex', gap:'5px', flexWrap:'wrap', padding:'5px', background:'rgba(255,255,255,0.05)', borderRadius:'4px'}}>
-                            <button className="button button--sm button--icon button--link" title="Negrito" onClick={()=>handleToolbar('bold')}>{Icons.bold}</button>
-                            <button className="button button--sm button--icon button--link" title="Itálico" onClick={()=>handleToolbar('italic')}>{Icons.italic}</button>
+                            <button className="button button--sm button--icon button--link" title="Negrito (Ctrl+B)" onClick={()=>handleToolbar('bold')}>{Icons.bold}</button>
+                            <button className="button button--sm button--icon button--link" title="Itálico (Ctrl+I)" onClick={()=>handleToolbar('italic')}>{Icons.italic}</button>
                             <button className="button button--sm button--icon button--link" title="Cabeçalho 2" onClick={()=>handleToolbar('h2')}>{Icons.h2}</button>
                             <span style={{borderRight:'1px solid #555', margin:'0 5px'}}></span>
-                            <button className="button button--sm button--icon button--link" title="Link" onClick={()=>handleToolbar('link')}>{Icons.link}</button>
-                            <button className="button button--sm button--icon button--link" title="Código C++" onClick={()=>handleToolbar('code')}>{Icons.code}</button>
+                            <button className="button button--sm button--icon button--link" title="Link (Ctrl+K)" onClick={()=>handleToolbar('link')}>{Icons.link}</button>
+                            <button className="button button--sm button--icon button--link" title="Código C++ (Ctrl+E)" onClick={()=>handleToolbar('code')}>{Icons.code}</button>
                             <button className="button button--sm button--icon button--link" title="Dica" onClick={()=>handleToolbar('tip')}>{Icons.tip}</button>
                             <button className="button button--sm button--icon button--link" title="Vídeo" onClick={()=>handleToolbar('video')}>{Icons.video}</button>
                             <span style={{flex:1}}></span>
-                            <small style={{opacity:0.5, alignSelf:'center', fontSize:'0.75rem'}}>Cole ou arraste imagens</small>
+                            <small style={{opacity:0.5, alignSelf:'center', fontSize:'0.75rem'}}>Ctrl+S para Salvar</small>
                         </div>
 
                         <textarea 
@@ -471,7 +550,8 @@ export default function PageEditor({ onBack, userToken }) {
                                 cursor: 'text'
                             }}
                             value={pageData.body}
-                            onChange={e => setPageData({...pageData, body: e.target.value})}
+                            onChange={e => updateBodyWithHistory(e.target.value)}
+                            onKeyDown={handleKeyDown}
                             onDrop={handleDrop}
                             onPaste={handlePaste}
                             onDragOver={e => e.preventDefault()}
