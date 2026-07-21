@@ -435,7 +435,7 @@ export default function PageEditor({ onBack, userToken }) {
                         <button className={`button button--sm ${viewMode==='edit'?'button--primary':'button--secondary'}`} onClick={()=>setViewMode('edit')}>Editor</button>
                         <button className={`button button--sm ${viewMode==='split'?'button--primary':'button--secondary'}`} onClick={()=>setViewMode('split')}>Split</button>
                     </div>
-                    <button className="button button--success button--sm" onClick={handleSave}>Salvar Tudo</button>
+                    <button className="button button--success button--sm" onClick={handleSave} style={{color:'white'}}>Salvar Tudo</button>
                 </div>
             </div>
 

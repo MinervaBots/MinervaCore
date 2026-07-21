@@ -493,3 +493,7 @@ textarea.button {
 @keyframes spin {
   100% { transform: rotate(360deg); }
 }
+
+.button--primary {
+    color: #ffffff;
+}
