@@ -3,15 +3,7 @@ import useBaseUrl from '@docusaurus/useBaseUrl';
 import { githubFetch, createPullRequest } from '../../utils/githubApi';
 import IconPicker from './IconPicker';
 import LinkPicker from './LinkPicker';
-
-// ÍCONES SVG
-const UiIcons = {
-    moveUp: <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round"><polyline points="18 15 12 9 6 15"></polyline></svg>,
-    moveDown: <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round"><polyline points="6 9 12 15 18 9"></polyline></svg>,
-    trash: <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><polyline points="3 6 5 6 21 6"></polyline><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path></svg>,
-    folder: <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M22 19a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5l2 3h9a2 2 0 0 1 2 2z"></path></svg>,
-    link: <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"></path><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"></path></svg>
-};
+import { Icons, RawIcons } from '../Icons';
 
 const HomeItemRow = ({ item, index, totalItems, onUpdate, onDelete, onMove, onOpenIconPicker, onOpenLinkPicker }) => {
   const fullIconPath = useBaseUrl(item.iconSrc);
@@ -61,7 +53,7 @@ const HomeItemRow = ({ item, index, totalItems, onUpdate, onDelete, onMove, onOp
                   onChange={e => onUpdate('link', e.target.value)} 
                />
                <button className="button button--sm button--secondary" onClick={onOpenLinkPicker} title="Selecionar Página" style={{padding:'0 10px'}}>
-                   {UiIcons.link}
+                   {Icons.link}
                </button>
            </div>
         </div>
@@ -78,7 +70,7 @@ const HomeItemRow = ({ item, index, totalItems, onUpdate, onDelete, onMove, onOp
                   value={item.iconSrc} 
                />
                <button className="button button--sm button--secondary" onClick={onOpenIconPicker} title="Abrir Galeria" style={{padding:'0 10px'}}>
-                   {UiIcons.folder}
+                   {Icons.folder}
                </button>
            </div>
         </div>
@@ -93,7 +85,7 @@ const HomeItemRow = ({ item, index, totalItems, onUpdate, onDelete, onMove, onOp
                     style={{padding: '2px 4px', lineHeight: 0, height: '24px', opacity: index===0 ? 0.3 : 1}}
                     title="Mover para Cima"
                 >
-                    {UiIcons.moveUp}
+                    {Icons.moveUp}
                 </button>
                 <button 
                     className="button button--outline button--secondary" 
@@ -102,7 +94,7 @@ const HomeItemRow = ({ item, index, totalItems, onUpdate, onDelete, onMove, onOp
                     style={{padding: '2px 4px', lineHeight: 0, height: '24px', opacity: index===totalItems-1 ? 0.3 : 1}}
                     title="Mover para Baixo"
                 >
-                    {UiIcons.moveDown}
+                    {Icons.moveDown}
                 </button>
             </div>
 
@@ -112,7 +104,7 @@ const HomeItemRow = ({ item, index, totalItems, onUpdate, onDelete, onMove, onOp
                 onClick={onDelete}
                 title="Excluir"
             >
-                {UiIcons.trash}
+                {Icons.trash}
             </button>
         </div>
     </div>
@@ -263,12 +255,19 @@ export default SiteData;
       setPickerType(null);
   };
 
-  if (loading) return <div className="container text--center margin-vert--xl"><h2>⏳ Processando...</h2></div>;
+  if (loading) {
+    return (
+        <div className="container text--center margin-vert--xl" style={{display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '15px'}}>
+            {Icons.loading}
+            <h2 style={{margin: 0}}>Processando...</h2>
+        </div>
+    );
+  }
 
   if (status.type === 'success') return (
     <div className="container text--center margin-vert--xl">
       <div className="alert alert--success">
-        <h3>✅ Pull Request Criado!</h3>
+        {Icons.sucess} <h3>Pull Request Criado!</h3>
         <p>Suas alterações estão esperando aprovação.</p>
         <a href={status.msg} target="_blank" className="button button--primary">Ver no GitHub</a>
         <button className="button button--link margin-left--md" onClick={() => setStatus({type:'', msg:''})}>Voltar</button>
@@ -305,8 +304,12 @@ export default SiteData;
       }}>
         <button className="button button--link" onClick={onBack}>← Voltar</button>
         <h2 style={{margin:0}}>Editando Home</h2>
-        <div>
-            {!isValid && <span style={{color:'red', marginRight:'10px', fontSize:'0.8rem'}}>⚠️ Preencha todos os campos</span>}
+        <div style={{display: 'flex', alignItems: 'center'}}>
+            {!isValid && (
+                <span style={{color:'red', marginRight:'15px', fontSize:'0.85rem', display: 'flex', alignItems: 'center', gap: '5px', fontWeight: '500'}}>
+                    {Icons.warning} Preencha todos os campos
+                </span>
+            )}
             <button className="button button--success" onClick={handleSave} disabled={!isValid} 
                     style={{opacity: isValid ? 1 : 0.5, color: 'white'}}>
                 Salvar Alterações

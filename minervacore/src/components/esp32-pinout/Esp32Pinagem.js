@@ -2,6 +2,7 @@
 
 import React, { useState } from 'react';
 import styles from './Esp32Pinagem.module.css';
+import { Icons, RawIcons } from '../Icons';
 
 // Definição de Cores das Funções
 const SIGNAL_TYPES = {
@@ -73,9 +74,12 @@ const PIN_DEFINITIONS = [
         note: "Clock do HSPI. Sinal de depuração JTAG (TMS). Emite sinal PWM na inicialização." 
     },
     { 
-        id: "D12", side: "L", pos: 11, isStrapping: true, 
-        func: [{name:"GPIO12", type:"gen"}, {name:"HSPI_MISO", type:"ser"}, {name:"ADC2_CH5", type:"ana"}, {name:"TOUCH5", type:"tch"}, {name:"JTAG_TDI", type:"ser"}], 
-        note: "⚠️ STRAPPING PIN (Crítico): Define a voltagem da Flash (3.3V vs 1.8V). Se puxado para ALTO no boot, a placa pode não ligar (Brownout)." 
+        id: "GPIO12", side: "L", pos: 11, isStrapping: true, 
+        func: [{name:"GPIO12", type:"gen"}, {name:"HSPI_MISO", type:"ser"}, {name:"TOUCH5", type:"tch"}, {name:"ADC2_CH5", type:"ana"}], 
+        note: <span style={{display: 'flex', gap: '6px', alignItems: 'flex-start'}}>
+                <span style={{color: '#f97316', marginTop: '2px'}}>{Icons.warning}</span>
+                <span><strong>STRAPPING PIN (Crítico):</strong> Define a voltagem da Flash (3.3V vs 1.8V). Se puxado para ALTO no boot, a placa pode não ligar (Brownout).</span>
+              </span>
     },
     { 
         id: "D13", side: "L", pos: 12, 

@@ -3,17 +3,7 @@ import useBaseUrl from '@docusaurus/useBaseUrl';
 import { getFolders, getFileContent, createPullRequest } from '../../utils/githubApi';
 import IconPicker from './IconPicker';
 import LinkPicker from './LinkPicker';
-
-// ÍCONES SVG
-const UiIcons = {
-    moveUp: <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round"><polyline points="18 15 12 9 6 15"></polyline></svg>,
-    moveDown: <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round"><polyline points="6 9 12 15 18 9"></polyline></svg>,
-    trash: <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><polyline points="3 6 5 6 21 6"></polyline><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path></svg>,
-    folder: <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M22 19a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5l2 3h9a2 2 0 0 1 2 2z"></path></svg>,
-    link: <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"></path><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"></path></svg>,
-    settings: <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><circle cx="12" cy="12" r="3"></circle><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"></path></svg>,
-    back: <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><line x1="19" y1="12" x2="5" y2="12"></line><polyline points="12 19 5 12 12 5"></polyline></svg>
-};
+import { Icons, RawIcons } from '../Icons';
 
 // =============================================================================
 //                          PARSER E BUILDER DE MDX
@@ -162,7 +152,7 @@ const TopicCardRow = ({ card, index, totalItems, onUpdate, onDelete, onMove, onO
                                     style={{textAlign:'left', flex: 1, borderColor: isLinkInvalid ? 'red' : ''}} 
                                 />
                                 <button className="button button--sm button--secondary" onClick={() => onOpenLinkPicker('link')} title="Selecionar Página">
-                                    {UiIcons.link}
+                                    {Icons.link}
                                 </button>
                             </div>
                         </div>
@@ -176,7 +166,7 @@ const TopicCardRow = ({ card, index, totalItems, onUpdate, onDelete, onMove, onO
                                 style={{textAlign:'left', opacity: 0.7, flex: 1}} 
                              />
                              <button className="button button--sm button--secondary" onClick={() => onOpenPicker('icon')} title="Galeria">
-                                {UiIcons.folder}
+                                {Icons.folder}
                              </button>
                         </div>
                     </div>
@@ -203,7 +193,7 @@ const TopicCardRow = ({ card, index, totalItems, onUpdate, onDelete, onMove, onO
                             onClick={() => onMove(-1)}
                             style={{padding: '2px 4px', lineHeight: 0, height: '24px', opacity: index===0 ? 0.3 : 1}}
                         >
-                            {UiIcons.moveUp}
+                            {Icons.moveUp}
                         </button>
                         <button 
                             className="button button--outline button--secondary" 
@@ -211,7 +201,7 @@ const TopicCardRow = ({ card, index, totalItems, onUpdate, onDelete, onMove, onO
                             onClick={() => onMove(1)}
                             style={{padding: '2px 4px', lineHeight: 0, height: '24px', opacity: index===totalItems-1 ? 0.3 : 1}}
                         >
-                            {UiIcons.moveDown}
+                            {Icons.moveDown}
                         </button>
                     </div>
                     <button 
@@ -219,7 +209,7 @@ const TopicCardRow = ({ card, index, totalItems, onUpdate, onDelete, onMove, onO
                         style={{padding: '2px', lineHeight: 0, height: '24px', width: '100%', marginTop: '3px', display:'flex', alignItems:'center', justifyContent:'center'}} 
                         onClick={onDelete}
                     >
-                        {UiIcons.trash}
+                        {Icons.trash}
                     </button>
                 </div>
             </div>
@@ -428,15 +418,23 @@ export default function TopicEditor({ onBack, userToken }) {
     };
 
     // RENDER
-    if (loading) return <div className="container text--center margin-vert--xl"><h2>⏳ Carregando...</h2></div>;
+    if (loading) {
+        return (
+            <div className="container text--center margin-vert--xl" style={{display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '15px'}}>
+                {Icons.loading}
+                <h2 style={{margin: 0}}>Processando...</h2>
+            </div>
+        );
+    }
 
     // SELECTOR
     if (step === 1) return (
         <div className="container margin-vert--md">
             <button className="button button--link" style={{display:'flex', gap:'5px', alignItems:'center'}} onClick={onBack}>
-                {UiIcons.back} Voltar
+                {Icons.back} Voltar
             </button>
-            <h2>📂 Selecione um Tópico</h2>
+            <h2 style={{display: 'flex', alignItems: 'center', gap: '10px'}}>{Icons.folder} Selecione um Tópico</h2>
+            
             <div className="tabs tabs--block margin-bottom--md">
                 {['programacao', 'arquitetura', 'eletronica'].map(t => (
                     <li key={t} className={`tabs__item ${area === t ? 'tabs__item--active' : ''}`} onClick={() => setArea(t)}>
@@ -447,17 +445,19 @@ export default function TopicEditor({ onBack, userToken }) {
             <div className="row">
                 {folders.map(f => (
                     <div key={f} className="col col--3 margin-bottom--md">
-                        <div className="card padding--md pointer" onClick={() => handleLoadTopic(f)} style={{border: '1px solid #444', textAlign:'center'}}>
-                            <h3>📁 {f}</h3>
-                            <small>Editar index.mdx</small>
+                        <div className="card padding--md pointer" onClick={() => handleLoadTopic(f)} style={{border: '1px solid #444', textAlign:'center', display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', gap: '8px'}}>
+                            {Icons.folder}
+                            <h3 style={{margin: 0}}>{f}</h3>
+                            <small style={{margin: 0}}>Editar index.mdx</small>
                         </div>
                     </div>
                 ))}
                 
                 {/* Card de Novo Tópico */}
                 <div className="col col--3 margin-bottom--md">
-                     <div className="card padding--md pointer" onClick={handleNewTopic} style={{border: '2px dashed var(--ifm-color-primary)', textAlign:'center', display: 'flex', flexDirection: 'column', justifyContent: 'center', height: '100%'}}>
-                        <h3 style={{margin:0}}>+ Novo Tópico</h3>
+                     <div className="card padding--md pointer" onClick={handleNewTopic} style={{border: '2px dashed var(--ifm-color-primary)', textAlign:'center', display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', gap: '10px', height: '100%'}}>
+                        {Icons.plus}
+                        <h3 style={{margin:0}}>Novo Tópico</h3>
                     </div>
                 </div>
             </div>
@@ -466,11 +466,15 @@ export default function TopicEditor({ onBack, userToken }) {
 
     // EDITOR
     if (status.type === 'success') return (
-         <div className="container text--center margin-vert--xl">
-            <div className="alert alert--success">
-                <h3>✅ Pull Request Criado!</h3>
-                <a href={status.msg} target="_blank" className="button button--primary">Ver PR</a>
-                <button className="button button--link margin-left--md" onClick={() => setStatus({type:'', msg:''})}>Continuar Editando</button>
+        <div className="container text--center margin-vert--xl">
+            <div className="alert alert--success" style={{display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '10px', padding: '30px'}}>
+                {Icons.success}
+                <h3 style={{margin: 0}}>Pull Request Criado!</h3>
+                <p>Texto e imagens foram enviados juntos.</p>
+                <div>
+                    <a href={status.msg} target="_blank" rel="noreferrer" className="button button--primary">Ver PR</a>
+                    <button className="button button--link margin-left--md" onClick={() => setStatus({type:'', msg:''})}>Voltar</button>
+                </div>
             </div>
         </div>
     );
@@ -491,11 +495,15 @@ export default function TopicEditor({ onBack, userToken }) {
                 display:'flex', justifyContent:'space-between', alignItems:'center'
             }}>
                 <button className="button button--link" style={{display:'flex', gap:'5px', alignItems:'center'}} onClick={() => setStep(1)}>
-                    {UiIcons.back} Voltar
+                    {Icons.back} Voltar
                 </button>
                 <h2 style={{margin:0}}>Editando: {selectedTopic}</h2>
-                <div>
-                    {!isValid && <span style={{color:'red', marginRight:'10px', fontSize:'0.8rem'}}>⚠️ Preencha os campos obrigatórios</span>}
+                <div style={{display: 'flex', alignItems: 'center'}}>
+                    {!isValid && (
+                        <span style={{color:'red', marginRight:'15px', fontSize:'0.85rem', display: 'flex', alignItems: 'center', gap: '5px', fontWeight: '500'}}>
+                            {Icons.warning} Preencha os campos obrigatórios
+                        </span>
+                    )}
                     <button className="button button--success" onClick={handleSave} disabled={!isValid} 
                             style={{opacity: isValid ? 1 : 0.5, color: 'white'}}>
                         Salvar Alterações
@@ -507,7 +515,7 @@ export default function TopicEditor({ onBack, userToken }) {
 
             {/* METADADOS */}
             <div className="card padding--md margin-bottom--lg" style={{backgroundColor: '#1b1b1d'}}>
-                <h4 style={{display:'flex', alignItems:'center', gap:'10px'}}>{UiIcons.settings} Configurações</h4>
+                <h4 style={{display:'flex', alignItems:'center', gap:'10px'}}>{Icons.settings} Configurações</h4>
                 <div className="row">
                     <div className="col col--6">
                         <small>Título (H1)</small>
@@ -545,9 +553,9 @@ export default function TopicEditor({ onBack, userToken }) {
                         </div>
                         <div className="col col--4 text--right" style={{display:'flex', gap:'5px', justifyContent:'flex-end'}}>
                             {/* REORDENAÇÃO DE SEÇÃO */}
-                            <button className="button button--sm button--secondary button--outline" disabled={secIdx === 0} onClick={() => moveSection(secIdx, -1)}>{UiIcons.moveUp}</button>
-                            <button className="button button--sm button--secondary button--outline" disabled={secIdx === mdxData.sections.length - 1} onClick={() => moveSection(secIdx, 1)}>{UiIcons.moveDown}</button>
-                            <button className="button button--sm button--danger button--outline" onClick={()=>removeSection(secIdx)}>{UiIcons.trash}</button>
+                            <button className="button button--sm button--secondary button--outline" disabled={secIdx === 0} onClick={() => moveSection(secIdx, -1)}>{Icons.moveUp}</button>
+                            <button className="button button--sm button--secondary button--outline" disabled={secIdx === mdxData.sections.length - 1} onClick={() => moveSection(secIdx, 1)}>{Icons.moveDown}</button>
+                            <button className="button button--sm button--danger button--outline" onClick={()=>removeSection(secIdx)}>{Icons.trash}</button>
                         </div>
                     </div>
                     
@@ -577,7 +585,9 @@ export default function TopicEditor({ onBack, userToken }) {
 
             {/* FOOTER */}
             <div className="card padding--md margin-top--xl">
-                <h4>📝 Conteúdo Extra (Markdown)</h4>
+                <h4 style={{display: 'flex', alignItems: 'center', gap: '10px'}}>
+                    {Icons.edit} Conteúdo Extra (Markdown)
+                </h4>
                 <textarea 
                     className="button button--block button--outline button--secondary" 
                     rows={10} 

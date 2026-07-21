@@ -3,6 +3,7 @@ import ReactMarkdown from 'react-markdown';
 import remarkGfm from 'remark-gfm';
 import rehypeRaw from 'rehype-raw';
 import { getFolders, getFiles, getFileContent, createBranch, commitFile, openPullRequest } from '../../utils/githubApi';
+import { Icons, RawIcons } from '../Icons';
 
 const TEMPLATES = {
     tutorial: `---
@@ -92,11 +93,11 @@ const MarkdownPreview = ({ content }) => {
     // Pré-processamento para simular componentes do Docusaurus no Preview
     // (React-Markdown não entende :::tip nativamente, então ele é transformado em HTML)
     const processedContent = content
-        .replace(/:::tip\s?(.*?)\n([\s\S]*?):::/g, '<div class="alert alert--success"><strong>💡 $1</strong><br/>$2</div>')
-        .replace(/:::info\s?(.*?)\n([\s\S]*?):::/g, '<div class="alert alert--info"><strong>ℹ️ $1</strong><br/>$2</div>')
-        .replace(/:::warning\s?(.*?)\n([\s\S]*?):::/g, '<div class="alert alert--warning"><strong>⚠️ $1</strong><br/>$2</div>')
-        .replace(/:::danger\s?(.*?)\n([\s\S]*?):::/g, '<div class="alert alert--danger"><strong>🔥 $1</strong><br/>$2</div>')
-        .replace(/<Video id="(.*?)" title="(.*?)" \/>/g, '<div style="background:#222; color:#fff; padding:10px; border-radius:5px; text-align:center">🎬 Vídeo: $2</div>');
+        .replace(/:::tip\s?(.*?)\n([\s\S]*?):::/g, `<div class="alert alert--success"><strong>${RawIcons.tip} $1</strong><br/>$2</div>`)
+        .replace(/:::info\s?(.*?)\n([\s\S]*?):::/g, `<div class="alert alert--info"><strong>${RawIcons.info} $1</strong><br/>$2</div>`)
+        .replace(/:::warning\s?(.*?)\n([\s\S]*?):::/g, `<div class="alert alert--warning"><strong>${RawIcons.warning} $1</strong><br/>$2</div>`)
+        .replace(/:::danger\s?(.*?)\n([\s\S]*?):::/g, `<div class="alert alert--danger"><strong>${RawIcons.danger} $1</strong><br/>$2</div>`)
+        .replace(/<Video id="(.*?)" title="(.*?)" \/>/g, `<div style="background:#222; color:#fff; padding:15px; border-radius:5px; text-align:center; display:flex; align-items:center; justify-content:center; gap:10px;">${RawIcons.video} Vídeo: $2</div>`);
 
     return (
         <div className="markdown-body" style={{ padding: '20px', backgroundColor: 'var(--ifm-background-color)', height: '100%', overflowY: 'auto' }}>
@@ -336,43 +337,83 @@ export default function PageEditor({ onBack, userToken }) {
     };
 
     // RENDER
-    if (loading) return <div className="container text--center margin-vert--xl"><h2>⏳ Processando...</h2></div>;
+    if (loading) {
+        return (
+            <div className="container text--center margin-vert--xl" style={{display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '15px'}}>
+                {Icons.loading}
+                <h2 style={{margin: 0}}>Processando...</h2>
+            </div>
+        );
+    }
 
     if (step === 1) return (
         <div className="container margin-vert--md">
-            <button className="button button--link" onClick={onBack}>← Menu</button>
-            <h2>📂 Passo 1: Área</h2>
+            <button className="button button--link" style={{display: 'flex', alignItems: 'center', gap: '5px'}} onClick={onBack}>
+                {Icons.back} Menu
+            </button>
+            
+            <h2 style={{display: 'flex', alignItems: 'center', gap: '10px', marginTop: '15px'}}>
+                {Icons.folder} Passo 1: Área
+            </h2>
+            
             <div className="tabs tabs--block margin-bottom--md">
                 {['programacao', 'arquitetura', 'eletronica'].map(t => (
                     <li key={t} className={`tabs__item ${area===t?'tabs__item--active':''}`} onClick={()=>setArea(t)}>{t.toUpperCase()}</li>
                 ))}
             </div>
             <div className="row">
-                {folders.map(f => <div key={f} className="col col--3 margin-bottom--md"><div className="card padding--md pointer" onClick={()=>handleSelectFolder(f)} style={{border:'1px solid #444', textAlign:'center'}}>📁 {f}</div></div>)}
+                {folders.map(f => (
+                    <div key={f} className="col col--3 margin-bottom--md">
+                        <div className="card padding--md pointer" onClick={()=>handleSelectFolder(f)} style={{border:'1px solid #444', textAlign:'center', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '10px'}}>
+                            {Icons.folder} {f}
+                        </div>
+                    </div>
+                ))}
             </div>
         </div>
     );
 
     if (step === 2) return (
         <div className="container margin-vert--md">
-            <button className="button button--link" onClick={()=>setStep(1)}>← Voltar</button>
-            <h2>📄 Arquivos em {selectedFolder}</h2>
+            <button className="button button--link" style={{display: 'flex', alignItems: 'center', gap: '5px'}} onClick={()=>setStep(1)}>
+                {Icons.back} Voltar
+            </button>
+            
+            <h2 style={{display: 'flex', alignItems: 'center', gap: '10px', marginTop: '15px'}}>
+                {Icons.file} Arquivos em {selectedFolder}
+            </h2>
+            
             <div className="row">
-                <div className="col col--3 margin-bottom--md"><div className="card padding--md pointer" onClick={handleNewFile} style={{border:'2px dashed var(--ifm-color-primary)', textAlign:'center'}}><h3>+ Nova Página</h3></div></div>
-                {files.map(f => <div key={f.sha} className="col col--3 margin-bottom--md"><div className="card padding--md pointer" onClick={()=>handleSelectFile(f.name)} style={{border:'1px solid #444', textAlign:'center'}}>{f.name}</div></div>)}
+                <div className="col col--3 margin-bottom--md">
+                    <div className="card padding--md pointer" onClick={handleNewFile} style={{border:'2px dashed var(--ifm-color-primary)', textAlign:'center', display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', gap: '10px', height: '100%'}}>
+                        {Icons.filePlus} 
+                        <h3 style={{margin: 0}}>Nova Página</h3>
+                    </div>
+                </div>
+                {files.map(f => (
+                    <div key={f.sha} className="col col--3 margin-bottom--md">
+                        <div className="card padding--md pointer" onClick={()=>handleSelectFile(f.name)} style={{border:'1px solid #444', textAlign:'center', display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', gap: '10px', height: '100%'}}>
+                            {Icons.file} 
+                            <span style={{wordBreak: 'break-all'}}>{f.name}</span>
+                        </div>
+                    </div>
+                ))}
             </div>
         </div>
     );
 
     if (status.type === 'success') return (
         <div className="container text--center margin-vert--xl">
-           <div className="alert alert--success">
-               <h3>✅ Pull Request Criado!</h3>
-               <p>Texto e imagens foram enviados juntos.</p>
-               <a href={status.msg} target="_blank" className="button button--primary">Ver PR</a>
-               <button className="button button--link margin-left--md" onClick={() => setStatus({type:'', msg:''})}>Voltar</button>
-           </div>
-       </div>
+            <div className="alert alert--success" style={{display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '10px', padding: '30px'}}>
+                {Icons.success}
+                <h3 style={{margin: 0}}>Pull Request Criado!</h3>
+                <p>Texto e imagens foram enviados juntos.</p>
+                <div>
+                    <a href={status.msg} target="_blank" rel="noreferrer" className="button button--primary">Ver PR</a>
+                    <button className="button button--link margin-left--md" onClick={() => setStatus({type:'', msg:''})}>Voltar</button>
+                </div>
+            </div>
+        </div>
     );
 
     // EDITOR COM TOOLBAR E PREVIEW

@@ -488,3 +488,8 @@ textarea.button {
     font-family: 'Fira Code', 'Consolas', monospace;
     line-height: 1.5;
 }
+
+/* Para ícone de loading */
+@keyframes spin {
+  100% { transform: rotate(360deg); }
+}

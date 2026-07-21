@@ -11,6 +11,7 @@ import DashboardMenu from '../components/editor/DashboardMenu';
 import HomeEditor from '../components/editor/HomeEditor';
 import TopicEditor from '../components/editor/TopicEditor';
 import PageEditor from '../components/editor/PageEditor';
+import { Icons, RawIcons } from '../components/Icons';
 
 const LoginScreen = ({ onLogin, adminPass }) => {
     const [pass, setPass] = useState('');
@@ -173,8 +174,8 @@ const LoginScreen = ({ onLogin, adminPass }) => {
                     <div className="margin-bottom--md">
                         <div style={{display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '5px'}}>
                             <label htmlFor="gh-token" style={{fontWeight: 'bold'}}>GitHub Personal Token</label>
-                            <a href={generateTokenUrl} target="_blank" rel="noopener noreferrer" style={{fontSize: '0.8rem', fontWeight: 'bold'}}>
-                                Gerar Token ↗
+                            <a href={generateTokenUrl} target="_blank" rel="noopener noreferrer" style={{fontSize: '0.8rem', fontWeight: 'bold', display: 'flex', alignItems: 'center', gap: '4px'}}>
+                                Gerar Token {Icons.externalLink}
                             </a>
                         </div>
                         
