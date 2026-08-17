@@ -171,7 +171,7 @@ const SiteData = {
       "items": [
         {
           "title": "Memória & Armazenamento",
-          "link": "/docs/arquitetura/memoria",
+          "link": "/docs/arquitetura/memoria/Memória & Armazenamento",
           "iconSrc": "/img/icons/memory.svg"
         },
         {
