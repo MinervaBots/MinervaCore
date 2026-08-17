@@ -9,8 +9,8 @@ const config = {
   favicon: 'img/minervacore-logo-transp.png',
 
   // Configurações para o GitHub Pages
-  url: 'https://MinervaBots.github.io',
-  baseUrl: '/MinervaCore/',
+  url: 'https://minervacore.dev',
+  baseUrl: '/',
   organizationName: 'MinervaBots',
   projectName: 'MinervaCore',
   deploymentBranch: 'gh-pages',
