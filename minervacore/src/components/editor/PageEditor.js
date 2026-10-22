@@ -169,7 +169,8 @@ export default function PageEditor({ onBack, userToken }) {
         try {
             const path = `minervacore/docs/${area}/${selectedFolder}/${fileName}`;
             const file = await getFileContent(path, userToken);
-            setPageData(parseMarkdown(file.content));
+            const parsed = parseMarkdown(file.content);
+            setPageData(parsed);
             setHistory([parsed.body]);
             setHistoryStep(0);
             setStep(3);
@@ -182,8 +183,9 @@ export default function PageEditor({ onBack, userToken }) {
         const finalName = name.endsWith('.md') ? name : `${name}.md`;
         setSelectedFile(finalName);
         setIsNewFile(true);
-        setPageData({ metadata: { title: 'Novo Título', pos: '1' }, body: '# Título Principal\n\n' });
-        setHistory([parsed.body]);
+        const initialData = { metadata: { title: 'Novo Título', pos: '1' }, body: '# Título Principal\n\n' };
+        setPageData(initialData);
+        setHistory([initialData.body]);
         setHistoryStep(0);
         setStep(3);
     };
