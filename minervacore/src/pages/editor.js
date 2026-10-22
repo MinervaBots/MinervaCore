@@ -105,7 +105,7 @@ const LoginScreen = ({ onLogin, adminPass, clientId, workerUrl, initialError }) 
             <div className="card shadow--lg login-card">
 
                 {/* Cabeçalho */}
-                <div className="text--center margin-bottom--lg">
+                <div className="text--center login-header">
                     <img
                         src={useBaseUrl('img/minervacore-logo-transp.png')}
                         alt="Logo"
@@ -113,7 +113,7 @@ const LoginScreen = ({ onLogin, adminPass, clientId, workerUrl, initialError }) 
                         style={{marginBottom: '1rem'}}
                     />
                     <h1 style={{fontSize: '1.8rem', marginBottom: '0.5rem'}}>Acesso Restrito</h1>
-                    <p style={{opacity: 0.7, fontSize: '0.9rem'}}>Autenticação de Membros MinervaBots</p>
+                    <p style={{opacity: 0.7, fontSize: '0.9rem'}}>Autenticação de Membros da MinervaBots</p>
                 </div>
 
                 {/* Erros (vale para os dois métodos de login) */}
