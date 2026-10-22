@@ -497,3 +497,78 @@ textarea.button {
 .button--primary {
     color: #ffffff;
 }
+/* =========================================
+      TELA DE LOGIN DO EDITOR
+   ========================================= */
+
+/* Ancorado no topo (e nao centralizado na vertical) de proposito:
+   abrir o login por token cresce o card para baixo, sem empurrar
+   o bloco inteiro e sem dar a impressao de que saiu do lugar. */
+.login-shell {
+    min-height: calc(100vh - var(--ifm-navbar-height));
+    display: flex;
+    align-items: flex-start;
+    justify-content: center;
+    padding: clamp(2rem, 7vh, 5rem) 1rem 4rem;
+    background: radial-gradient(circle at 50% 25%, rgba(158, 31, 34, 0.12) 0%, transparent 60%);
+}
+
+.login-card {
+    width: 100%;
+    max-width: 420px;
+    padding: 2.5rem 2rem 2rem;
+    border: 1px solid var(--ifm-color-emphasis-200);
+}
+
+.login-remember {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    margin-top: 1.25rem;
+    font-size: 0.85rem;
+    opacity: 0.7;
+    cursor: pointer;
+    transition: opacity 0.2s ease;
+}
+
+.login-remember:hover {
+    opacity: 1;
+}
+
+.login-remember input {
+    margin: 0;
+    cursor: pointer;
+}
+
+.login-divider {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    margin: 1.75rem 0 0.5rem;
+}
+
+.login-divider::before,
+.login-divider::after {
+    content: '';
+    flex: 1;
+    height: 1px;
+    background: var(--ifm-color-emphasis-200);
+}
+
+.login-divider span {
+    font-size: 0.7rem;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    opacity: 0.45;
+}
+
+/* Aparece suave em vez de "pipocar" no meio da tela */
+.login-reveal {
+    animation: login-reveal 0.25s ease;
+}
+
+@keyframes login-reveal {
+    from { opacity: 0; transform: translateY(-6px); }
+    to   { opacity: 1; transform: translateY(0); }
+}

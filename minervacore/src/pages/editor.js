@@ -87,15 +87,22 @@ const LoginScreen = ({ onLogin, adminPass, clientId, workerUrl, initialError }) 
         }
     };
 
+    // Fica junto do botão principal quando o OAuth está ligado, e dentro do
+    // formulário quando não está — nos dois casos colado na ação que ele afeta.
+    const rememberRow = (
+        <label className="login-remember">
+            <input
+                type="checkbox"
+                checked={remember}
+                onChange={e => setRemember(e.target.checked)}
+            />
+            Manter-me conectado neste navegador
+        </label>
+    );
+
     return (
-        <div style={{
-            minHeight: '80vh',
-            display: 'flex',
-            alignItems: 'center',
-            justifyContent: 'center',
-            background: 'radial-gradient(circle at center, rgba(158, 31, 34, 0.1) 0%, transparent 70%)' // Efeito de fundo sutil
-        }}>
-            <div className="card shadow--lg" style={{maxWidth: '450px', width: '100%', padding: '2rem', border: '1px solid var(--ifm-color-emphasis-200)'}}>
+        <div className="login-shell">
+            <div className="card shadow--lg login-card">
 
                 {/* Cabeçalho */}
                 <div className="text--center margin-bottom--lg">
@@ -116,20 +123,6 @@ const LoginScreen = ({ onLogin, adminPass, clientId, workerUrl, initialError }) 
                     </div>
                 )}
 
-                {/* Manter conectado: usado tanto pelo OAuth quanto pelo token */}
-                <div className="margin-bottom--md" style={{display: 'flex', alignItems: 'center'}}>
-                    <input
-                        type="checkbox"
-                        id="remember"
-                        checked={remember}
-                        onChange={e => setRemember(e.target.checked)}
-                        style={{marginRight: '8px', cursor: 'pointer'}}
-                    />
-                    <label htmlFor="remember" style={{cursor: 'pointer', fontSize: '0.9rem'}}>
-                        Manter-me conectado neste navegador
-                    </label>
-                </div>
-
                 {/* Login via GitHub (principal) */}
                 {oauthEnabled && (
                     <>
@@ -146,16 +139,13 @@ const LoginScreen = ({ onLogin, adminPass, clientId, workerUrl, initialError }) 
                             ENTRAR COM GITHUB
                         </button>
 
-                        <small style={{fontSize: '0.75rem', opacity: 0.6, marginTop: '8px', display: 'block', textAlign: 'center'}}>
-                            Você será redirecionado ao GitHub. Não precisa criar nem colar token.
+                        <small style={{fontSize: '0.75rem', opacity: 0.6, marginTop: '10px', display: 'block', textAlign: 'center'}}>
+                            Você será redirecionado ao GitHub
                         </small>
 
-                        {/* Separador */}
-                        <div style={{display: 'flex', alignItems: 'center', gap: '10px', margin: '1.5rem 0 1rem'}}>
-                            <hr style={{flex: 1, margin: 0, borderColor: 'var(--ifm-color-emphasis-200)'}} />
-                            <span style={{fontSize: '0.75rem', opacity: 0.5}}>ou</span>
-                            <hr style={{flex: 1, margin: 0, borderColor: 'var(--ifm-color-emphasis-200)'}} />
-                        </div>
+                        {rememberRow}
+
+                        <div className="login-divider"><span>ou</span></div>
 
                         <button
                             type="button"
@@ -170,7 +160,11 @@ const LoginScreen = ({ onLogin, adminPass, clientId, workerUrl, initialError }) 
 
                 {/* Login antigo: senha da equipe + Personal Access Token */}
                 {(!oauthEnabled || showFallback) && (
-                    <form onSubmit={handleSubmit} autoComplete="off" className="margin-top--md">
+                    <form
+                        onSubmit={handleSubmit}
+                        autoComplete="off"
+                        className={oauthEnabled ? 'margin-top--md login-reveal' : 'margin-top--md'}
+                    >
 
                         <div className="margin-bottom--md">
                             <label htmlFor="mc_access_key_field" style={{fontWeight: 'bold', display: 'block', marginBottom: '5px'}}>
@@ -242,11 +236,16 @@ const LoginScreen = ({ onLogin, adminPass, clientId, workerUrl, initialError }) 
                             </small>
                         </div>
 
+                        {/* Sem OAuth, este formulário é o login principal e carrega o "manter conectado" */}
+                        {!oauthEnabled && (
+                            <div className="margin-bottom--md">{rememberRow}</div>
+                        )}
+
                         {/* Botão de Ação */}
                         <button
                             type="submit"
                             className={`button button--block button--lg ${oauthEnabled ? 'button--secondary button--outline' : 'button--primary'}`}
-                            style={{fontWeight: 'bold', letterSpacing: '0.5px'}}
+                            style={{fontWeight: 'bold', letterSpacing: '0.5px', marginTop: oauthEnabled ? '0.5rem' : 0}}
                             disabled={loading}
                         >
                             {loading ? 'Verificando GitHub...' : 'ACESSAR PAINEL'}
