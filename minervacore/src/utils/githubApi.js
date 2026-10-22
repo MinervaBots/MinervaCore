@@ -8,7 +8,7 @@ export async function githubFetch(endpoint, token, options = {}) {
   const res = await fetch(`${GITHUB_API}/repos/${REPO}${endpoint}`, {
     ...options,
     headers: {
-      'Authorization': `token ${token}`,
+      'Authorization': `Bearer ${token}`,
       'Content-Type': 'application/json',
       ...options.headers,
     },

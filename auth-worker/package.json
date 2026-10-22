@@ -1,0 +1,15 @@
+{
+  "name": "minervacore-auth-worker",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Worker de troca de código OAuth do GitHub para o editor do MinervaCore",
+  "scripts": {
+    "dev": "wrangler dev",
+    "deploy": "wrangler deploy",
+    "secret": "wrangler secret put GH_CLIENT_SECRET",
+    "tail": "wrangler tail"
+  },
+  "devDependencies": {
+    "wrangler": "^4.0.0"
+  }
+}

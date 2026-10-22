@@ -1,0 +1,2 @@
+# Copie para .dev.vars (git-ignorado) para rodar `npm run dev` localmente
+GH_CLIENT_SECRET=coloque_o_client_secret_aqui

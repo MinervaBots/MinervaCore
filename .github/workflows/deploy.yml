@@ -46,6 +46,9 @@ jobs:
         run: npm run build
         env:
           SITE_ACCESS_PASS: ${{ secrets.SITE_ACCESS_PASS }} # Passando a variável de ambiente para o build
+          # Login via GitHub: valores públicos, ficam em Settings > Variables
+          GH_OAUTH_CLIENT_ID: ${{ vars.GH_OAUTH_CLIENT_ID }}
+          AUTH_WORKER_URL: ${{ vars.AUTH_WORKER_URL }}
 
       - name: Upload Build Artifact
         uses: actions/upload-pages-artifact@v3

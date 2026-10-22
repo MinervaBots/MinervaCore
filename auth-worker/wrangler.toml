@@ -1,0 +1,16 @@
+name = "minervacore-auth"
+main = "src/index.js"
+compatibility_date = "2026-01-01"
+
+# A URL *.workers.dev e o endpoint publico deste Worker: precisa ficar ligada.
+workers_dev = true
+
+# URLs de preview por versao: nao usamos, cada deploy criaria mais um endpoint.
+preview_urls = false
+
+[vars]
+# Origens que podem chamar este Worker
+ALLOWED_ORIGINS = "https://minervacore.dev,http://localhost:3000"
+
+# Client ID do GitHub App
+GH_CLIENT_ID = "Iv23li9ZhsrVZIL3UWnN"

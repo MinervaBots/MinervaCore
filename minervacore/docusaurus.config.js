@@ -178,6 +178,11 @@ const config = {
     customFields: 
     {
       adminPass: process.env.SITE_ACCESS_PASS,
+
+      // Login via GitHub (OAuth). Nenhum dos dois é segredo:
+      // o client_secret fica só no Cloudflare Worker.
+      githubClientId: process.env.GH_OAUTH_CLIENT_ID,
+      authWorkerUrl: process.env.AUTH_WORKER_URL,
     },
 };
 

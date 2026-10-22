@@ -59,3 +59,21 @@ Para contribuir com a mudanças no site, siga os passos abaixo.
 O site abrirá automaticamente em `http://localhost:3000/MinervaCore/`.
 
 ---
+
+## 🔐 Modo Edição (`/editor`)
+
+A página de edição permite que membros escrevam conteúdo pelo navegador, sem abrir o
+código: cada alteração vira um Pull Request no repositório.
+
+O login é feito via **GitHub** — o membro clica em *Entrar com GitHub*, autoriza o
+GitHub App `MinervaCore Editor` e volta autenticado. Só entra quem tem permissão de
+escrita neste repositório.
+
+Como o site é estático (GitHub Pages), a troca do código OAuth por um token acontece
+num Cloudflare Worker minúsculo, que guarda o `client_secret`. O código dele e o passo
+a passo de configuração estão em [`auth-worker/`](auth-worker/README.md).
+
+O login antigo (senha da equipe + Personal Access Token) continua disponível como
+alternativa, escondido atrás de *Entrar com token pessoal*.
+
+---
