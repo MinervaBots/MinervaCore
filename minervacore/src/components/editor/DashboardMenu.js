@@ -4,12 +4,18 @@ import React from 'react';
 import useBaseUrl from '@docusaurus/useBaseUrl';
 
 // Card Individual
-const DashboardCard = ({ item, onSelect }) => (
+const DashboardCard = ({ item, onSelect }) => {
+  // Hooks só podem rodar durante a renderização. Antes, o useBaseUrl do
+  // fallback era chamado dentro do onError e quebrava se a imagem falhasse.
+  const imageUrl = useBaseUrl(item.image);
+  const fallbackUrl = useBaseUrl(item.fallbackIcon);
+
+  return (
   <div className="col col--4">
-    <div 
+    <div
       className="card shadow--md"
       style={{
-        cursor: 'pointer', height: '100%', 
+        cursor: 'pointer', height: '100%',
         transition: 'transform 0.2s', border: '1px solid var(--ifm-color-emphasis-200)'
       }}
       onClick={() => onSelect(item.id)}
@@ -18,11 +24,12 @@ const DashboardCard = ({ item, onSelect }) => (
     >
       <div className="card__image" style={{height: '160px', overflow: 'hidden', backgroundColor: '#222', display: 'flex', alignItems: 'center', justifyContent: 'center'}}>
          {/* Fallback para evitar erros de render */}
-         <img 
-            src={useBaseUrl(item.image)} 
+         <img
+            src={imageUrl}
+            alt=""
             onError={(e) => {
-                e.target.onerror = null; 
-                e.target.src = useBaseUrl(item.fallbackIcon);
+                e.target.onerror = null;
+                e.target.src = fallbackUrl;
                 e.target.style.width = '50px';
                 e.target.style.filter = 'invert(1)';
             }}
@@ -40,7 +47,8 @@ const DashboardCard = ({ item, onSelect }) => (
       </div>
     </div>
   </div>
-);
+  );
+};
 
 export default function DashboardMenu({ onSelectOption }) {
   const menuItems = [

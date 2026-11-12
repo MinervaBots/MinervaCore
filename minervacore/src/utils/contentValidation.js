@@ -641,8 +641,11 @@ function homeIssues(data, index) {
                     issues.push({ level: 'error', message: 'Botão sem título.', where });
                 }
 
-                const linkIssue = brokenLinkIssue(item.link, undefined, null, index, 'O botão');
-                if (linkIssue) issues.push({ ...linkIssue, where });
+                // Link vazio = botão "Em breve" (conteúdo ainda não escrito)
+                if (item.link && item.link.trim() !== '') {
+                    const linkIssue = brokenLinkIssue(item.link, undefined, null, index, 'O botão');
+                    if (linkIssue) issues.push({ ...linkIssue, where });
+                }
 
                 if (item.iconSrc && item.iconSrc.startsWith('/') && !index.hasStatic(item.iconSrc)) {
                     issues.push({

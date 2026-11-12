@@ -741,3 +741,28 @@ html[data-theme='light'] .topic-card--soon:hover {
     border: 1px solid currentColor;
     flex-shrink: 0;
 }
+
+/* Botão da home sem link: conteúdo ainda não escrito */
+.knowledge-card--soon {
+    cursor: default;
+    opacity: 0.5;
+}
+
+.knowledge-card--soon:hover {
+    top: 0;
+    background-color: rgba(255, 255, 255, 0.05);
+    border-color: rgba(255, 255, 255, 0.1);
+    box-shadow: none;
+}
+
+.knowledge-card__badge {
+    margin-top: 8px;
+    padding: 2px 8px;
+    border-radius: 999px;
+    font-size: 0.65rem;
+    font-weight: 600;
+    letter-spacing: 0.05em;
+    text-transform: uppercase;
+    border: 1px solid currentColor;
+    color: var(--ifm-font-color-base);
+}

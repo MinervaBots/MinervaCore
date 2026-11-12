@@ -103,7 +103,7 @@ export default function LinkPicker({ userToken, onSelect, onClose }) {
                                 </li>
                             ))}
                             
-                            {step > 1 && list.length === 0 && <li className="padding--md text--center opacity-50">Pasta vazia.</li>}
+                            {step > 1 && list.length === 0 && <li className="padding--md text--center" style={{opacity: 0.5}}>Pasta vazia.</li>}
                         </ul>
                     )}
                 </div>

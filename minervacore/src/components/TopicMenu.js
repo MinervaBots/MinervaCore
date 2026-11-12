@@ -24,10 +24,12 @@ export const TopicCard = ({ title, description, link, icon }) => {
   // Sem link = conteúdo ainda não escrito. Antes era preciso inventar um
   // link (como "/docs/"), que virava link quebrado no site.
   if (!link) {
+    // O selo só aparece se o próprio título já não disser "em breve"
+    const titleSaysSoon = /em breve/i.test(title || '');
     return (
       <div className="topic-card topic-card--soon" aria-disabled="true">
         {content}
-        <span className="topic-card__badge">Em breve</span>
+        {!titleSaysSoon && <span className="topic-card__badge">Em breve</span>}
       </div>
     );
   }

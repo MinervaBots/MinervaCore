@@ -6,9 +6,10 @@ name: Verificar PR (build e links)
 #
 # Falha se:
 #   - o site não compila com o PR (frontmatter inválido, erro de MDX,
-#     imagem inexistente, import quebrado...)
-#   - o PR cria links quebrados NOVOS. Os que já existiam na main aparecem
-#     no resumo, mas não bloqueiam.
+#     imagem inexistente, import quebrado, link quebrado — desde que
+#     onBrokenLinks virou 'throw' no docusaurus.config.js)
+#   - o PR cria âncoras (#secao) ou links para arquivos .md quebrados NOVOS.
+#     Esses só geram aviso no build, então são comparados com a main.
 
 on:
   pull_request:

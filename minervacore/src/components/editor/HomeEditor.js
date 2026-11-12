@@ -11,7 +11,7 @@ import { Icons, RawIcons } from '../Icons';
 const HomeItemRow = ({ item, index, totalItems, onUpdate, onDelete, onMove, onOpenIconPicker, onOpenLinkPicker }) => {
   const fullIconPath = useBaseUrl(item.iconSrc);
   const isTitleInvalid = !item.title || item.title.trim() === '';
-  const isLinkInvalid = !item.link || item.link.trim() === '';
+  const isLinkInvalid = false; // link vazio é permitido: o botão aparece como "Em breve"
 
   return (
     <div className="row margin-top--sm" style={{
@@ -52,7 +52,8 @@ const HomeItemRow = ({ item, index, totalItems, onUpdate, onDelete, onMove, onOp
                   type="text" 
                   className="button button--outline button--secondary button--block" 
                   style={{textAlign:'left', padding:'8px', cursor: 'text', flex: 1, borderColor: isLinkInvalid ? 'red' : ''}}
-                  value={item.link} 
+                  placeholder="vazio = Em breve"
+                  value={item.link}
                   onChange={e => onUpdate('link', e.target.value)} 
                />
                <button className="button button--sm button--secondary" onClick={onOpenLinkPicker} title="Selecionar Página" style={{padding:'0 10px'}}>
@@ -163,7 +164,6 @@ export default function HomeEditor({ onBack, userToken }) {
           for (const group of data[cat]) {
               for (const item of group.items) {
                   if (!item.title || item.title.trim() === '') return false;
-                  if (!item.link || item.link.trim() === '') return false;
               }
           }
       }

@@ -139,6 +139,7 @@ function compareLinks(baseLogPath, prLogPath) {
 // ============================================================================
 
 const CAUSES = [
+    [/found broken links/i, 'Algum **link aponta para uma página que não existe** (lista abaixo). Lembre que maiúsculas e minúsculas fazem diferença. Para conteúdo ainda não escrito, deixe o link do card vazio: ele aparece como "Em breve".'],
     [/front ?matter|frontMatter/i, 'O **cabeçalho** (frontmatter) de alguma página está inválido. Causas comuns: título com `:` sem aspas, `sidebar_position` vazio ou com texto.'],
     [/MDX compilation failed|Could not parse expression|Unexpected character|Expected a closing tag|end-tag-mismatch/i, 'Erro de **sintaxe MDX** em alguma página. Causas comuns: `<` grudado em número (`x<5`), `#include <...>` fora de bloco de código, chaves `{ }` no texto, `<br>` sem barra.'],
     [/Markdown image .* couldn't be resolved/i, 'Uma **imagem** referenciada não existe. Confira o nome e a pasta do arquivo, inclusive maiúsculas e minúsculas.'],
@@ -153,6 +154,7 @@ function explainBuildError(prLogPath) {
     const first = lines.findIndex((l) => /\[ERROR\]|Error:/.test(l));
     const excerpt = (first === -1 ? lines.slice(-40) : lines.slice(first, first + 30)).join('\n').trim();
     const causes = CAUSES.filter(([pattern]) => pattern.test(log)).map(([, text]) => `- ${text}`);
+    const links = [...brokenLinks(log).values()];
 
     writeSummary([
         '## ❌ O site não compila com este PR',
@@ -160,6 +162,7 @@ function explainBuildError(prLogPath) {
         'Se este PR for aprovado assim, o deploy falha e o site fica preso na versão anterior.',
         '',
         ...(causes.length ? ['**Causa provável:**', '', ...causes, ''] : []),
+        ...(links.length ? [table(links), ''] : []),
         '<details open>',
         '<summary>Trecho do erro</summary>',
         '',

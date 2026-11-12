@@ -49,6 +49,6 @@ git add .
 ### git commit
 
 Esse é um dos comandos principais, vamos até criar uma página só para ele!
-[Commits](https://minervabots.github.io/MinervaCore/docs/programacao/git/padronizacao-commits)
+[Commits](/docs/programacao/git/padronizacao-commits)
 
 

@@ -69,7 +69,7 @@ const SiteData = {
         },
         {
           "title": "Estruturas de Dados",
-          "link": "/docs/programacao/estruturas-dados",
+          "link": "/docs/programacao/estrutura-dados",
           "iconSrc": "/img/icons/estrutura-dados.svg"
         },
         {
@@ -84,7 +84,7 @@ const SiteData = {
         },
         {
           "title": "Concorrência & Paralelismo",
-          "link": "/docs/programacao/concorrencia-paralelismo",
+          "link": "",
           "iconSrc": "/img/icons/pages.svg"
         }
       ]
@@ -144,7 +144,7 @@ const SiteData = {
       "items": [
         {
           "title": "ESP-32",
-          "link": "/docs/programacao/espressif",
+          "link": "/docs/programacao/Espressif",
           "iconSrc": "/img/icons/espressif.svg"
         }
       ]
@@ -243,7 +243,7 @@ const SiteData = {
       "items": [
         {
           "title": "Multiplexadores",
-          "link": "/docs/eletronica/multiplexadores",
+          "link": "/docs/eletronica/multiplexador",
           "iconSrc": "/img/icons/logic-diagram.svg"
         }
       ]
@@ -253,7 +253,7 @@ const SiteData = {
       "items": [
         {
           "title": "Baterias",
-          "link": "/docs/eletronica/energia/baterias",
+          "link": "",
           "iconSrc": "/img/icons/battery.svg"
         },
         {
@@ -263,7 +263,7 @@ const SiteData = {
         },
         {
           "title": "Circuitos de Proteção",
-          "link": "/docs/eletronica/energia/protecao",
+          "link": "",
           "iconSrc": "/img/icons/shield.svg"
         }
       ]
@@ -273,12 +273,12 @@ const SiteData = {
       "items": [
         {
           "title": "Motores DC & Brushless",
-          "link": "/docs/eletronica/atuacao/motores",
+          "link": "",
           "iconSrc": "/img/icons/motor.svg"
         },
         {
           "title": "Drivers Ponte H",
-          "link": "/docs/eletronica/atuacao/drivers",
+          "link": "",
           "iconSrc": "/img/icons/chip.svg"
         },
         {
@@ -288,7 +288,7 @@ const SiteData = {
         },
         {
           "title": "Servomotores",
-          "link": "/docs/eletronica/atuacao/servos",
+          "link": "",
           "iconSrc": "/img/icons/robotic-gripper.svg"
         }
       ]
@@ -308,7 +308,7 @@ const SiteData = {
       "items": [
         {
           "title": "Análogico vs Digital",
-          "link": "/docs/eletronica/sinais/analogico-digital",
+          "link": "/docs/eletronica/sinais/analog-dig",
           "iconSrc": "/img/icons/signal.svg"
         },
         {
@@ -363,7 +363,7 @@ const SiteData = {
         },
         {
           "title": "Encoders",
-          "link": "/docs/eletronica/encoders",
+          "link": "/docs/eletronica/encoder",
           "iconSrc": "/img/icons/encoder.svg"
         }
       ]

@@ -10,7 +10,7 @@ As duas são tão similares que em algumas linguagens elas são sinônimos(como 
 No entanto, em C++ as duas possuem diferença em relação a como lidam na memória os dados dentro delas
 
 ## Array
-Array é provavelmente a estrutura de dados mais conhecida e usada. No C++ existem dois tipos de arrays, o array classico do C e o array da Standart Library.
+Array é provavelmente a estrutura de dados mais conhecida e usada. No C++ existem dois tipos de arrays, o array classico do C e o array da Standard Library.
 Ambos os tipos possuem limitações e caracteristicas em comum. 
 Entre elas e importante ressaltar como ele e criado na memória
 
@@ -39,7 +39,7 @@ std::cout << arrayExemplo[0] << std::endl;
 ```
 
 É comum também precisar acessar mais de um, ou todos os elementos de um array de uma vez. 
-Existem várias maneiras de fazer isso, a mais comum é utilizar um simples [loop](https://minervabots.github.io/MinervaCore/docs/programacao/cpp/loops) para ir passando de elemento em elemento:
+Existem várias maneiras de fazer isso, a mais comum é utilizar um simples [loop](/docs/programacao/cpp/loops) para ir passando de elemento em elemento:
 
 ```cpp
 // Percorremos todos os elementos do array e printamos cada um deles
@@ -49,14 +49,14 @@ for(int i = 0; i < 5; i++) {
 }
 ```
 
-### Arrays Standart Library
-O array da Standart Library pode ser considerado a "evolução" do array clássico no C++. A ideia aqui e a mesma do array normal, porém aqui o array é uma classe,
+### Arrays Standard Library
+O array da Standard Library pode ser considerado a "evolução" do array clássico no C++. A ideia aqui e a mesma do array normal, porém aqui o array é uma classe,
  e isso significa que, por exemplo, podemos utilizar metodos dessa classe! 
 
 Isso facilita muito realizar tarefas que eram simples e trabalhosas, como ver o tamanho de uma array, onde aqui, apenas precisamos chamar o metodo "size".  
 
 #### Criando um Array
-Para criar uma array da Standart Library e bem parecido com o array convencional, com apenas uma pequena mudança na sintaxe
+Para criar uma array da Standard Library e bem parecido com o array convencional, com apenas uma pequena mudança na sintaxe
 ```cpp
 // A sintaxe para criar um array se resume a std::array<tipo, tamanho> nome;
 std::array<int, 10> arrayExemplo; // Cria um array do tipo int de tamanho 10
@@ -103,17 +103,17 @@ Caso queira ver mais métodos ou mais detalhes, sugiro olhar alguma [documentaç
 Vetores possuem a mesma função de um array, so que a maneira que fazem isso na memória e diferente. A principal diferença e que vetores **não** possuem tamanho fixo. 
 Ele é basiscamente um array de alocação dinâmica, por causa disso, ele é criado na HEAP.
 
-Umas das vantagens do vetor é que a implementação dele na Standart Library abstrai muito do trabalho de se lidar com alocação dinâmica, o que traz facilidade e segurança pro seu código.
+Umas das vantagens do vetor é que a implementação dele na Standard Library abstrai muito do trabalho de se lidar com alocação dinâmica, o que traz facilidade e segurança pro seu código.
 
 ### Criando um vetor
-Para criar um vetor, a sintaxe é muito parecida com o array da Standart Library: std::vector\<tipo> nome = {}
+Para criar um vetor, a sintaxe é muito parecida com o array da Standard Library: std::vector\<tipo> nome = {}
 
 ```cpp
 // Cria um vetor com 3 itens
 std::vector<int> vetorExemplo = {1, 2, 3} 
 ```
 ### Acessando elementos de um vetor 
-Para acessar um elemento de um vetor é exatamente igual ao do array da Standart Library, usando os colchetes ou com a função "at", com as mesmas peculiaridades já comentadas acima
+Para acessar um elemento de um vetor é exatamente igual ao do array da Standard Library, usando os colchetes ou com a função "at", com as mesmas peculiaridades já comentadas acima
 ```cpp
 // Acessando com colchetes da maneira convencional
 vetorExemplo[0]

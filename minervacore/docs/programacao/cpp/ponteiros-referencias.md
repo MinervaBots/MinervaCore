@@ -6,7 +6,7 @@ title: 9. Ponteiros e Referências
 ### Ponteiros e Referências
 Em um programa, toda variável tem um **endereço que indica sua localização na memória do computador** . Além disso, existe o **conteúdo da variável**, que é o valor armazenado naquela posição de memória. 
 
-> As informações sobre memória e armazenamento são explicadas melhor [nesta seção MinervaCore](https://minervabots.github.io/MinervaCore/docs/arquitetura/memoria).
+> As informações sobre memória e armazenamento são explicadas melhor [nesta seção MinervaCore](/docs/arquitetura/memoria).
 
 A partir dessas informações, utilizaremos ferramentas para que possamos acessar e alterar valores diretamente na memória, economizando processamento e modificando variáveis globalmente mesmo que estas estejam dentro de funções. Essas ferramentas serão os **ponteiros** e as **referências**.
 :::info

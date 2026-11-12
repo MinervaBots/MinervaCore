@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useRef } from 'react';
 import useBaseUrl from '@docusaurus/useBaseUrl';
 import { getFolders, getFileContent, createPullRequest } from '../../utils/githubApi';
-import { splitFrontmatter, buildDocument } from '../../utils/markdownFormat';
+import { splitFrontmatter, buildDocument, slugify } from '../../utils/markdownFormat';
 import { parseTopicIndex, buildTopicBody, topicFrontmatter } from '../../utils/topicFormat';
 import { loadRepoPaths, createSiteIndex } from '../../utils/siteIndex';
 import { validateDocument } from '../../utils/contentValidation';
@@ -189,10 +189,15 @@ export default function TopicEditor({ onBack, userToken }) {
         const name = prompt("Digite o nome da nova pasta (sem espaços, ex: machine-learning):");
         if (!name) return;
 
-        // Limpa o nome para virar formato de URL/Pasta padrão
-        const cleanName = name.toLowerCase().replace(/[^a-z0-9-]/g, '-').replace(/-+/g, '-').replace(/^-|-$/g, '');
+        // Limpa o nome para virar formato de URL/Pasta padrão ("Eletrônica" -> "eletronica")
+        const cleanName = slugify(name);
+        if (!cleanName) {
+            alert("Nome inválido. Use letras e números.");
+            return;
+        }
 
-        if (folders.includes(cleanName)) {
+        // Sem diferenciar maiúsculas: "espressif" e "Espressif" colidem no Windows
+        if (folders.some((f) => f.toLowerCase() === cleanName)) {
             alert("Já existe uma pasta com esse nome nesta área!");
             return;
         }

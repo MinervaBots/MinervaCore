@@ -69,6 +69,22 @@ export function toSidebarPosition(value) {
 }
 
 // ============================================================================
+// Nomes de arquivo e pasta
+// ============================================================================
+
+// Nome seguro para URL: "Memória & Armazenamento" -> "memoria-armazenamento".
+// Os acentos são removidos antes (e não trocados por traço, o que daria
+// "mem-ria"), e qualquer outro símbolo vira um traço só.
+export function slugify(text) {
+    return String(text || '')
+        .normalize('NFD')
+        .replace(/[̀-ͯ]/g, '')
+        .toLowerCase()
+        .replace(/[^a-z0-9]+/g, '-')
+        .replace(/^-+|-+$/g, '');
+}
+
+// ============================================================================
 // Atributos JSX (usados nos <TopicCard ... />)
 // ============================================================================
 

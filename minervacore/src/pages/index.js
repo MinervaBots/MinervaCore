@@ -33,8 +33,8 @@ function HeroHeader() {
 
 function KnowledgeCard({ title, link, iconSrc }) {
     const iconUrl = useBaseUrl(iconSrc);
-    return (
-        <Link to={link} className="knowledge-card">
+    const content = (
+        <>
             {iconSrc ? (
               <div className="card-icon-container">
                 <img src={iconUrl} alt={title} className="card-icon" />
@@ -43,6 +43,22 @@ function KnowledgeCard({ title, link, iconSrc }) {
               <div style={{height: '50px', marginBottom: '20px'}}></div>
             )}
             <h3 className="card-title">{title}</h3>
+        </>
+    );
+
+    // Sem link = conteúdo ainda não escrito
+    if (!link) {
+        return (
+            <div className="knowledge-card knowledge-card--soon" aria-disabled="true">
+                {content}
+                <span className="knowledge-card__badge">Em breve</span>
+            </div>
+        );
+    }
+
+    return (
+        <Link to={link} className="knowledge-card">
+            {content}
         </Link>
     );
 }
@@ -119,12 +135,19 @@ export default function Home() {
             </div>
 
             <div style={{ minHeight: '400px', paddingBottom: '100px' }}>
-                {SiteData[activeTab].map((category, idx) => (
-                    <CategorySection 
-                        key={idx} 
-                        title={category.title} 
-                        items={category.items} 
-                    />
+                {/* As três abas vão para o HTML e só a ativa aparece. Assim o build
+                    enxerga os links de todas e avisa se algum estiver quebrado
+                    (antes só os da primeira aba eram verificados). */}
+                {Object.keys(SiteData).map((tab) => (
+                    <div key={tab} hidden={activeTab !== tab}>
+                        {SiteData[tab].map((category, idx) => (
+                            <CategorySection
+                                key={idx}
+                                title={category.title}
+                                items={category.items}
+                            />
+                        ))}
+                    </div>
                 ))}
             </div>
 

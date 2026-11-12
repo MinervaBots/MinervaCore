@@ -3,7 +3,7 @@ import ReactMarkdown from 'react-markdown';
 import remarkGfm from 'remark-gfm';
 import rehypeRaw from 'rehype-raw';
 import { getFolders, getFiles, getFileContent, createBranch, commitFile, openPullRequest } from '../../utils/githubApi';
-import { splitFrontmatter, buildDocument, toSidebarPosition } from '../../utils/markdownFormat';
+import { splitFrontmatter, buildDocument, toSidebarPosition, slugify } from '../../utils/markdownFormat';
 import { loadRepoPaths, createSiteIndex } from '../../utils/siteIndex';
 import { validateDocument } from '../../utils/contentValidation';
 import ValidationPanel from './ValidationPanel';
@@ -199,7 +199,22 @@ export default function PageEditor({ onBack, userToken }) {
     const handleNewFile = () => {
         const name = prompt("Nome do arquivo (ex: ponteiros):");
         if (!name) return;
-        const finalName = name.endsWith('.md') ? name : `${name}.md`;
+
+        // O nome vira parte da URL: sem acentos, espaços ou símbolos
+        const slug = slugify(name.replace(/\.mdx?$/i, ''));
+        if (!slug) {
+            alert("Nome inválido. Use letras e números.");
+            return;
+        }
+        const finalName = `${slug}.md`;
+
+        // Sem essa checagem, o PR sobrescrevia a página existente inteira
+        if (files.some((f) => f.name.toLowerCase() === finalName)) {
+            alert(`Já existe uma página chamada ${finalName} nesta pasta. Para editá-la, abra pela lista.`);
+            return;
+        }
+        if (slug !== name.trim() && !confirm(`O arquivo será criado como "${finalName}". Continuar?`)) return;
+
         setSelectedFile(finalName);
         setIsNewFile(true);
         const initialData = { metadata: { title: 'Novo Título', pos: '1' }, extraFrontmatter: {}, body: '# Título Principal\n\n' };

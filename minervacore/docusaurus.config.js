@@ -16,7 +16,9 @@ const config = {
   deploymentBranch: 'gh-pages',
   trailingSlash: false,
 
-  onBrokenLinks: 'warn',
+  // 'throw': link quebrado faz o build falhar, então nenhum volta para o site.
+  // Para conteúdo ainda não escrito, deixe o link do card vazio ("Em breve").
+  onBrokenLinks: 'throw',
   onDuplicateRoutes: 'warn',
   onBrokenAnchors: 'warn',
 
