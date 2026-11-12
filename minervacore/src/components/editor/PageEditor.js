@@ -3,6 +3,10 @@ import ReactMarkdown from 'react-markdown';
 import remarkGfm from 'remark-gfm';
 import rehypeRaw from 'rehype-raw';
 import { getFolders, getFiles, getFileContent, createBranch, commitFile, openPullRequest } from '../../utils/githubApi';
+import { splitFrontmatter, buildDocument, toSidebarPosition } from '../../utils/markdownFormat';
+import { loadRepoPaths, createSiteIndex } from '../../utils/siteIndex';
+import { validateDocument } from '../../utils/contentValidation';
+import ValidationPanel from './ValidationPanel';
 import { Icons, RawIcons } from '../Icons';
 
 const TEMPLATES = {
@@ -99,23 +103,34 @@ const MarkdownPreview = ({ content }) => {
 // =============================================================================
 //                            PARSERS E BUILDERS
 // =============================================================================
-function parseMarkdown(content) {
-    const fmRegex = /^---\n([\s\S]*?)\n---/;
-    const fmMatch = content.match(fmRegex);
-    const frontmatter = fmMatch ? fmMatch[1] : '';
-    const getFmValue = (key) => { const match = frontmatter.match(new RegExp(`${key}:\\s*(.*)`)); return match ? match[1].trim() : ''; };
-    
-    let rawTitle = getFmValue('title').replace(/^['"]|['"]$/g, '');
-    let pos = getFmValue('sidebar_position');
-    const titleMatch = rawTitle.match(/^\d+\.\s+(.*)/);
-    const cleanTitle = titleMatch ? titleMatch[1] : rawTitle;
+// No arquivo, o título leva a posição na frente ("3. Ponteiros"); no editor, não.
+// Os demais campos do cabeçalho ficam em `extraFrontmatter` e voltam intactos.
+function pageDataFromFile(content) {
+    const { data, body, error } = splitFrontmatter(content);
+    if (error) throw new Error(`o cabeçalho do arquivo está inválido (${error}). Corrija pelo GitHub.`);
 
-    return { metadata: { title: cleanTitle, pos: pos || '0' }, body: content.replace(fmRegex, '').trim() };
+    const rawTitle = data.title === undefined ? '' : String(data.title);
+    const titleMatch = rawTitle.match(/^\d+\.\s+(.*)/);
+
+    return {
+        metadata: {
+            title: titleMatch ? titleMatch[1] : rawTitle,
+            pos: data.sidebar_position === undefined ? '' : String(data.sidebar_position),
+        },
+        extraFrontmatter: data,
+        body,
+    };
 }
 
-function buildMarkdown(data) {
-    const finalTitle = (data.metadata.pos && data.metadata.pos !== '0') ? `${data.metadata.pos}. ${data.metadata.title}` : data.metadata.title;
-    return `---\nsidebar_position: ${data.metadata.pos}\ntitle: ${finalTitle}\n---\n\n${data.body}\n`;
+function frontmatterFromPageData(pageData) {
+    const position = toSidebarPosition(pageData.metadata.pos);
+    const title = pageData.metadata.title.trim();
+
+    return {
+        ...pageData.extraFrontmatter,
+        sidebar_position: position, // vazio some do arquivo em vez de virar "null"
+        title: title && position ? `${position}. ${title}` : title,
+    };
 }
 
 // =============================================================================
@@ -130,7 +145,10 @@ export default function PageEditor({ onBack, userToken }) {
     const [selectedFile, setSelectedFile] = useState('');
     
     // Estados do Editor
-    const [pageData, setPageData] = useState({ metadata: { title: '', pos: '' }, body: '' });
+    const [pageData, setPageData] = useState({ metadata: { title: '', pos: '' }, extraFrontmatter: {}, body: '' });
+    const [originalBody, setOriginalBody] = useState(''); // para separar problemas novos dos que já existiam
+    const [validation, setValidation] = useState(null);   // painel de verificação antes do PR
+    const busyRef = useRef(false);                        // impede verificar/salvar duas vezes ao mesmo tempo
     const [history, setHistory] = useState(['']);
     const [historyStep, setHistoryStep] = useState(0);
     const [viewMode, setViewMode] = useState('split');
@@ -169,12 +187,13 @@ export default function PageEditor({ onBack, userToken }) {
         try {
             const path = `minervacore/docs/${area}/${selectedFolder}/${fileName}`;
             const file = await getFileContent(path, userToken);
-            const parsed = parseMarkdown(file.content);
+            const parsed = pageDataFromFile(file.content);
             setPageData(parsed);
+            setOriginalBody(parsed.body);
             setHistory([parsed.body]);
             setHistoryStep(0);
             setStep(3);
-        } catch (e) { alert("Erro ao ler arquivo."); } finally { setLoading(false); }
+        } catch (e) { alert(`Erro ao ler arquivo: ${e.message}`); } finally { setLoading(false); }
     };
 
     const handleNewFile = () => {
@@ -183,8 +202,9 @@ export default function PageEditor({ onBack, userToken }) {
         const finalName = name.endsWith('.md') ? name : `${name}.md`;
         setSelectedFile(finalName);
         setIsNewFile(true);
-        const initialData = { metadata: { title: 'Novo Título', pos: '1' }, body: '# Título Principal\n\n' };
+        const initialData = { metadata: { title: 'Novo Título', pos: '1' }, extraFrontmatter: {}, body: '# Título Principal\n\n' };
         setPageData(initialData);
+        setOriginalBody('');
         setHistory([initialData.body]);
         setHistoryStep(0);
         setStep(3);
@@ -351,9 +371,83 @@ export default function PageEditor({ onBack, userToken }) {
         processImageFile(file);
     };
 
+    // VERIFICAÇÃO ANTES DO PR
+    // Confere sintaxe, imagens e links do mesmo jeito que o build do site faz
+    const runValidation = async () => {
+        const filePath = `minervacore/docs/${area}/${selectedFolder}/${selectedFile}`;
+        const paths = await loadRepoPaths(userToken);
+        const index = createSiteIndex(paths, {
+            // A página nova e as imagens da fila vão no mesmo PR, então contam como existentes
+            extraFiles: [filePath, ...pendingImages.map((img) => img.serverPath)],
+        });
+
+        return validateDocument({
+            filePath,
+            frontmatter: frontmatterFromPageData(pageData),
+            body: pageData.body,
+            originalBody,
+            index,
+            pendingImages,
+        });
+    };
+
+    const startValidation = async (mode) => {
+        // O Ctrl+S chega duas vezes (textarea e janela): só a primeira conta
+        if (busyRef.current) return;
+        busyRef.current = true;
+        setValidation({ mode, running: true });
+
+        try {
+            const result = await runValidation();
+            const clean = result.errors.length === 0 && result.warnings.length === 0;
+
+            if (mode === 'save' && clean) {
+                setValidation(null);
+                await submitPullRequest();
+            } else {
+                setValidation({ mode, running: false, result });
+            }
+        } catch (e) {
+            setValidation({ mode, running: false, error: `Não foi possível verificar o conteúdo: ${e.message}` });
+        } finally {
+            busyRef.current = false;
+        }
+    };
+
+    const handleSave = () => startValidation('save');
+
+    // Só chega aqui com avisos (nunca com erros): a pessoa confirmou que está ok
+    const confirmSave = async () => {
+        if (busyRef.current) return;
+        busyRef.current = true;
+        setValidation(null);
+        try {
+            await submitPullRequest();
+        } finally {
+            busyRef.current = false;
+        }
+    };
+
+    // Leva o cursor até a linha do problema
+    const jumpToLine = (line) => {
+        setValidation(null);
+        const textarea = textAreaRef.current;
+        if (!textarea) return;
+
+        const lines = pageData.body.split('\n');
+        const start = lines.slice(0, line - 1).reduce((total, text) => total + text.length + 1, 0);
+        const end = start + (lines[line - 1] || '').length;
+
+        setTimeout(() => {
+            textarea.focus();
+            textarea.setSelectionRange(start, end);
+            const lineHeight = parseFloat(getComputedStyle(textarea).lineHeight) || 22;
+            textarea.scrollTop = Math.max(0, (line - 4) * lineHeight);
+        }, 0);
+    };
+
     // SALVAMENTO UNIFICADO (BATCH)
-    const handleSave = async () => {
-        if (!pageData.metadata.title) { alert("Título obrigatório!"); return; }
+    const submitPullRequest = async () => {
         setLoading(true);
         setStatus({ type: 'info', msg: 'Preparando pacote de atualizações...' });
 
@@ -378,7 +472,7 @@ export default function PageEditor({ onBack, userToken }) {
 
             // Sobe o arquivo Markdown para a mesma branch
             setStatus({ type: 'info', msg: 'Salvando texto...' });
-            const mdContent = btoa(unescape(encodeURIComponent(buildMarkdown(pageData))));
+            const mdContent = btoa(unescape(encodeURIComponent(buildDocument(frontmatterFromPageData(pageData), pageData.body))));
             const mdPath = `minervacore/docs/${area}/${selectedFolder}/${selectedFile}`;
             
             await commitFile({
@@ -480,7 +574,8 @@ export default function PageEditor({ onBack, userToken }) {
             <div className="alert alert--success" style={{display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '10px', padding: '30px'}}>
                 {Icons.success}
                 <h3 style={{margin: 0}}>Pull Request Criado!</h3>
-                <p>Texto e imagens foram enviados juntos.</p>
+                <p style={{margin: 0}}>Texto e imagens foram enviados juntos.</p>
+                <small style={{opacity: 0.8}}>O GitHub ainda roda o build completo no PR. Se aparecer um X vermelho por lá, alguma coisa precisa de ajuste.</small>
                 <div>
                     <a href={status.msg} target="_blank" rel="noreferrer" className="button button--primary">Ver PR</a>
                     <button className="button button--link margin-left--md" onClick={() => setStatus({type:'', msg:''})}>Voltar</button>
@@ -492,7 +587,15 @@ export default function PageEditor({ onBack, userToken }) {
     // EDITOR COM TOOLBAR E PREVIEW
     return (
         <div className="container-fluid margin-vert--sm" style={{ padding: '0 0px' }}>
-            
+
+            <ValidationPanel
+                state={validation}
+                onClose={() => setValidation(null)}
+                onConfirm={confirmSave}
+                onRetry={() => startValidation(validation?.mode || 'check')}
+                onJump={jumpToLine}
+            />
+
             {/* Header Fixo */}
             <div style={{
                 display:'flex', justifyContent:'space-between', alignItems:'center', marginBottom:'15px', 
@@ -508,6 +611,7 @@ export default function PageEditor({ onBack, userToken }) {
                         <button className={`button button--sm ${viewMode==='edit'?'button--primary':'button--secondary'}`} onClick={()=>setViewMode('edit')}>Editor</button>
                         <button className={`button button--sm ${viewMode==='split'?'button--primary':'button--secondary'}`} onClick={()=>setViewMode('split')}>Split</button>
                     </div>
+                    <button className="button button--secondary button--sm" onClick={() => startValidation('check')} title="Confere sintaxe, imagens e links sem enviar nada">Verificar</button>
                     <button className="button button--success button--sm" onClick={handleSave} style={{color:'white'}}>Salvar Tudo</button>
                 </div>
             </div>

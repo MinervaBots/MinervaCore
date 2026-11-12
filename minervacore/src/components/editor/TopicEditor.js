@@ -1,106 +1,18 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import useBaseUrl from '@docusaurus/useBaseUrl';
 import { getFolders, getFileContent, createPullRequest } from '../../utils/githubApi';
+import { splitFrontmatter, buildDocument } from '../../utils/markdownFormat';
+import { parseTopicIndex, buildTopicBody, topicFrontmatter } from '../../utils/topicFormat';
+import { loadRepoPaths, createSiteIndex } from '../../utils/siteIndex';
+import { validateDocument } from '../../utils/contentValidation';
 import IconPicker from './IconPicker';
 import LinkPicker from './LinkPicker';
+import ValidationPanel from './ValidationPanel';
 import { Icons, RawIcons } from '../Icons';
 
-// =============================================================================
-//                          PARSER E BUILDER DE MDX
-// =============================================================================
-
-function parseIndexMdx(content) {
-    // Extrair Frontmatter
-    const fmRegex = /^---\n([\s\S]*?)\n---/;
-    const fmMatch = content.match(fmRegex);
-    const frontmatter = fmMatch ? fmMatch[1] : '';
-    
-    // Parsear valores simples do frontmatter
-    const getFmValue = (key) => {
-        const match = frontmatter.match(new RegExp(`${key}:\\s*(.*)`));
-        return match ? match[1].trim() : '';
-    };
-
-    const metadata = {
-        title: getFmValue('title'),
-        description: getFmValue('description'),
-        pos: getFmValue('sidebar_position')
-    };
-
-    // Separar o conteúdo após o Frontmatter
-    let body = content.replace(fmRegex, '').trim();
-
-    // Procure (### Texto) opcionalmente, seguido de quebra de linha e <TopicGrid>
-    const sectionRegex = /(?:###\s+(.*)\n\s*)?<TopicGrid>([\s\S]*?)<\/TopicGrid>/g;
-    
-    const sections = [];
-    let match;
-    let lastIndex = 0;
-    let firstMatchIndex = -1;
-
-    // Loop para encontrar todas as seções de Grid
-    while ((match = sectionRegex.exec(body)) !== null) {
-        if (firstMatchIndex === -1) firstMatchIndex = match.index;
-
-        // match[1] é o título (pode ser undefined se não tiver ###)
-        // match[2] é o conteúdo do grid
-        const title = match[1] ? match[1].trim() : ''; 
-        const gridContent = match[2];
-        const cards = [];
-
-        // Extrair Cards dentro do Grid
-        const cardRegex = /<TopicCard\s+([\s\S]*?)\/>/g;
-        let cardMatch;
-        while ((cardMatch = cardRegex.exec(gridContent)) !== null) {
-            const propsStr = cardMatch[1];
-            // Função auxiliar para pegar props (title="Val" ou title='Val')
-            const getProp = (key) => {
-                const pMatch = propsStr.match(new RegExp(`${key}=["'](.*?)["']`));
-                return pMatch ? pMatch[1] : '';
-            };
-            cards.push({
-                title: getProp('title'),
-                description: getProp('description'),
-                link: getProp('link'),
-                icon: getProp('icon')
-            });
-        }
-
-        sections.push({ title, cards });
-        lastIndex = match.index + match[0].length;
-    }
-
-    // Separar Intro e Footer
-    // Intro é tudo antes do primeiro grid achado
-    const introContent = firstMatchIndex > 0 ? body.substring(0, firstMatchIndex).trim() : '';
-    
-    // Footer é tudo depois do último grid
-    // Se não achou grid nenhum, o footer é vazio e tudo vira intro (ou vice versa, mas aqui assumimos grids)
-    const footerContent = lastIndex < body.length ? body.substring(lastIndex).trim() : '';
-
-    return { metadata, introContent, sections, footerContent };
-}
-
-function buildIndexMdx(data) {
-    let mdx = `---\nsidebar_position: ${data.metadata.pos}\ntitle: ${data.metadata.title}\ndescription: ${data.metadata.description}\nhide_table_of_contents: true\n---\n\n`;
-
-    if (data.introContent) mdx += `${data.introContent}\n\n`;
-
-    data.sections.forEach(sec => {
-        if (sec.title && sec.title.trim() !== '') {
-            mdx += `### ${sec.title}\n\n`;
-        }
-        
-        mdx += `<TopicGrid>\n\n`;
-        sec.cards.forEach(c => {
-            mdx += `    <TopicCard \n    title="${c.title}" \n    description="${c.description}" \n    link="${c.link}" \n    icon="${c.icon}"\n    />\n\n`;
-        });
-        mdx += `</TopicGrid>\n\n`;
-    });
-
-    if (data.footerContent) mdx += `${data.footerContent}\n`;
-    return mdx;
-}
+// A leitura e a escrita do index.mdx ficam em utils/topicFormat.js: o
+// frontmatter é escrito pelo js-yaml e os atributos dos cards são escapados,
+// então aspas, dois-pontos e # nos textos não quebram mais o build.
 
 // =============================================================================
 //                          COMPONENTE VISUAL DE CARD
@@ -108,9 +20,9 @@ function buildIndexMdx(data) {
 
 const TopicCardRow = ({ card, index, totalItems, onUpdate, onDelete, onMove, onOpenPicker, onOpenLinkPicker }) => {
     
-    // Validação Visual
+    // Validação Visual (link vazio é permitido: vira um card "Em breve")
     const isTitleInvalid = !card.title || card.title.trim() === '';
-    const isLinkInvalid = !card.link || card.link.trim() === '';
+    const isLinkInvalid = false;
 
     return (
         <div className="card padding--sm margin-bottom--sm" style={{
@@ -146,7 +58,7 @@ const TopicCardRow = ({ card, index, totalItems, onUpdate, onDelete, onMove, onO
                                 <input 
                                     type="text" 
                                     className="button button--outline button--secondary button--block button--sm" 
-                                    placeholder="Link (/docs/...)"
+                                    placeholder="Link (vazio = Em breve)"
                                     value={card.link} 
                                     onChange={e => onUpdate('link', e.target.value)} 
                                     style={{textAlign:'left', flex: 1, borderColor: isLinkInvalid ? 'red' : ''}} 
@@ -231,6 +143,9 @@ export default function TopicEditor({ onBack, userToken }) {
     const [loading, setLoading] = useState(false);
     const [mdxData, setMdxData] = useState(null);
     const [status, setStatus] = useState({type:'', msg:''});
+    const [originalBody, setOriginalBody] = useState(''); // para separar problemas novos dos que já existiam
+    const [validation, setValidation] = useState(null);   // painel de verificação antes do PR
+    const busyRef = useRef(false);
 
     // Pickers
     const [pickerType, setPickerType] = useState(null); // 'icon' ou 'link'
@@ -259,11 +174,11 @@ export default function TopicEditor({ onBack, userToken }) {
         try {
             const path = `minervacore/docs/${area}/${topicName}/index.mdx`;
             const file = await getFileContent(path, userToken);
-            const parsed = parseIndexMdx(file.content);
-            setMdxData(parsed);
+            setMdxData(parseTopicIndex(file.content));
+            setOriginalBody(splitFrontmatter(file.content).body);
             setStep(2);
         } catch (e) {
-            alert("Erro: index.mdx não encontrado nesta pasta.");
+            alert(/Not Found/i.test(e.message) ? "Erro: index.mdx não encontrado nesta pasta." : `Erro ao ler index.mdx: ${e.message}`);
         } finally {
             setLoading(false);
         }
@@ -283,7 +198,8 @@ export default function TopicEditor({ onBack, userToken }) {
         }
 
         setSelectedTopic(cleanName);
-        
+        setOriginalBody('');
+
         // Inicializa com um template base para um novo tópico
         setMdxData({
             metadata: {
@@ -291,11 +207,13 @@ export default function TopicEditor({ onBack, userToken }) {
                 description: 'Descrição do tópico para o Google (SEO)',
                 pos: '1'
             },
+            extraFrontmatter: {},
             introContent: `# Bem-vindo ao Tópico de ${cleanName}\n\nSelecione um dos itens abaixo para iniciar seus estudos.`,
             sections: [
                 {
                     title: 'Início e Teoria',
-                    cards: []
+                    cards: [],
+                    after: ''
                 }
             ],
             footerContent: '### Material Extra\n\nAdicione links e playlists aqui.'
@@ -310,23 +228,71 @@ export default function TopicEditor({ onBack, userToken }) {
         // Metadados básicos
         if (!mdxData.metadata.title) return false;
         
-        // Cards
+        // Cards (link vazio é permitido: vira "Em breve")
         for (const sec of mdxData.sections) {
             for (const card of sec.cards) {
-                if (!card.title || !card.link) return false;
+                if (!card.title) return false;
             }
         }
         return true;
     };
 
+    // Verificação antes do PR: mesma checagem do PageEditor, aplicada ao
+    // index.mdx gerado. `locate` traduz a linha do erro para o card/campo.
+    const startValidation = async (mode) => {
+        if (busyRef.current) return;
+        busyRef.current = true;
+        setValidation({ mode, running: true });
+
+        try {
+            const filePath = `minervacore/docs/${area}/${selectedTopic}/index.mdx`;
+            const { body, locate } = buildTopicBody(mdxData);
+            const paths = await loadRepoPaths(userToken);
+            const index = createSiteIndex(paths, { extraFiles: [filePath] });
+
+            const result = await validateDocument({
+                filePath,
+                frontmatter: topicFrontmatter(mdxData),
+                body,
+                originalBody,
+                index,
+                locate,
+            });
+
+            if (mode === 'save' && result.errors.length === 0 && result.warnings.length === 0) {
+                setValidation(null);
+                await submitPullRequest();
+            } else {
+                setValidation({ mode, running: false, result });
+            }
+        } catch (e) {
+            setValidation({ mode, running: false, error: `Não foi possível verificar o conteúdo: ${e.message}` });
+        } finally {
+            busyRef.current = false;
+        }
+    };
+
+    const handleSave = () => startValidation('save');
+
+    const confirmSave = async () => {
+        if (busyRef.current) return;
+        busyRef.current = true;
+        setValidation(null);
+        try {
+            await submitPullRequest();
+        } finally {
+            busyRef.current = false;
+        }
+    };
+
     // Salvar
-    const handleSave = async () => {
+    const submitPullRequest = async () => {
         setLoading(true);
         setStatus({type:'info', msg:'Gerando Pull Request...'});
         try {
-            const newContent = buildIndexMdx(mdxData);
+            const newContent = buildDocument(topicFrontmatter(mdxData), buildTopicBody(mdxData).body);
             const path = `minervacore/docs/${area}/${selectedTopic}/index.mdx`;
-            
+
             const link = await createPullRequest({
                 token: userToken,
                 filePath: path,
@@ -368,8 +334,9 @@ export default function TopicEditor({ onBack, userToken }) {
 
     const addCard = (secIdx) => {
         const newData = {...mdxData};
+        // Começa sem link (= "Em breve"); antes o padrão "/docs/..." virava link quebrado
         newData.sections[secIdx].cards.push({
-            title: 'Novo', description: '...', link: '/docs/...', icon: '/img/icons/code.svg'
+            title: 'Novo', description: '', link: '', icon: '/img/icons/code.svg'
         });
         setMdxData(newData);
     };
@@ -383,7 +350,7 @@ export default function TopicEditor({ onBack, userToken }) {
 
     const addSection = () => {
         const newData = {...mdxData};
-        newData.sections.push({ title: 'Nova Seção', cards: [] });
+        newData.sections.push({ title: 'Nova Seção', cards: [], after: '' });
         setMdxData(newData);
     };
 
@@ -470,7 +437,8 @@ export default function TopicEditor({ onBack, userToken }) {
             <div className="alert alert--success" style={{display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '10px', padding: '30px'}}>
                 {Icons.success}
                 <h3 style={{margin: 0}}>Pull Request Criado!</h3>
-                <p>Texto e imagens foram enviados juntos.</p>
+                <p style={{margin: 0}}>A página do tópico foi enviada para revisão.</p>
+                <small style={{opacity: 0.8}}>O GitHub ainda roda o build completo no PR. Se aparecer um X vermelho por lá, alguma coisa precisa de ajuste.</small>
                 <div>
                     <a href={status.msg} target="_blank" rel="noreferrer" className="button button--primary">Ver PR</a>
                     <button className="button button--link margin-left--md" onClick={() => setStatus({type:'', msg:''})}>Voltar</button>
@@ -486,6 +454,13 @@ export default function TopicEditor({ onBack, userToken }) {
             
             {pickerType === 'icon' && <IconPicker userToken={userToken} onClose={()=>setPickerType(null)} onSelect={handlePickerSelect} />}
             {pickerType === 'link' && <LinkPicker userToken={userToken} onClose={()=>setPickerType(null)} onSelect={handlePickerSelect} />}
+
+            <ValidationPanel
+                state={validation}
+                onClose={() => setValidation(null)}
+                onConfirm={confirmSave}
+                onRetry={() => startValidation(validation?.mode || 'check')}
+            />
 
             {/* STICKY HEADER */}
             <div style={{
@@ -504,7 +479,10 @@ export default function TopicEditor({ onBack, userToken }) {
                             {Icons.warning} Preencha os campos obrigatórios
                         </span>
                     )}
-                    <button className="button button--success" onClick={handleSave} disabled={!isValid} 
+                    <button className="button button--secondary margin-right--sm" onClick={() => startValidation('check')} title="Confere sintaxe, links e ícones sem enviar nada">
+                        Verificar
+                    </button>
+                    <button className="button button--success" onClick={handleSave} disabled={!isValid}
                             style={{opacity: isValid ? 1 : 0.5, color: 'white'}}>
                         Salvar Alterações
                     </button>

@@ -1,8 +1,11 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import useBaseUrl from '@docusaurus/useBaseUrl';
 import { githubFetch, createPullRequest } from '../../utils/githubApi';
+import { loadRepoPaths, createSiteIndex } from '../../utils/siteIndex';
+import { validateHomeData } from '../../utils/contentValidation';
 import IconPicker from './IconPicker';
 import LinkPicker from './LinkPicker';
+import ValidationPanel from './ValidationPanel';
 import { Icons, RawIcons } from '../Icons';
 
 const HomeItemRow = ({ item, index, totalItems, onUpdate, onDelete, onMove, onOpenIconPicker, onOpenLinkPicker }) => {
@@ -121,8 +124,14 @@ export default function HomeEditor({ onBack, userToken }) {
   const [status, setStatus] = useState({ type: '', msg: '' });
   const [activeTab, setActiveTab] = useState('programacao');
   
-  const [pickerType, setPickerType] = useState(null); 
-  const [pickerTarget, setPickerTarget] = useState(null); 
+  const [pickerType, setPickerType] = useState(null);
+  const [pickerTarget, setPickerTarget] = useState(null);
+
+  // Cópia do que veio do GitHub, para separar problemas novos dos que já existiam.
+  // Precisa ser cópia profunda: os handlers abaixo alteram `data` por dentro.
+  const [originalData, setOriginalData] = useState(null);
+  const [validation, setValidation] = useState(null);
+  const busyRef = useRef(false);
 
   useEffect(() => {
     async function load() {
@@ -138,6 +147,7 @@ export default function HomeEditor({ onBack, userToken }) {
         // eslint-disable-next-line no-eval
         const parsedData = eval(`(${match[1]})`);
         setData(parsedData);
+        setOriginalData(JSON.parse(JSON.stringify(parsedData)));
       } catch (e) {
         setStatus({ type: 'danger', msg: `Erro ao carregar: ${e.message}` });
       } finally {
@@ -160,7 +170,43 @@ export default function HomeEditor({ onBack, userToken }) {
       return true;
   };
 
-  const handleSave = async () => {
+  // Verificação antes do PR: links dos botões e ícones precisam existir
+  const startValidation = async (mode) => {
+    if (busyRef.current || !data) return;
+    busyRef.current = true;
+    setValidation({ mode, running: true });
+
+    try {
+      const index = createSiteIndex(await loadRepoPaths(userToken));
+      const result = validateHomeData({ data, originalData, index });
+
+      if (mode === 'save' && result.errors.length === 0 && result.warnings.length === 0) {
+        setValidation(null);
+        await submitPullRequest();
+      } else {
+        setValidation({ mode, running: false, result });
+      }
+    } catch (e) {
+      setValidation({ mode, running: false, error: `Não foi possível verificar: ${e.message}` });
+    } finally {
+      busyRef.current = false;
+    }
+  };
+
+  const handleSave = () => startValidation('save');
+
+  const confirmSave = async () => {
+    if (busyRef.current) return;
+    busyRef.current = true;
+    setValidation(null);
+    try {
+      await submitPullRequest();
+    } finally {
+      busyRef.current = false;
+    }
+  };
+
+  const submitPullRequest = async () => {
     if (!data) return;
     setLoading(true);
     setStatus({ type: 'info', msg: 'Criando Branch e Pull Request...' });
@@ -267,8 +313,9 @@ export default SiteData;
   if (status.type === 'success') return (
     <div className="container text--center margin-vert--xl">
       <div className="alert alert--success">
-        {Icons.sucess} <h3>Pull Request Criado!</h3>
+        {Icons.success} <h3>Pull Request Criado!</h3>
         <p>Suas alterações estão esperando aprovação.</p>
+        <p><small style={{opacity: 0.8}}>O GitHub ainda roda o build completo no PR. Se aparecer um X vermelho por lá, alguma coisa precisa de ajuste.</small></p>
         <a href={status.msg} target="_blank" className="button button--primary">Ver no GitHub</a>
         <button className="button button--link margin-left--md" onClick={() => setStatus({type:'', msg:''})}>Voltar</button>
       </div>
@@ -288,12 +335,19 @@ export default SiteData;
           />
       )}
       {pickerType === 'link' && (
-          <LinkPicker 
-            userToken={userToken} 
-            onClose={() => setPickerType(null)} 
-            onSelect={handlePickerSelect} 
+          <LinkPicker
+            userToken={userToken}
+            onClose={() => setPickerType(null)}
+            onSelect={handlePickerSelect}
           />
       )}
+
+      <ValidationPanel
+        state={validation}
+        onClose={() => setValidation(null)}
+        onConfirm={confirmSave}
+        onRetry={() => startValidation(validation?.mode || 'check')}
+      />
 
       {/* STICKY HEADER */}
       <div style={{
@@ -310,7 +364,10 @@ export default SiteData;
                     {Icons.warning} Preencha todos os campos
                 </span>
             )}
-            <button className="button button--success" onClick={handleSave} disabled={!isValid} 
+            <button className="button button--secondary margin-right--sm" onClick={() => startValidation('check')} title="Confere links e ícones sem enviar nada">
+                Verificar
+            </button>
+            <button className="button button--success" onClick={handleSave} disabled={!isValid}
                     style={{opacity: isValid ? 1 : 0.5, color: 'white'}}>
                 Salvar Alterações
             </button>
