@@ -1,0 +1,67 @@
+name: Verificar PR (build e links)
+
+# Roda o build completo em todo PR que mexe no site, antes do merge.
+# Sem isso, um PR com erro só era descoberto depois de mergeado, quando o
+# deploy falhava e o site ficava preso na versão anterior.
+#
+# Falha se:
+#   - o site não compila com o PR (frontmatter inválido, erro de MDX,
+#     imagem inexistente, import quebrado...)
+#   - o PR cria links quebrados NOVOS. Os que já existiam na main aparecem
+#     no resumo, mas não bloqueiam.
+
+on:
+  pull_request:
+    paths:
+      - 'minervacore/**'
+      - '.github/workflows/pr-check.yml'
+      - '.github/scripts/**'
+
+permissions:
+  contents: read
+
+concurrency:
+  group: pr-check-${{ github.event.pull_request.number }}
+  cancel-in-progress: true
+
+jobs:
+  build:
+    name: Build e links quebrados
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout do PR
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0 # o build usa o histórico do git ("última atualização por...")
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: 'npm'
+          cache-dependency-path: minervacore/package-lock.json
+
+      - name: Build do PR
+        id: pr_build
+        working-directory: minervacore
+        run: |
+          set -o pipefail
+          npm ci
+          npm run build 2>&1 | tee "$RUNNER_TEMP/pr-build.log"
+
+      - name: Explicar o erro do build
+        if: failure() && steps.pr_build.outcome == 'failure'
+        run: node .github/scripts/check-build-log.mjs --erro "$RUNNER_TEMP/pr-build.log"
+
+      # Builda a main num diretório separado só para ter a lista de links
+      # quebrados que já existiam e não culpar o PR por eles.
+      - name: Build da main (para comparar links)
+        run: |
+          git worktree add "$RUNNER_TEMP/base" "${{ github.event.pull_request.base.sha }}"
+          cd "$RUNNER_TEMP/base/minervacore"
+          npm ci
+          npm run build > "$RUNNER_TEMP/base-build.log" 2>&1 || echo "::warning::O build da main falhou; os links não serão comparados."
+
+      - name: Comparar links quebrados
+        run: node .github/scripts/check-build-log.mjs "$RUNNER_TEMP/base-build.log" "$RUNNER_TEMP/pr-build.log"
